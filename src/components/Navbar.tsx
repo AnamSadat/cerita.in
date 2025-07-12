@@ -19,6 +19,8 @@ export default function Navbar() {
 
   const pathname = usePathname();
 
+  // TODO: Fixing bug navbar
+
   return (
     <div className=''>
       <header className='fixed top-5 left-1/2 -translate-x-1/2 z-50 rounded-xl w-full max-w-7xl mx-auto justify-center shadow-20 transition-all duration-300 bg-[var(--gray)]'>

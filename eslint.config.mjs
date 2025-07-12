@@ -12,6 +12,17 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
   {
+    files: ['**/*.json'],
+    languageOptions: {
+      parser: JSON,
+    },
+    rules: {
+      'comma-dangle': ['error', 'never'],
+      'quotes': ['error', 'double'],
+      'no-multiple-empty-lines': ['error', { max: 1 }]
+    }
+  },
+  {
     rules: {
       quotes: ['error', 'single'],
       indent: ['error', 2],

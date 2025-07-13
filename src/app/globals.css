@@ -82,6 +82,10 @@
   --light-gray: oklch(97.23% 0.005 277.62);
   --gray: oklch(45.22% 0.004 277.63);
   --dark-gray: oklch(35.53% 0.004 277.63);
+  --neutral-950: oklch(0.14 0 0);
+  --neutral-900: oklch(0.2 0 0);
+  --neutral-800: oklch(0.27 0 0);
+  --neutral-700: oklch(0.37 0 0);
 }
 
 .dark {
@@ -124,6 +128,6 @@
   }
   body {
     @apply bg-background text-foreground;
-    background: var(--light-gray);
+    background: var(--neutral-800);
   }
 }

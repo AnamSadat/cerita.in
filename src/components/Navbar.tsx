@@ -1,84 +1,66 @@
-'use client'
+'use client';
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+// import { usePathname } from 'next/navigation';
 import { Button } from './ui/button';
 import { useEffect, useState } from 'react';
+// import { motion } from 'framer-motion';
+import { NavItems } from './ui/resizable-navbar';
 
 export default function Navbar() {
   const routes = [
-    {
-      href: '/',
-      label: 'Home',
-    },
-    {
-      href: '/story',
-      label: 'Story',
-    },
+    { link: '/', name: 'Home' },
+    { link: '/story', name: 'Story' },
   ];
 
-  const pathname = usePathname();
-
-  const [scrolled, setScrolled] = useState(false)
+  // const pathname = usePathname();
+  const [scrolled, setScrolled] = useState(false);
+  // const [hovered, setHovered] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 10)
-    }
+      setScrolled(window.scrollY > 10);
+    };
 
-    window.addEventListener('scroll', handleScroll)
-    handleScroll()
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
 
-    return  () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-  const handleClass = `fixed top-5 left-1/2 -translate-x-1/2 z-50 rounded-full w-4xl shadow-xl transition-all duration-300 transition-colors backdrop-blur-md ${scrolled ? 'bg-gray-900/20 backdrop-blur-md' : 'bg-[var(--gray)]'}`;
-
-  // TODO: Fixing bug navbar
+  const navbarClass = `
+    fixed top-5 left-1/2 -translate-x-1/2 z-50
+    rounded-full w-full max-w-4xl
+    transition-colors duration-300
+    px-4 backdrop-blur-md
+    ${scrolled ? 'bg-gray-900/60 shadow-xl' : 'bg-[var(--gray)]'}
+  `;
 
   return (
-    <header className={handleClass}>
-      <div className='flex justify-between container items-center py-2 text-lg gap-3 px-3'>
+    <header className={navbarClass}>
+      <div className="flex items-center justify-between w-full py-2 px-4 md:px-1">
+        {/* Logo */}
+        <Link href="/">
+          <Image
+            src="/logo-white.png"
+            alt="Logo Cerita.in"
+            width={130}
+            height={0}
+            priority
+          />
+        </Link>
+
+        {/* Navigation */}
+        <NavItems items={routes}/>
+        
+        {/* Button Log In */}
         <div>
-          <Link href={'/'}>
-            <Image
-              src={'/logo-white.png'}
-              alt="Logo Cerita.in"
-              width={150}
-              height={0}
-            />
-          </Link>
-        </div>
-        <nav>
-          <ul className="flex gap-7">
-            {routes.map((route) => (
-              <li key={route.href}>
-                <Link
-                  href={route.href}
-                  className={
-                    pathname === route.href ||
-                    (route.href !== '/' && pathname.startsWith(route.href))
-                      ? 'text-[var(--light-gray)] font-bold'
-                      : 'text-input font-semibold'
-                  }
-                >
-                  {route.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <div className='gap-2 flex'>
-          <div>
-            <Button variant={'secondary'} className='rounded-full' asChild>
-              <Link href={'/'}>
-              Log In
-              </Link>
-            </Button>
-          </div>
+          <Button variant="secondary" className="rounded-full" asChild>
+            <Link href="/login">Log In</Link>
+          </Button>
         </div>
       </div>
     </header>
-  )
+  );
 }

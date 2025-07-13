@@ -26,7 +26,7 @@ export default function RootLayout({
         className={`${poppins.variable} antialiased min-h-screen flex flex-col`}
       >
         <Navbar />
-        <main className="flex-grow pt-[125px]">{children}</main>
+        <main className="flex-grow">{children}</main>
         <Footer />
       </body>
     </html>

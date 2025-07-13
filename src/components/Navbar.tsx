@@ -1,66 +1,94 @@
 'use client';
-
-import Image from 'next/image';
+import {
+  Navbar,
+  NavBody,
+  NavItems,
+  MobileNav,
+  NavbarLogo,
+  NavbarButton,
+  MobileNavHeader,
+  MobileNavToggle,
+  MobileNavMenu,
+} from '@/components/ui/resizable-navbar';
 import Link from 'next/link';
-// import { usePathname } from 'next/navigation';
-import { Button } from './ui/button';
-import { useEffect, useState } from 'react';
-// import { motion } from 'framer-motion';
-import { NavItems } from './ui/resizable-navbar';
+import { useState } from 'react';
 
-export default function Navbar() {
-  const routes = [
-    { link: '/', name: 'Home' },
-    { link: '/story', name: 'Story' },
+export function Nav() {
+  const navItems = [
+    {
+      name: 'Home',
+      link: '/',
+    },
+    {
+      name: 'Story',
+      link: '/story',
+    },
+    {
+      name: 'Contact',
+      link: '#contact',
+    },
   ];
 
-  // const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
-  // const [hovered, setHovered] = useState<string | null>(null);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const navbarClass = `
-    fixed top-5 left-1/2 -translate-x-1/2 z-50
-    rounded-full w-full max-w-4xl
-    transition-colors duration-300
-    px-4 backdrop-blur-md
-    ${scrolled ? 'bg-gray-900/60 shadow-xl' : 'bg-[var(--gray)]'}
-  `;
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <header className={navbarClass}>
-      <div className="flex items-center justify-between w-full py-2 px-4 md:px-1">
-        {/* Logo */}
-        <Link href="/">
-          <Image
-            src="/logo-white.png"
-            alt="Logo Cerita.in"
-            width={130}
-            height={0}
-            priority
-          />
-        </Link>
+    <div className="relative w-full">
+      <Navbar>
+        {/* Desktop Navigation */}
+        <NavBody>
+          <NavbarLogo />
+          <NavItems items={navItems} />
+          <div className="flex items-center gap-4">
+            <NavbarButton variant="secondary" className='text-white'>Login</NavbarButton>
+            <NavbarButton variant="primary">Book a call</NavbarButton>
+          </div>
+        </NavBody>
 
-        {/* Navigation */}
-        <NavItems items={routes}/>
-        
-        {/* Button Log In */}
-        <div>
-          <Button variant="secondary" className="rounded-full" asChild>
-            <Link href="/login">Log In</Link>
-          </Button>
-        </div>
-      </div>
-    </header>
+        {/* Mobile Navigation */}
+        <MobileNav>
+          <MobileNavHeader>
+            <NavbarLogo />
+            <MobileNavToggle
+              isOpen={isMobileMenuOpen}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            />
+          </MobileNavHeader>
+
+          <MobileNavMenu
+            isOpen={isMobileMenuOpen}
+            onClose={() => setIsMobileMenuOpen(false)}
+          >
+            {navItems.map((item, idx) => (
+              <Link
+                key={`mobile-link-${idx}`}
+                href={item.link}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="relative text-neutral-600 dark:text-neutral-300"
+              >
+                <span className="block">{item.name}</span>
+              </Link>
+            ))}
+            <div className="flex w-full flex-col gap-4">
+              <NavbarButton
+                onClick={() => setIsMobileMenuOpen(false)}
+                variant="primary"
+                className="w-full"
+              >
+                Login
+              </NavbarButton>
+              <NavbarButton
+                onClick={() => setIsMobileMenuOpen(false)}
+                variant="primary"
+                className="w-full"
+              >
+                Book a call
+              </NavbarButton>
+            </div>
+          </MobileNavMenu>
+        </MobileNav>
+      </Navbar>
+
+      {/* Navbar */}
+    </div>
   );
 }

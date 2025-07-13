@@ -1,75 +1,94 @@
-'use client'
-
-import Image from 'next/image';
+'use client';
+import {
+  Navbar,
+  NavBody,
+  NavItems,
+  MobileNav,
+  NavbarLogo,
+  NavbarButton,
+  MobileNavHeader,
+  MobileNavToggle,
+  MobileNavMenu,
+} from '@/components/ui/resizable-navbar';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Button } from './ui/button';
+import { useState } from 'react';
 
-export default function Navbar() {
-  const routes = [
+export function Nav() {
+  const navItems = [
     {
-      href: '/',
-      label: 'Home',
+      name: 'Home',
+      link: '/',
     },
     {
-      href: '/story',
-      label: 'Story',
+      name: 'Story',
+      link: '/story',
+    },
+    {
+      name: 'Contact',
+      link: '#contact',
     },
   ];
 
-  const pathname = usePathname();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className=''>
-      <header className='fixed top-5 left-1/2 -translate-x-1/2 z-50 rounded-xl w-full max-w-7xl mx-auto justify-center shadow-20 transition-all duration-300 bg-[var(--gray)]'>
-        <div className='flex justify-between container mx-auto items-center py-3 text-lg gap-3'>
-          <div>
-            <Link href={'/'}>
-              <Image
-                src={'/logo-white.png'}
-                alt="Logo Cerita.in"
-                width={150}
-                height={0}
-              />
-            </Link>
+    <div className="relative w-full">
+      <Navbar>
+        {/* Desktop Navigation */}
+        <NavBody>
+          <NavbarLogo />
+          <NavItems items={navItems} />
+          <div className="flex items-center gap-4">
+            <NavbarButton variant="secondary" className='text-white'>Login</NavbarButton>
+            <NavbarButton variant="primary">Book a call</NavbarButton>
           </div>
-          <nav>
-            <ul className="flex gap-7">
-              {routes.map((route) => (
-                <li key={route.href}>
-                  <Link
-                    href={route.href}
-                    className={
-                      pathname === route.href ||
-                    (route.href !== '/' && pathname.startsWith(route.href))
-                        ? 'text-[var(--light-gray)] font-bold'
-                        : 'text-input font-semibold'
-                    }
-                  >
-                    {route.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-          <div className='gap-2 flex'>
-            <div>
-              <Button variant={'secondary'} asChild>
-                <Link href={'/'}>
-              Sign In
-                </Link>
-              </Button>
+        </NavBody>
+
+        {/* Mobile Navigation */}
+        <MobileNav>
+          <MobileNavHeader>
+            <NavbarLogo />
+            <MobileNavToggle
+              isOpen={isMobileMenuOpen}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            />
+          </MobileNavHeader>
+
+          <MobileNavMenu
+            isOpen={isMobileMenuOpen}
+            onClose={() => setIsMobileMenuOpen(false)}
+          >
+            {navItems.map((item, idx) => (
+              <Link
+                key={`mobile-link-${idx}`}
+                href={item.link}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="relative text-neutral-600 dark:text-neutral-300"
+              >
+                <span className="block">{item.name}</span>
+              </Link>
+            ))}
+            <div className="flex w-full flex-col gap-4">
+              <NavbarButton
+                onClick={() => setIsMobileMenuOpen(false)}
+                variant="primary"
+                className="w-full"
+              >
+                Login
+              </NavbarButton>
+              <NavbarButton
+                onClick={() => setIsMobileMenuOpen(false)}
+                variant="primary"
+                className="w-full"
+              >
+                Book a call
+              </NavbarButton>
             </div>
-            <div>
-              <Button variant={'secondary'} asChild>
-                <Link href={'/'}>
-              Sign Up
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+          </MobileNavMenu>
+        </MobileNav>
+      </Navbar>
+
+      {/* Navbar */}
     </div>
-  )
+  );
 }

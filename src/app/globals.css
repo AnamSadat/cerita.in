@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -133,14 +133,36 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
     background: var(--neutral-800);
+  }
+
+  input,
+  textarea,
+  select {
+    @apply caret-white text-white;
+  }
+
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply text-white;
+  }
+
+  .icon-global {
+    @apply text-white;
   }
 }
 
 @layer utilities {
   .animate-scroll {
-    animation: var(--animate-scroll);
+    animation: scroll var(--animation-duration) linear infinite;
+    animation-direction: var(--animation-direction);
   }
 }

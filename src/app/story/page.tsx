@@ -6,7 +6,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-// import Image from 'next/image';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 // import { Label } from '@/components/ui/label';
@@ -26,6 +25,7 @@ import {
   Filter,
   // MapPin, Loader2
 } from 'lucide-react';
+import StoryList from '@/components/view/story/StoryList';
 
 export default function Story() {
   return (
@@ -46,14 +46,6 @@ export default function Story() {
         </BreadcrumbList>
       </Breadcrumb>
       <div className=" ">
-        {/* <div className="flex flex-row justify-center">
-          <Image
-            width="100"
-            height="100"
-            src="https://img.icons8.com/ios-filled/100/FFFFFF/storytelling.png"
-            alt="storytelling"
-          />
-        </div> */}
         {/* Hero Header */}
         <div className="text-center space-y-4 py-8">
           <div className="inline-flex items-center justify-center w-16 h-16 mb-4 bg-zinc-100 rounded-full">
@@ -94,6 +86,9 @@ export default function Story() {
               </SelectTrigger>
               <SelectContent></SelectContent>
             </Select>{' '}
+          </div>
+          <div>
+            <StoryList />
           </div>
         </div>
       </div>

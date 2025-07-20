@@ -4,6 +4,8 @@ import { FlipWords } from '@/components/ui/flip-words';
 import { InfiniteMovingCards } from '@/components/ui/infinite-moving-cards';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { CarouselDemo } from '@/components/view/home/LatestStory';
+import { StickyScrollRevealDemo } from '@/components/view/home/StickyScrollRevealDemo';
 
 export default function Home() {
   const words = ['kisah', 'hidup', 'diri', 'takdir', 'cinta'];
@@ -78,18 +80,19 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Stories Latest Section */}
+      {/* carousel */}
       <div className="container mx-auto">
-        <h1 className="text-white">Stories Latest</h1>
-        <div className="my-10 px-4 w-full flex justify-center mx-auto">
-          <div className="w-screen overflow-hidden">
-            <InfiniteMovingCards
-              items={testimonials}
-              direction="left"
-              speed="slow"
-              className="w-full flex mx-auto "
-            />
-          </div>
+        <h1>Latest Story</h1>
+        <div>
+          <CarouselDemo />
+        </div>
+      </div>
+
+      {/* Sticky scroll */}
+      <div className="w-full h-screen bg-white mb-40">
+        <h1 className="text-white text-3xl font-bold">Latest Story</h1>
+        <div className="h-full">
+          <StickyScrollRevealDemo />
         </div>
       </div>
 

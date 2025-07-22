@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export default function NotFound() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen text-center px-4 bg-zinc-950 mx-2 my-2 rounded-2xl">
+    <div className="flex flex-col items-center justify-center min-h-screen text-center px-4 bg-neutal-950 mx-2 my-2 rounded-2xl">
       <Image
         src="/not-found-animation.gif"
         alt="Animasi halaman tidak ditemukan"

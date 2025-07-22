@@ -136,7 +136,7 @@
 
   body {
     @apply bg-background text-foreground;
-    background: var(--neutral-800);
+    background: var(--neutral-950);
   }
 
   input,
@@ -165,4 +165,12 @@
     animation: scroll var(--animation-duration) linear infinite;
     animation-direction: var(--animation-direction);
   }
+}
+
+.scroll-hidden::-webkit-scrollbar {
+  display: none;
+}
+.scroll-hidden {
+  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none; /* Firefox */
 }

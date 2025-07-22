@@ -1,0 +1,24 @@
+import z from 'zod';
+
+export const storySchema = z.object({
+  title: z.string().min(3),
+  sortDescription: z.string().min(10),
+  category: z
+    .array(z.enum(['Horor', 'Komedi', 'Aksi', 'Romantis']))
+    .min(1, { message: 'Pilih setidaknya 1 tag' }),
+  content: z.string().min(30),
+  img_url: z
+    .any()
+    .refine((file) => file instanceof File, {
+      message: 'Wajib unggah file gambar',
+    })
+    .refine((file) => file?.size <= 10 * 1024 * 1024, {
+      message: 'Ukuran gambar maksimal 10MB',
+    })
+    .refine((file) => ['image/jpeg', 'image/png'].includes(file?.type), {
+      message: 'Format harus JPG atau PNG',
+    }),
+});
+
+export type formSchemaStoryInput = z.infer<typeof storySchema>;
+export type formSchemaStory = { id: number } & formSchemaStoryInput;

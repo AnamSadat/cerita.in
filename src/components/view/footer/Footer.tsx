@@ -4,7 +4,7 @@ import Link from 'next/link';
 // TODO: Footer cant be working
 export default function Footer() {
   return (
-    <footer className="bg-zinc-900 px-8 py-12 mx-2 my-2 rounded-2xl text-white">
+    <footer className="bg-neutral-900 px-8 py-12 mx-2 my-2 rounded-2xl text-white">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Logo, Description & Social */}
         <div className="flex flex-col space-y-4">

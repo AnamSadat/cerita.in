@@ -89,8 +89,7 @@ export default function Home() {
       </div>
 
       {/* Sticky scroll */}
-      <div className="w-full h-screen bg-white mb-40">
-        <h1 className="text-white text-3xl font-bold">Latest Story</h1>
+      <div className="w-full container mx-auto">
         <div className="h-full">
           <StickyScrollRevealDemo />
         </div>
@@ -106,8 +105,11 @@ export default function Home() {
           terhubung lewat pengalaman yang serupa. Kamu tidak sendiri, suaramu
           berarti.
         </p>
-        <Button className="bg-white text-black hover:bg-neutral-200 font-semibold px-8 py-3 rounded-full text-lg transition">
-          ✍️ Ceritakan Sekarang
+        <Button
+          className="bg-white text-black hover:bg-neutral-200 font-semibold px-8 py-3 rounded-full text-lg transition"
+          asChild
+        >
+          <Link href={'/add-story'}>✍️ Ceritakan Sekarang</Link>
         </Button>
       </div>
     </>

@@ -18,7 +18,6 @@ export const loginSchema = z.object({
     .refine((val) => /[^A-Za-z0-9]/.test(val), {
       message: 'Password harus mengandung simbol (!@#$%, dll)',
     }),
-  confirmPassword: z.string(),
 });
 
 // Types Register

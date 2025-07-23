@@ -3,9 +3,7 @@ import z from 'zod';
 export const storySchema = z.object({
   title: z.string().min(3),
   sortDescription: z.string().min(10),
-  category: z
-    .array(z.enum(['Horor', 'Komedi', 'Aksi', 'Romantis']))
-    .min(1, { message: 'Pilih setidaknya 1 tag' }),
+  category: z.array(z.string()).min(1, { message: 'Pilih setidaknya 1 tag' }),
   content: z.string().min(30),
   img_url: z
     .any()

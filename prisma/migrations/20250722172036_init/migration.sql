@@ -3,7 +3,7 @@ CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "update_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
@@ -17,7 +17,7 @@ CREATE TABLE "Profile" (
     "bio" TEXT NOT NULL,
     "avatar_url" TEXT NOT NULL,
     "gender" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "update_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Profile_pkey" PRIMARY KEY ("id")
@@ -31,8 +31,9 @@ CREATE TABLE "Stories" (
     "slug" TEXT NOT NULL,
     "content" TEXT NOT NULL,
     "short_description" TEXT NOT NULL,
+    "img_url" TEXT NOT NULL,
     "category_id" INTEGER NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "update_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Stories_pkey" PRIMARY KEY ("id")
@@ -43,7 +44,7 @@ CREATE TABLE "Likes" (
     "id" SERIAL NOT NULL,
     "story_id" INTEGER NOT NULL,
     "user_id" INTEGER NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Likes_pkey" PRIMARY KEY ("id")
 );
@@ -53,7 +54,7 @@ CREATE TABLE "Bookmark" (
     "id" SERIAL NOT NULL,
     "story_id" INTEGER NOT NULL,
     "user_id" INTEGER NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Bookmark_pkey" PRIMARY KEY ("id")
 );

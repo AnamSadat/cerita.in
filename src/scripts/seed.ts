@@ -22,6 +22,17 @@ async function main() {
     },
   });
 
+  const category = await Prisma.category.upsert({
+    where: {
+      name: 'Petualangan',
+    },
+    update: {},
+    create: {
+      name: 'Petualangan',
+      slug: 'petualangan',
+    },
+  });
+
   const story = await Prisma.stories.create({
     data: {
       user_id: user.id,
@@ -30,7 +41,7 @@ async function main() {
       content: 'ini adalah cerita pertama saya',
       short_description: 'Cerita pembuka tentang pengalaman pertama',
       img_url: 'https://4kwallpapers.com/images/walls/thumbs_3t/23027.jpg',
-      category_id: 1,
+      category_id: category.id,
     },
   });
 

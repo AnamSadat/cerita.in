@@ -31,30 +31,42 @@ model User {
 model Profile {
   id                  Int       @id @default(autoincrement())
   userId              Int       @unique
-  user                User      @relation(fields: [userId], references: [id])
   username            String     
   bio                 String
   avatar_url          String
   gender              String
   created_at          DateTime  @default(now())
-  update_at           DateTime  @updatedAt
+  updated_at           DateTime  @updatedAt
+  
+  user                User      @relation(fields: [userId], references: [id])
 }
 
 model Stories {
   id                  Int       @id @default(autoincrement())
   user_id             Int
   title               String
-  slug                String
+  slug                String 
   content             String
   short_description   String
   img_url             String
   category_id         Int
   created_at          DateTime  @default(now())
-  update_at           DateTime  @updatedAt
+  updated_at           DateTime  @updatedAt
 
   user                User      @relation(fields: [user_id], references: [id])
   likes               Likes[]  
   bookmarks           Bookmark[]
+  category            Category  @relation(fields: [category_id], references: [id])
+}
+
+model Category {
+  id                  Int       @id @default(autoincrement())
+  name                String    @unique
+  slug                String    @unique
+  created_at          DateTime  @default(now())
+  updated_at          DateTime  @updatedAt
+
+  stories Stories[]
 }
 
 model Likes {

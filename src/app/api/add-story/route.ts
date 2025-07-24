@@ -73,8 +73,29 @@ export async function POST(req: NextRequest) {
     const decoded = token ? verifyJwt(token) : null;
 
     if (!decoded || typeof decoded !== 'object' || !('sub' in decoded)) {
+      if (decoded && typeof decoded === 'object' && 'status' in decoded) {
+        if (decoded.status === 'expired') {
+          return NextResponse.json(
+            { status: 401, message: 'Unauthorized: Token expired' },
+            { status: 401 }
+          );
+        }
+
+        if (decoded.status === 'invalid') {
+          return NextResponse.json(
+            { status: 401, message: 'Unauthorized: Invalid token' },
+            { status: 401 }
+          );
+        }
+
+        return NextResponse.json(
+          { status: 500, message: 'Unexpected JWT error' },
+          { status: 500 }
+        );
+      }
+
       return NextResponse.json(
-        { status: 401, message: 'Unauthorized: Invalid token' },
+        { status: 401, message: 'Unauthorized: Invalid token format' },
         { status: 401 }
       );
     }
@@ -89,16 +110,47 @@ export async function POST(req: NextRequest) {
     const content = fields.content?.[0];
     const sortDescription = fields.sortDescription?.[0];
     const imageFile = files.image?.[0];
+    const category = fields.category?.[0];
 
     if (!title || !content || !sortDescription || !imageFile) {
+      console.log('FIELDS:', fields);
+      console.log('FILES:', files);
       return NextResponse.json(
         { status: 400, message: 'Data tidak lengkap' },
         { status: 400 }
       );
     }
 
+    if (!category) {
+      return NextResponse.json(
+        { status: 400, message: 'Kategori wajib diisi' },
+        { status: 400 }
+      );
+    }
+
+    // Cari kategori berdasarkan nama
+    const existingCategory = await Prisma.category.findUnique({
+      where: { name: category },
+    });
+
+    if (!existingCategory) {
+      return NextResponse.json(
+        { status: 400, message: `Kategori "${category}" tidak ditemukan` },
+        { status: 400 }
+      );
+    }
+
     // Upload gambar ke GCS
-    const img_url = await uploadImageToGCS(imageFile);
+    let img_url;
+    try {
+      img_url = await uploadImageToGCS(imageFile);
+    } catch (err) {
+      console.error('Gagal upload gambar ke GCS:', err);
+      return NextResponse.json(
+        { status: 500, message: 'Gagal upload gambar' },
+        { status: 500 }
+      );
+    }
 
     // Simpan ke database
     const newStory = await Prisma.stories.create({
@@ -108,10 +160,8 @@ export async function POST(req: NextRequest) {
         short_description: sortDescription,
         content,
         img_url,
-        category_id: 1,
-        user: {
-          connect: { id: Number(userId) },
-        },
+        category_id: existingCategory.id,
+        user_id: Number(userId),
       },
     });
 

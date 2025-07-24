@@ -128,10 +128,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const categorySlug = slugify(category, { lower: true });
+
     // Cari kategori berdasarkan nama
     const existingCategory = await Prisma.category.findUnique({
-      where: { name: category },
+      where: { slug: categorySlug },
     });
+
+    console.log('category hasil slug: ', categorySlug);
+    console.log('category isinya: ', existingCategory);
 
     if (!existingCategory) {
       return NextResponse.json(

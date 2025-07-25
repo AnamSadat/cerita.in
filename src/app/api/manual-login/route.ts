@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
         email: user.email,
         name: user.name,
       },
-      process.env.AUTH_SECRET!,
+      process.env.NEXTAUTH_URL!,
       { expiresIn: '1d' }
     );
 

@@ -52,7 +52,7 @@ export const { auth, signIn, signOut } = NextAuth({
     strategy: 'jwt',
   },
 
-  secret: process.env.AUTH_SECRET,
+  secret: process.env.NEXTAUTH_URL,
   callbacks: {
     async session({ session, token }) {
       if (session.user && token.sub) {

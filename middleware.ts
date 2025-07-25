@@ -7,7 +7,5 @@ export default withAuth({
 });
 
 export const config = {
-  matcher: [
-    '/add-story', // ❗ ini akan exclude `/login`
-  ],
+  matcher: ['/add-story'],
 };

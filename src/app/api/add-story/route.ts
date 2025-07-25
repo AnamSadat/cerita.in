@@ -179,3 +179,6 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+// https://www.linkedin.com/in/desi-yulyana-hendryani/
+// https://www.linkedin.com/in/audreyalodia/

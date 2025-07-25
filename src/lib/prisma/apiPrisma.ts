@@ -1,4 +1,4 @@
-import { formSchemaStory, formSchemaStoryInput } from '@/types/story';
+// import { formSchemaStoryInput } from '@/types/story';
 import axiosInstance from '../axios';
 import { AxiosError, AxiosRequestConfig } from 'axios';
 
@@ -24,15 +24,15 @@ export async function apiAxios<T>(
   }
 }
 
-export async function getStory() {
-  try {
-    const response = await apiAxios<formSchemaStoryInput[]>('/add-story');
+// export async function getStory() {
+//   try {
+//     const response = await apiAxios<formSchemaStoryInput[]>('/add-story');
 
-    return response.data.data;
-  } catch (error) {
-    const err = error as AxiosError<{ message?: string }>;
-    const message = err?.response?.data?.message || 'Internal server error';
+//     return response.data;
+//   } catch (error) {
+//     const err = error as AxiosError<{ message?: string }>;
+//     const message = err?.response?.data?.message || 'Internal server error';
 
-    throw new Error(message);
-  }
-}
+//     throw new Error(message);
+//   }
+// }

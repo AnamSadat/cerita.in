@@ -13,6 +13,18 @@ export async function POST(req: NextRequest) {
       where: { email },
     });
 
+    if (!user) {
+      return NextResponse.json(
+        {
+          status: 404,
+          message: 'user not found',
+        },
+        {
+          status: 404,
+        }
+      );
+    }
+
     if (!user || !user.password) {
       return NextResponse.json(
         { error: 'Invalid credentials' },

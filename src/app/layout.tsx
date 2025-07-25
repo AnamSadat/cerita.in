@@ -3,6 +3,7 @@ import { Poppins } from 'next/font/google';
 import './globals.css';
 import Footer from '@/components/view/footer/Footer';
 import { Nav } from '@/components/view/navbar/Navbar';
+import NextAuthSession from './NextSession';
 
 const poppins = Poppins({
   variable: '--font-poppins',
@@ -30,9 +31,11 @@ export default function RootLayout({
       <body
         className={`${poppins.variable} antialiased min-h-screen flex flex-col`}
       >
-        <Nav />
-        <main className="flex-grow">{children}</main>
-        <Footer />
+        <NextAuthSession>
+          <Nav />
+          <main className="flex-grow">{children}</main>
+          <Footer />
+        </NextAuthSession>
       </body>
     </html>
   );

@@ -270,39 +270,37 @@ export const NavbarLogo = () => {
 };
 
 export const NavbarButton = (props: NavbarButtonProps) => {
-  const { as = 'a', variant = 'primary', className, children, ...rest } = props;
+  const { variant = 'primary', className, children, ...rest } = props;
 
   const baseStyles =
     'px-4 py-2 rounded-md bg-white text-black text-sm font-bold relative cursor-pointer hover:-translate-y-0.5 transition duration-200 inline-block text-center';
 
   const variantStyles = {
-    primary:
-      'shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]',
+    primary: 'shadow-[...]',
     secondary: 'bg-transparent shadow-none dark:text-white',
-    dark: 'bg-black text-white shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]',
+    dark: 'bg-black text-white shadow-[...]',
     gradient:
-      'bg-gradient-to-b from-blue-500 to-blue-700 text-white shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset]',
+      'bg-gradient-to-b from-blue-500 to-blue-700 text-white shadow-[...]',
   };
 
   const combined = cn(baseStyles, variantStyles[variant], className);
 
-  if (as === 'button') {
+  // Cek jika ada href, pakai Link
+  if ('href' in rest && rest.href) {
+    const { href, ...linkProps } = rest as AnchorProps;
     return (
-      <button
-        className={combined}
-        {...(rest as React.ButtonHTMLAttributes<HTMLButtonElement>)}
-      >
+      <Link href={href} className={combined} {...linkProps}>
         {children}
-      </button>
+      </Link>
     );
   }
 
-  // as === 'a', gunakan <Link> langsung (tanpa <a>)
-  const { href, ...linkProps } = rest as AnchorProps;
-
   return (
-    <Link href={href} className={combined} {...linkProps}>
+    <button
+      className={combined}
+      {...(rest as React.ButtonHTMLAttributes<HTMLButtonElement>)}
+    >
       {children}
-    </Link>
+    </button>
   );
 };

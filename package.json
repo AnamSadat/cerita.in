@@ -1,7 +1,15 @@
 {
   "name": "cerita-in",
   "version": "0.1.0",
+  "description": "Simpel web for sharing story",
   "private": true,
+  "author": "Anam Sadat <anamsadat3@gmail.com> (https://github.com/AnamSadat/)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AnamSadat/cerita.in.git"
+  },
+  "homepage": "https://github.com/AnamSadat/cerita.in#readme",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "prisma generate && next build",

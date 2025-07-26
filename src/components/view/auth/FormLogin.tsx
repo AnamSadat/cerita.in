@@ -13,8 +13,15 @@ import {
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import Link from 'next/link';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 
 export default function FormLogin() {
+  const [errorMessage, setErrorMessage] = useState('');
+  const router = useRouter();
+
   const form = useForm<formSchemaLogin>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -23,14 +30,33 @@ export default function FormLogin() {
     },
   });
 
-  const onSubmit = (data: formSchemaLogin) => {
-    console.log('Login submitted:', data);
+  const handleSubmit = async (data: formSchemaLogin) => {
+    const result = await signIn('credentials', {
+      redirect: false,
+      email: data.email,
+      password: data.password,
+    });
+
+    if (result?.ok) {
+      router.push('/');
+    } else {
+      setErrorMessage('Email atau passowrd salah');
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setErrorMessage('');
+    const { name, value } = e.target;
+    form.setValue(name as 'email' | 'password', value);
   };
 
   return (
-    <div>
+    <div className="">
+      <div>
+        <h1></h1>
+      </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
           <FormField
             control={form.control}
             name="email"
@@ -42,6 +68,10 @@ export default function FormLogin() {
                     type="email"
                     placeholder="email@example.com"
                     {...field}
+                    onChange={(e) => {
+                      handleChange(e);
+                      field.onChange(e);
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
@@ -56,18 +86,37 @@ export default function FormLogin() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="••••••" {...field} />
+                  <Input
+                    type="password"
+                    placeholder="••••••"
+                    {...field}
+                    onChange={(e) => {
+                      handleChange(e);
+                      field.onChange(e);
+                    }}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
+          {errorMessage && (
+            <p className="text-sm text-red-500">{errorMessage}</p>
+          )}
+
           <Button type="submit" className="w-full">
             Login
           </Button>
         </form>
       </Form>
+      <p className="text-center">
+        Belum punya akun?{' '}
+        <Link href={'/register'} className="underline underline-offset-1">
+          Register
+        </Link>{' '}
+        aja
+      </p>
     </div>
   );
 }

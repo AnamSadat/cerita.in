@@ -10,6 +10,8 @@ import {
   MobileNavToggle,
   MobileNavMenu,
 } from '@/components/ui/resizable-navbar';
+import { useSession, signOut } from 'next-auth/react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -30,6 +32,7 @@ export function Nav() {
   ];
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { data: session } = useSession();
 
   return (
     <div className="relative w-full">
@@ -54,9 +57,32 @@ export function Nav() {
               </svg>
               Add Story
             </NavbarButton>
-            <NavbarButton variant="primary" href="/login">
-              Login
-            </NavbarButton>
+            {session ? (
+              <div className="relative group">
+                <button className="flex items-center gap-2 text-white focus:outline-none">
+                  <Image
+                    src={session.user?.image || '/luffy.jpg'}
+                    alt="Profile"
+                    className="w-8 h-8 rounded-full"
+                    width={20}
+                    height={10}
+                  />
+                </button>
+                {/* Optional: Dropdown logout */}
+                <div className="absolute right-0 hidden group-hover:block bg-white shadow-md rounded-md mt-2 z-10">
+                  <button
+                    onClick={() => signOut()}
+                    className="block w-full px-4 py-2 text-sm text-left hover:bg-gray-100"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <NavbarButton variant="primary" href="/login">
+                Login
+              </NavbarButton>
+            )}
           </div>
         </NavBody>
 

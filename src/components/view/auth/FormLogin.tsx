@@ -116,7 +116,11 @@ export default function FormLogin() {
             <p className="text-sm text-red-500">{errorMessage}</p>
           )}
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button
+            type="submit"
+            className="w-full cursor-pointer"
+            disabled={isLoading}
+          >
             {isLoading ? (
               <div className="flex items-center justify-center gap-2">
                 <svg

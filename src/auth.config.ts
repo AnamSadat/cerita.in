@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { loginSchema } from '@/types/auth';
+import { signJwt } from '@/lib/jwt';
 
 // https://youtube.com/shorts/fuf1Q-aQI6k?si=s4NJb3EBpilubG-s
 
@@ -36,10 +37,13 @@ export const authOptions: NextAuthOptions = {
 
         if (!isPasswordValid) throw new Error('Invalid password');
 
+        const token = signJwt({ sub: String(user.id) });
+
         return {
           id: String(user.id),
           name: user.name,
           email: user.email,
+          token,
         };
       },
     }),
@@ -50,5 +54,27 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: '/login',
   },
-  secret: process.env.NEXTAUTH_URL,
+  secret: process.env.NEXTAUTH_SECRET,
+  callbacks: {
+    async session({ session, token }) {
+      if (session.user && token.sub) {
+        session.user.id = token.sub;
+      }
+
+      if (session.user && token.token) {
+        session.user.token = token.token as string;
+      }
+
+      return session;
+    },
+    async jwt({ token, user }) {
+      if (user && typeof user.token === 'string') {
+        token.token = user.token;
+      }
+      console.log('🧠 JWT CALLBACK');
+      console.log('token:', token.token);
+
+      return token;
+    },
+  },
 };

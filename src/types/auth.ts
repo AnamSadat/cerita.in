@@ -47,5 +47,11 @@ export const registerSchema = z
     message: 'Konfirmasi password tidak cocok',
   });
 
+export type PostRegisterType = {
+  name: string;
+  email: string;
+  password: string;
+};
+
 export type formSchemaLogin = z.infer<typeof loginSchema>;
 export type formSchemaRegister = z.infer<typeof registerSchema>;

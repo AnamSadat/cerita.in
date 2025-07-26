@@ -109,12 +109,10 @@ export async function POST(req: NextRequest) {
     const title = fields.title?.[0];
     const content = fields.content?.[0];
     const sortDescription = fields.sortDescription?.[0];
-    const imageFile = files.image?.[0];
+    const imageFile = files.imageFile?.[0];
     const category = fields.category?.[0];
 
     if (!title || !content || !sortDescription || !imageFile) {
-      console.log('FIELDS:', fields);
-      console.log('FILES:', files);
       return NextResponse.json(
         { status: 400, message: 'Data tidak lengkap' },
         { status: 400 }

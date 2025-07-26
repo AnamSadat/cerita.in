@@ -6,10 +6,6 @@ const routes = [
     href: '/',
     label: 'Home',
   },
-  {
-    href: '/about-us',
-    label: 'About',
-  },
 ];
 
 export default function AuthLayout({
@@ -37,7 +33,7 @@ export default function AuthLayout({
                   <Link
                     key={route.href}
                     href={route.href}
-                    className="font-medium transition-colors hover:text-orange-500"
+                    className="font-medium transition-colors text-neutral-400 hover:text-neutral-100"
                   >
                     {route.label}
                   </Link>

@@ -64,7 +64,7 @@ export default function Story() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <Input
               type="text"
-              placeholder="Search foods, nations, or origins..."
+              placeholder="Search category story."
               className="pl-10 h-12 border-2 border-gray-200 focus:border-orange-400 rounded-xl"
             />
           </div>
@@ -75,17 +75,11 @@ export default function Story() {
               <span className="text-sm font-medium text-white">Filters:</span>
             </div>
             <Select>
-              <SelectTrigger className="w-48 border-2 border-gray-200 focus:border-orange-400 rounded-lg">
+              <SelectTrigger className="w-48 border-2 border-gray-200  rounded-lg">
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent></SelectContent>
             </Select>
-            <Select>
-              <SelectTrigger className="w-48 border-2 border-gray-200 focus:border-orange-400 rounded-lg">
-                <SelectValue placeholder="Select nation" />
-              </SelectTrigger>
-              <SelectContent></SelectContent>
-            </Select>{' '}
           </div>
           <div>
             <StoryList />

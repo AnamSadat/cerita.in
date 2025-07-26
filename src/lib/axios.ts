@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: process.env.STORY_API,
+  baseURL: process.env.NEXT_PUBLIC_STORY_API,
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json',

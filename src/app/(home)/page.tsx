@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { CarouselDemo } from '@/components/view/home/LatestStory';
 import { StickyScrollRevealDemo } from '@/components/view/home/StickyScrollRevealDemo';
 
-export default function Home() {
+export default function User() {
   const words = ['kisah', 'hidup', 'diri', 'takdir', 'cinta'];
 
   const testimonials = [
@@ -82,14 +82,14 @@ export default function Home() {
 
       {/* carousel */}
       <div className="container mx-auto">
-        <h1>Latest Story</h1>
+        <h1 className="text-white text-3xl font-bold">Latest Story</h1>
         <div>
           <CarouselDemo />
         </div>
       </div>
 
       {/* Sticky scroll */}
-      <div className="w-full container mx-auto">
+      <div className="w-full mx-auto">
         <div className="h-full">
           <StickyScrollRevealDemo />
         </div>

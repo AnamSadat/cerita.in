@@ -1,12 +1,12 @@
 import jwt from 'jsonwebtoken';
 
-export function signJwt(payload: object) {
-  return jwt.sign(payload, process.env.NEXTAUTH_URL!, { expiresIn: '1d' });
+export function signJwt(payload: object): string {
+  return jwt.sign(payload, process.env.NEXTAUTH_SECRET!, { expiresIn: '1d' });
 }
 
 export function verifyJwt(token: string) {
   try {
-    return jwt.verify(token, process.env.NEXTAUTH_URL!);
+    return jwt.verify(token, process.env.NEXTAUTH_SECRET!);
   } catch (error) {
     // Di sini kita bisa menggunakan objek 'error'
     if (error instanceof jwt.TokenExpiredError) {

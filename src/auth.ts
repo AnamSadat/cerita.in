@@ -4,6 +4,7 @@ import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { loginSchema } from '@/types/auth';
 import { authOptions } from './auth.config';
+import { signJwt } from '@/lib/jwt';
 
 // https://youtube.com/shorts/fuf1Q-aQI6k?si=s4NJb3EBpilubG-s
 
@@ -40,10 +41,13 @@ export const { auth, signIn, signOut } = NextAuth({
 
         if (!isPasswordValid) return null;
 
+        const token: string = signJwt({ sub: String(user.id) });
+
         return {
           id: String(user.id),
           name: user.name,
           email: user.email,
+          token,
         };
       },
     }),
@@ -52,13 +56,5 @@ export const { auth, signIn, signOut } = NextAuth({
     strategy: 'jwt',
   },
 
-  secret: process.env.NEXTAUTH_URL,
-  callbacks: {
-    async session({ session, token }) {
-      if (session.user && token.sub) {
-        session.user.id = token.sub;
-      }
-      return session;
-    },
-  },
+  secret: process.env.NEXTAUTH_SECRET,
 });

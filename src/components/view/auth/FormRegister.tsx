@@ -16,6 +16,7 @@ import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { postUser } from '@/lib/prisma/apiPrisma';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 export default function FormRegister() {
   const [errorMessage, setErrorMessage] = useState('');
@@ -51,6 +52,7 @@ export default function FormRegister() {
 
     setIsLoading(false);
     console.log('Regist berhasil', result);
+    toast.success('Success to register!');
     router.push('/login');
   };
 

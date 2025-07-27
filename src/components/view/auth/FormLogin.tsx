@@ -17,6 +17,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+import { toast } from 'sonner';
 
 export default function FormLogin() {
   const [errorMessage, setErrorMessage] = useState('');
@@ -49,6 +50,7 @@ export default function FormLogin() {
     setIsLoading(false);
 
     if (result?.ok) {
+      toast.success('Success to login!');
       router.push(callbackUrl);
     } else {
       setErrorMessage('Email atau passowrd salah');

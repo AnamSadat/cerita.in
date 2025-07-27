@@ -168,7 +168,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ status: 200, data: newStory });
+    return NextResponse.json({ status: 200, data: newStory }, { status: 200 });
   } catch (error) {
     console.error('Error on POST story:', error);
     return NextResponse.json(
@@ -177,6 +177,3 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-
-// https://www.linkedin.com/in/desi-yulyana-hendryani/
-// https://www.linkedin.com/in/audreyalodia/

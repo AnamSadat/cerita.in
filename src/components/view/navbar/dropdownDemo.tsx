@@ -18,6 +18,8 @@ import { signOut } from 'next-auth/react';
 
 import Image from 'next/image';
 import type { DropDownDemoProps } from '@/types/navbar';
+import { toast } from 'sonner';
+import { Info } from 'lucide-react';
 
 export function DropdownMenuDemo({ session }: DropDownDemoProps) {
   if (!session) return <button>Login</button>;
@@ -43,22 +45,47 @@ export function DropdownMenuDemo({ session }: DropDownDemoProps) {
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="start">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel className="text-md">My Account</DropdownMenuLabel>
+        <DropdownMenuLabel>Nama</DropdownMenuLabel>
+        <DropdownMenuItem disabled>{session.user.name}</DropdownMenuItem>
+        <DropdownMenuLabel>Email</DropdownMenuLabel>
+        <DropdownMenuItem disabled>{session.user.email}</DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => {
+              toast('Masih dalam tahap development', {
+                icon: <Info className="text-blue-500" />,
+                className: 'justify-center',
+              });
+            }}
+          >
             Profile
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+            <DropdownMenuShortcut>
+              <Image
+                src={'/profile.png'}
+                alt="profile"
+                width={18}
+                height={10}
+              />
+            </DropdownMenuShortcut>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className="cursor-pointer"
-          onClick={() => {
-            signOut();
+          onClick={async () => {
+            toast.success('Success to logout');
+            setTimeout(() => {
+              signOut();
+            }, 2000);
           }}
         >
           Log out
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+          <DropdownMenuShortcut>
+            <Image src={'/logout.png'} alt="logout" width={15} height={10} />
+          </DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

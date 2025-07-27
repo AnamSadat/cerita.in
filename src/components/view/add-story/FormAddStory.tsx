@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { storySchema, formSchemaStoryInput } from '@/types/story';
 import { getCategory, postStory } from '@/lib/prisma/apiPrisma';
+import { toast } from 'sonner';
 
 export default function FormAddStory() {
   const form = useForm<formSchemaStoryInput>({
@@ -61,8 +62,10 @@ export default function FormAddStory() {
 
       console.log('✅ Story added:', res);
       setIsLoading(false);
+      toast.success('Story has been created');
     } catch (error) {
       console.error('❌ Gagal menambahkan story:', error);
+      toast.error('Failed to create story');
     }
   };
 

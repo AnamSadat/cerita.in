@@ -6,8 +6,6 @@ import { loginSchema } from '@/types/auth';
 import { authOptions } from './auth.config';
 import { signJwt } from '@/lib/jwt';
 
-// https://youtube.com/shorts/fuf1Q-aQI6k?si=s4NJb3EBpilubG-s
-
 export const { auth, signIn, signOut } = NextAuth({
   ...authOptions,
   providers: [

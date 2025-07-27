@@ -5,8 +5,6 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { loginSchema } from '@/types/auth';
 import { signJwt } from '@/lib/jwt';
 
-// https://youtube.com/shorts/fuf1Q-aQI6k?si=s4NJb3EBpilubG-s
-
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({

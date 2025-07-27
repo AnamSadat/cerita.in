@@ -4,8 +4,16 @@ import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 
+const keyPath = path.join(process.cwd(), 'key.json');
+
+if (!fs.existsSync(keyPath)) {
+  throw new Error(
+    '❌ key.json is missing. Please provide the service account key file.'
+  );
+}
+
 const storage = new Storage({
-  keyFilename: path.join(process.cwd(), 'key.json'),
+  keyFilename: keyPath,
 });
 
 const bucketName = 'ceritain-images';

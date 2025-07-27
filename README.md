@@ -4,14 +4,14 @@ Website bercerita modern menggunakan **Next.js**, **Tailwind CSS**, dan **Google
 
 ## 🛠️ Getting Started (Development)
 
-### 1. Clone Repository
+### 1. 🔁 Clone Repository
 
 ```bash
 git clone https://github.com/AnamSadat/cerita.in.git
 cd cerita.in
 ```
 
-### 2. Install Depedencies
+### 2. 📦 Install Depedencies
 
 Kami menyarankan menggunakan pnpm (lebih cepat & efisien):
 
@@ -24,7 +24,7 @@ pnpm install
 
 ```
 
-### 3. Setup `.env`
+### 3. 🔐 Setup `.env`
 
 Buat file .env di root project dan isi dengan setup kamu:
 
@@ -54,7 +54,7 @@ pnpm test:db
 pnpm seed
 ```
 
-### 4. Setup Google Cloud Storage (Untuk upload gambar)
+### 4. ☁️ Setup Google Cloud Storage (Untuk upload gambar)
 
 #### 1. Buat Project dan Bucket
 
@@ -68,7 +68,7 @@ pnpm seed
    - Access control: Uniform
    - Public Access: unchecker (nanti diatur manual)
 
-### 2. Izin Akses Publik (allUser)
+#### 2. Izin Akses Publik (allUser)
 
 1. Klik Bucket yang sudah dibuat `ceritain-images`
 2. Buka tab **Permission** pada bucket
@@ -84,7 +84,7 @@ Sekarang file yang diunggah dapat diakses melalui URL publik:
 https://storage.googleapis.com/ceritain-images/namafile.jpg
 ```
 
-### 3. Buat Service Accounts dan Unduh Key
+#### 3. Buat Service Accounts dan Unduh Key
 
 1. Buka [Service Accounts](https://console.cloud.google.com/iam-admin/serviceaccounts)
 2. Masuk ke **IAM & Admin > Service Accounts**
@@ -102,7 +102,7 @@ https://storage.googleapis.com/ceritain-images/namafile.jpg
 key.json
 ```
 
-### Running Application
+### ▶️ Running Application
 
 ```bash
 pnpm run dev

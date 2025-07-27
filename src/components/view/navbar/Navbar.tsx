@@ -10,8 +10,12 @@ import {
   MobileNavToggle,
   MobileNavMenu,
 } from '@/components/ui/resizable-navbar';
+
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useState } from 'react';
+import { DropdownMenuDemo } from '@/components/view/navbar/dropdownDemo';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export function Nav() {
   const navItems = [
@@ -24,12 +28,13 @@ export function Nav() {
       link: '/story',
     },
     {
-      name: 'Contact',
-      link: '#contact',
+      name: 'About',
+      link: '/about',
     },
   ];
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { data: session, status } = useSession();
 
   return (
     <div className="relative w-full">
@@ -39,8 +44,32 @@ export function Nav() {
           <NavbarLogo />
           <NavItems items={navItems} />
           <div className="flex items-center gap-4">
-            <NavbarButton variant="secondary" className='text-white'>Login</NavbarButton>
-            <NavbarButton variant="primary">Book a call</NavbarButton>
+            <NavbarButton
+              variant="secondary"
+              href="/add-story"
+              className="text-white flex gap-1.5 items-center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"
+                width={15}
+                style={{ fill: '#FFFFFF' }}
+              >
+                <path d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM200 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z" />
+              </svg>
+              Add Story
+            </NavbarButton>
+            {status === 'loading' ? (
+              <Skeleton className="h-8 w-8 rounded-full" />
+            ) : session ? (
+              <div className="relative group">
+                <DropdownMenuDemo session={session} />
+              </div>
+            ) : (
+              <NavbarButton variant="primary" href="/login">
+                Login
+              </NavbarButton>
+            )}
           </div>
         </NavBody>
 
@@ -74,14 +103,14 @@ export function Nav() {
                 variant="primary"
                 className="w-full"
               >
-                Login
+                Add Story
               </NavbarButton>
               <NavbarButton
                 onClick={() => setIsMobileMenuOpen(false)}
                 variant="primary"
                 className="w-full"
               >
-                Book a call
+                Login
               </NavbarButton>
             </div>
           </MobileNavMenu>

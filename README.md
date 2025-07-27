@@ -68,6 +68,14 @@ pnpm seed
    - Access control: Uniform
    - Public Access: unchecker (nanti diatur manual)
 
+#### 🔑 Aktifkan `Cloud Storage API`
+
+Sebelum lanjut, aktifkan API-nya terlebih dahulu:
+
+1. Buka [Cloud Storage API](https://console.cloud.google.com/apis/library/storage-component.googleapis.com)
+
+2. Pilih project kamu lalu klik **Enable**.
+
 #### 2. Izin Akses Publik (allUser)
 
 1. Klik Bucket yang sudah dibuat `ceritain-images`

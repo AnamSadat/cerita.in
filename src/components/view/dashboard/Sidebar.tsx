@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { User, Heart, Bookmark, Settings } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
 
 export function DashboardSidebar() {
   const pathname = usePathname();
@@ -22,7 +23,16 @@ export function DashboardSidebar() {
   return (
     <aside className="w-full max-w-[240px] bg-neutral-800/90  min-h-screen p-4 text-white flex flex-col justify-between">
       <div>
-        <h2 className="text-lg font-semibold mb-6">Dashboard</h2>
+        <Link href={'/'}>
+          <Image
+            src={'/logo-white.png'}
+            alt="logo"
+            width={150}
+            height={0}
+            className="mb-6"
+          />
+        </Link>
+        {/* <h2 className="text-lg font-semibold mb-6">Dashboard</h2> */}
         <nav className="space-y-2">
           {links.map(({ href, label, icon: Icon }) => {
             const isActive = pathname === href;

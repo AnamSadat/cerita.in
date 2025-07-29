@@ -26,7 +26,7 @@ import { useRouter } from 'next/navigation';
 export function DropdownMenuDemo({ session }: DropDownDemoProps) {
   const router = useRouter();
   const username = session?.user?.username;
-  console.log('🚀 ~ DropdownMenuDemo ~ username:', username);
+  // console.log('🚀 ~ DropdownMenuDemo ~ username:', username);
   if (!session) return <button>Login</button>;
 
   return (
@@ -60,14 +60,11 @@ export function DropdownMenuDemo({ session }: DropDownDemoProps) {
           <DropdownMenuItem
             className="cursor-pointer"
             onClick={() => {
-              toast.success('Redirecting...');
-              setTimeout(() => {
-                if (username) {
-                  router.push(`/user/${username}`);
-                } else {
-                  toast.error('Username not found');
-                }
-              }, 2000);
+              if (username) {
+                router.push(`/user/${username}`);
+              } else {
+                toast.error('Username not found');
+              }
             }}
           >
             Profile

@@ -30,10 +30,16 @@ export const { auth, signIn, signOut } = NextAuth({
           where: {
             email,
           },
+          include: {
+            profile: true,
+          },
         });
 
         if (!user) return null;
         if (!user.password) return null;
+        if (!user?.profile?.username) {
+          throw new Error('Username is missing in profile');
+        }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
@@ -46,6 +52,7 @@ export const { auth, signIn, signOut } = NextAuth({
           name: user.name,
           email: user.email,
           token,
+          username: user.profile.username,
         };
       },
     }),

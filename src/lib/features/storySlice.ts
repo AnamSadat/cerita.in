@@ -13,6 +13,13 @@ export const fetchStory = createAsyncThunk<StoryFromDB[]>(
   'story/fetchStories',
   async () => {
     const res = await getStory();
+    console.log('🚀 response getStory:', res);
+
+    await new Promise((resolve) => setTimeout(resolve, 7000));
+
+    if (!Array.isArray(res)) {
+      throw new Error('Response is not an array!');
+    }
 
     return res.map((story) => ({
       id: story.id,

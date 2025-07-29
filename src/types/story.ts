@@ -48,13 +48,8 @@ export type StoryFromDB = {
       avatar_url: string;
     };
   };
-
   category: {
-    id: number;
     name: string;
-    slug: string;
-    created_at: string;
-    updated_at: string;
   };
   content: string;
   img_url: string;

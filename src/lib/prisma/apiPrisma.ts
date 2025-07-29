@@ -5,7 +5,7 @@ import {
   StoryFromDB,
 } from '@/types/story';
 import axiosInstance from '../axios';
-import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { AxiosError, AxiosRequestConfig } from 'axios';
 import { getSession } from 'next-auth/react';
 import { formSchemaRegister, PostRegisterType } from '@/types/auth';
 
@@ -72,15 +72,16 @@ export async function postUser(params: PostRegisterType) {
 
 export async function getStory() {
   try {
-    const response = (await apiAxios(ENDPOINTS.STORY)) as AxiosResponse<
-      StoryFromDB[]
-    >;
+    const response = await apiAxios<{ status: number; data: StoryFromDB[] }>(
+      ENDPOINTS.STORY
+    );
+
+    console.log('📦 response.data:', response.data); // ✅ ini bener
 
     return response.data;
   } catch (error) {
     const err = error as AxiosError<{ message?: string }>;
     const message = err?.response?.data?.message || 'Internal server error';
-
     throw new Error(message);
   }
 }

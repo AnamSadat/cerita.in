@@ -1,5 +1,3 @@
-'use client';
-
 import FormRegister from '@/components/view/auth/FormRegister';
 import Link from 'next/link';
 

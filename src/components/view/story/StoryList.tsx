@@ -5,6 +5,7 @@ import { StoryCard } from './StoryCard';
 import { RootState } from '@/lib/store';
 import { useEffect } from 'react';
 import { fetchStory } from '@/lib/features/storySlice';
+import toast from 'react-hot-toast';
 
 export default function StoryList() {
   const dispatch = useAppDispatch();
@@ -16,8 +17,19 @@ export default function StoryList() {
     dispatch(fetchStory());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
+
+  console.log({ loading, error, items });
+
   if (loading) return <p className="text-white text-center">Loading...</p>;
-  if (error) return <p className="text-red-500 text-center">{error}</p>;
+  if (error && items.length === 0) {
+    return <p className="text-red-500 text-center">{error}</p>;
+  }
+
   console.log('story: ', items);
 
   return (

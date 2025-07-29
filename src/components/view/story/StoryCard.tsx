@@ -36,6 +36,8 @@ export function StoryCard({ story }: PropsStoryCard) {
 
   const formatted = `${time} ${day}, ${fullDate}`;
 
+  console.log('✅ StoryCard item:', story);
+
   return (
     <Card className="transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg bg-neutral-800/80 border-0 text-white">
       <CardHeader className="gap-3">

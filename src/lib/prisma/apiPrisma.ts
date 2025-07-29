@@ -12,14 +12,14 @@ import { formSchemaRegister, PostRegisterType } from '@/types/auth';
 const BASE_URL = process.env.NEXT_PUBLIC_STORY_API;
 
 const ENDPOINTS = {
-  STORY: `${BASE_URL}/story`,
-  STORY_DETAIL: (id: number) => `${BASE_URL}/story/${id}`,
-  CATEGORY: `${BASE_URL}/category`,
-  ADD_STORY: `${BASE_URL}/add-story`,
-  PROFILE: `${BASE_URL}/profile`,
-  LIKE: `${BASE_URL}/like`,
-  BOOKMARK: `${BASE_URL}/bookmark`,
-  REGISTER: `${BASE_URL}/auth/signup`,
+  STORY: '/story',
+  STORY_DETAIL: (id: number) => `/story/${id}`,
+  CATEGORY: '/category',
+  ADD_STORY: '/add-story',
+  PROFILE: '/profile',
+  LIKE: '/like',
+  BOOKMARK: '/bookmark',
+  REGISTER: '/auth/signup',
 };
 
 if (!BASE_URL) {
@@ -76,13 +76,17 @@ export async function getStory() {
       ENDPOINTS.STORY
     );
 
+    console.log('📦 Full response:', response);
+
     console.log('📦 response.data:', response.data); // ✅ ini bener
 
     return response.data;
   } catch (error) {
-    const err = error as AxiosError<{ message?: string }>;
-    const message = err?.response?.data?.message || 'Internal server error';
-    throw new Error(message);
+    // const err = error as AxiosError<{ message?: string }>;
+    // const message = err?.response?.data?.message || 'Internal server error';
+    console.error('❌ getStory error:', error);
+    // throw new Error(message);
+    throw error;
   }
 }
 

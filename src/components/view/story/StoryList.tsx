@@ -23,6 +23,10 @@ export default function StoryList() {
     }
   }, [error]);
 
+  // if (error?.message.includes('timeout')) {
+  //   toast.error('Server lambat, coba lagi nanti.');
+  // }
+
   console.log({ loading, error, items });
 
   if (loading) return <p className="text-white text-center">Loading...</p>;

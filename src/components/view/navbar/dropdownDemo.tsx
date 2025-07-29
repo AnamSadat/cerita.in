@@ -18,10 +18,11 @@ import { signOut } from 'next-auth/react';
 
 import Image from 'next/image';
 import type { DropDownDemoProps } from '@/types/navbar';
-import { toast } from 'sonner';
+import toast from 'react-hot-toast';
 import { Info } from 'lucide-react';
 
 export function DropdownMenuDemo({ session }: DropDownDemoProps) {
+  // TODO: handler error session dropdownmenu
   if (!session) return <button>Login</button>;
 
   return (

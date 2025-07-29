@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { postUser } from '@/lib/prisma/apiPrisma';
 import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
+import toast from 'react-hot-toast';
 
 export default function FormRegister() {
   const [errorMessage, setErrorMessage] = useState('');
@@ -40,6 +40,7 @@ export default function FormRegister() {
     console.log('Login submitted:', data);
 
     if (data.password !== data.confirmPassword) {
+      setIsLoading(false);
       setErrorMessage('Password tidak cocok');
       return;
     }

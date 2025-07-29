@@ -1,6 +1,11 @@
-import { Category, formSchemaStoryInput, PostStoryType } from '@/types/story';
+import {
+  Category,
+  formSchemaStoryInput,
+  PostStoryType,
+  StoryFromDB,
+} from '@/types/story';
 import axiosInstance from '../axios';
-import { AxiosError, AxiosRequestConfig } from 'axios';
+import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { getSession } from 'next-auth/react';
 import { formSchemaRegister, PostRegisterType } from '@/types/auth';
 
@@ -67,9 +72,11 @@ export async function postUser(params: PostRegisterType) {
 
 export async function getStory() {
   try {
-    const response = await apiAxios<formSchemaStoryInput[]>(ENDPOINTS.STORY);
+    const response = (await apiAxios(ENDPOINTS.STORY)) as AxiosResponse<
+      StoryFromDB[]
+    >;
 
-    return response;
+    return response.data;
   } catch (error) {
     const err = error as AxiosError<{ message?: string }>;
     const message = err?.response?.data?.message || 'Internal server error';
@@ -101,7 +108,10 @@ export async function postStory(params: PostStoryType) {
 
     const session = await getSession();
 
-    const response = await apiAxios<formSchemaStoryInput>(ENDPOINTS.ADD_STORY, {
+    const response = await apiAxios<{
+      status: number;
+      data: formSchemaStoryInput;
+    }>(ENDPOINTS.ADD_STORY, {
       method: 'POST',
       data: formData,
       headers: {
@@ -110,7 +120,10 @@ export async function postStory(params: PostStoryType) {
       },
     });
 
-    return response;
+    if (response.status !== 200)
+      throw new Error('❌ Gagal menambahkan story, error di apiPrisma.ts');
+
+    return response.data;
   } catch (error) {
     const err = error as AxiosError<{ message?: string }>;
     const message = err?.response?.data?.message || 'Failed to add story';

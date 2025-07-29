@@ -3,7 +3,18 @@ import { Prisma } from '@/lib/prisma/prismaClient';
 
 export async function GET() {
   try {
-    const story = await Prisma.stories.findMany();
+    const story = await Prisma.stories.findMany({
+      select: {
+        id: true,
+        title: true,
+        category: true,
+        content: true,
+        slug: true,
+        created_at: true,
+        img_url: true,
+        short_description: true,
+      },
+    });
 
     if (!story) {
       return NextResponse.json(

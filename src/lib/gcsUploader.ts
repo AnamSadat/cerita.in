@@ -4,16 +4,16 @@ import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 
-const keyPath = path.join(process.cwd(), 'key.json');
+const serviceAccount = process.env.GOOGLE_CLOUD_KEY;
 
-if (!fs.existsSync(keyPath)) {
+if (!serviceAccount) {
   throw new Error(
-    '❌ key.json is missing. Please provide the service account key file.'
+    '❌ GOOGLE_CLOUD_KEY is missing. Please set the service account key in your environment variables.'
   );
 }
 
 const storage = new Storage({
-  keyFilename: keyPath,
+  credentials: JSON.parse(serviceAccount),
 });
 
 const bucketName = 'ceritain-images';

@@ -16,7 +16,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { storySchema, formSchemaStoryInput } from '@/types/story';
 import { getCategory, postStory } from '@/lib/prisma/apiPrisma';
-import { toast } from 'sonner';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+// import { convertTo16by9 } from '@/lib/convertResolution';
 
 export default function FormAddStory() {
   const form = useForm<formSchemaStoryInput>({
@@ -30,6 +32,7 @@ export default function FormAddStory() {
     },
   });
 
+  const router = useRouter();
   const [categories, setCategories] = useState<{ id: string; name: string }[]>(
     []
   );
@@ -49,8 +52,12 @@ export default function FormAddStory() {
     fetchCategories();
   }, []);
 
-  const onSubmit = async (data: formSchemaStoryInput) => {
+  const handleSubmit = async (data: formSchemaStoryInput) => {
     setIsLoading(true);
+
+    console.log('img_url:', data.img_url);
+    console.log('instanceof File?', data.img_url instanceof File);
+
     try {
       const res = await postStory({
         title: data.title,
@@ -63,7 +70,10 @@ export default function FormAddStory() {
       console.log('✅ Story added:', res);
       setIsLoading(false);
       toast.success('Story has been created');
+      form.reset();
+      router.push('/story');
     } catch (error) {
+      setIsLoading(false);
       console.error('❌ Gagal menambahkan story:', error);
       toast.error('Failed to create story');
     }
@@ -72,7 +82,7 @@ export default function FormAddStory() {
   return (
     <div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
           <FormField
             control={form.control}
             name="title"

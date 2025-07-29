@@ -31,5 +31,43 @@ export type PostStoryType = {
   img_url: File;
 };
 
+export type StorySlice = {
+  items: StoryFromDB[];
+  loading: boolean;
+  error: string | null;
+};
+
+export type StoryFromDB = {
+  id: number;
+  title: string;
+  short_description: string;
+  slug: string;
+  category: {
+    id: number;
+    name: string;
+    slug: string;
+    created_at: string;
+    updated_at: string;
+  };
+  content: string;
+  img_url: string;
+  created_at: string;
+};
+
+export const bookmarkSchema = z.object({
+  notes: z.string().min(3),
+});
+
+export type BookmarkFromDB = {
+  id: number;
+  story_id: number;
+  user_id: number;
+  notes: string;
+  created_at: string;
+};
+
+export type bookmarkSchemaInput = z.infer<typeof bookmarkSchema>;
+export type formBookmark = { id: number } & bookmarkSchemaInput;
+
 export type formSchemaStoryInput = z.infer<typeof storySchema>;
 export type formSchemaStory = { id: number } & formSchemaStoryInput;

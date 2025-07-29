@@ -1,3 +1,5 @@
+'use client';
+
 import FormLogin from '@/components/view/auth/FormLogin';
 import Image from 'next/image';
 

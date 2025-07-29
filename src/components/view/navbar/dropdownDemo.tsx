@@ -1,3 +1,5 @@
+'use client';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,10 +21,12 @@ import { signOut } from 'next-auth/react';
 import Image from 'next/image';
 import type { DropDownDemoProps } from '@/types/navbar';
 import toast from 'react-hot-toast';
-import { Info } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export function DropdownMenuDemo({ session }: DropDownDemoProps) {
-  // TODO: handler error session dropdownmenu
+  const router = useRouter();
+  const username = session?.user?.username;
+  console.log('🚀 ~ DropdownMenuDemo ~ username:', username);
   if (!session) return <button>Login</button>;
 
   return (
@@ -56,10 +60,14 @@ export function DropdownMenuDemo({ session }: DropDownDemoProps) {
           <DropdownMenuItem
             className="cursor-pointer"
             onClick={() => {
-              toast('Masih dalam tahap development', {
-                icon: <Info className="text-blue-500" />,
-                className: 'justify-center',
-              });
+              toast.success('Redirecting...');
+              setTimeout(() => {
+                if (username) {
+                  router.push(`/user/${username}`);
+                } else {
+                  toast.error('Username not found');
+                }
+              }, 2000);
             }}
           >
             Profile

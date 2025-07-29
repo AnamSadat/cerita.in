@@ -16,7 +16,13 @@ VSCode Marketplace: https://marketplace.visualstudio.com/items?itemName=Gruntfug
 - [x] configure add story
 - [x] create api get category
 - [x] post new story
-- [ ] create redux state management
+- [x] create redux state management
+
+<!-- RESTful API -->
+
+- [ ] post profile
+- [ ] get profile
+- [ ] update profile
 - [] adding skeleton
 - [] get story client
 - [] edit story

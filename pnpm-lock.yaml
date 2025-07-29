@@ -47,9 +47,6 @@ importers:
       bcrypt:
         specifier: ^6.0.0
         version: 6.0.0
-      cerita-in:
-        specifier: 'link:'
-        version: 'link:'
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1

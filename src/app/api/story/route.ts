@@ -7,12 +7,26 @@ export async function GET() {
       select: {
         id: true,
         title: true,
-        category: true,
-        content: true,
         slug: true,
+        content: true,
         created_at: true,
         img_url: true,
         short_description: true,
+        category: {
+          select: {
+            name: true,
+          },
+        },
+        user: {
+          select: {
+            name: true,
+            profile: {
+              select: {
+                avatar_url: true,
+              },
+            },
+          },
+        },
       },
     });
 

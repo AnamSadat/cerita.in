@@ -23,6 +23,7 @@ export const fetchStory = createAsyncThunk<StoryFromDB[]>(
       content: story.content,
       img_url: story.img_url,
       created_at: story.created_at,
+      user: story.user,
     }));
   }
 );

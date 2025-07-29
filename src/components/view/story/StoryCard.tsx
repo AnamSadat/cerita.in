@@ -8,7 +8,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { StoryFromDB } from '@/types/story';
-import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -17,7 +16,6 @@ type PropsStoryCard = {
 };
 
 export function StoryCard({ story }: PropsStoryCard) {
-  const { data: session } = useSession();
   const date = new Date(story.created_at);
 
   const time = date.toLocaleTimeString('id-ID', {
@@ -56,7 +54,7 @@ export function StoryCard({ story }: PropsStoryCard) {
         <CardTitle>{story.title}</CardTitle>
         <div className="flex flex-wrap gap-2">
           <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
-            Kategori: {story.category.name}
+            {story.category.name}
           </span>
         </div>
       </CardHeader>
@@ -66,9 +64,15 @@ export function StoryCard({ story }: PropsStoryCard) {
         </CardDescription>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <div className="flex">
-          <div className="rounded-full">{session?.user.image}</div>
-          <div>{session?.user.name}</div>
+        <div className="flex items-center gap-2">
+          <Image
+            src={story.user.profile?.avatar_url ?? '/luffy.jpg'}
+            alt={story.user.name}
+            width={40}
+            height={40}
+            className="rounded-full"
+          />
+          <span>{story.user.name}</span>
         </div>
         <Button type="submit" variant={'outline'} className="" asChild>
           <Link href={`story/${story.slug}`} className="text-black">

@@ -9,9 +9,9 @@ import { getStory, getStoryBySlug } from '../prisma/apiPrisma';
 import { StoryFromDB } from '@/types/story';
 import { StorySlice } from '@/types/story';
 
-export const fetchStory = createAsyncThunk<StoryFromDB[]>(
+export const fetchStory = createAsyncThunk<StoryFromDB[], number | undefined>(
   'story/fetchStories',
-  async () => {
+  async (userId) => {
     const res = await getStory();
     console.log('🚀 response getStory:', res);
 
@@ -31,6 +31,13 @@ export const fetchStory = createAsyncThunk<StoryFromDB[]>(
       img_url: story.img_url,
       created_at: story.created_at,
       user: story.user,
+      likesCount: story._count?.likes ?? 0,
+      bookmarksCount: story._count?.bookmarks ?? 0,
+      isLiked: story.likes?.some((like) => like.user_id === userId) ?? false,
+      isBookmarked:
+        story.bookmarks?.some((bm) => bm.user_id === userId) ?? false,
+      likes: story.likes,
+      bookmarks: story.bookmarks,
     }));
   }
 );

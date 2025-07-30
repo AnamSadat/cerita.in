@@ -35,8 +35,8 @@ export type StorySlice = {
   items: StoryFromDB[];
   loading: boolean;
   error: string | null;
-  detail: StoryFromDB | null; // ✅ Tambah
-  loadingDetail: boolean; // ✅ Tambah
+  detail: StoryFromDB | null;
+  loadingDetail: boolean;
   errorDetail: string | null;
 };
 
@@ -57,6 +57,21 @@ export type StoryFromDB = {
   content: string;
   img_url: string;
   created_at: string;
+  _count?: {
+    likes: number;
+    bookmarks: number;
+  };
+  likesCount?: number;
+  bookmarksCount?: number;
+  isLiked?: boolean;
+  isBookmarked?: boolean;
+  likes?: {
+    user_id: number;
+  }[];
+
+  bookmarks?: {
+    user_id: number;
+  }[];
 };
 
 export const bookmarkSchema = z.object({

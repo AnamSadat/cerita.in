@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import storySlice from './features/storySlice';
+import likeSlice from './features/likeSlice';
 
 export const storeRedux = () => {
   return configureStore({
     reducer: {
       story: storySlice,
+      like: likeSlice,
     },
   });
 };

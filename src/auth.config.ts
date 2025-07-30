@@ -33,9 +33,11 @@ export const authOptions: NextAuthOptions = {
 
         if (!user) throw new Error('No user found');
         if (!user.password) throw new Error('No password set for user');
-        if (!user?.profile?.username) {
-          throw new Error('Username is missing in profile');
-        }
+        // if (!user?.profile?.username) {
+        //   throw new Error('Username is missing in profile');
+        // }
+
+        const username = user.profile?.username || '';
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
@@ -48,7 +50,7 @@ export const authOptions: NextAuthOptions = {
           name: user.name,
           email: user.email,
           token,
-          username: user.profile.username,
+          username,
         };
       },
     }),

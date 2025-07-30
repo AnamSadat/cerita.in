@@ -25,6 +25,7 @@ import { useParams } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/lib/hook';
 import { useEffect } from 'react';
 import { fetchStoryBySlug } from '@/lib/features/storySlice';
+import LikeButton from '@/components/view/story/LikeButton';
 
 export default function StoryDetailPage() {
   const { slug } = useParams();
@@ -114,7 +115,7 @@ export default function StoryDetailPage() {
 
             {/* Tombol aksi */}
             <div className="flex gap-3 pt-4">
-              <Button>❤️ Suka (123)</Button>
+              <LikeButton storyId={detail.id} />
               <Button variant="outline">🔖 Simpan</Button>
             </div>
           </CardContent>

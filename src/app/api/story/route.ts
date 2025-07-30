@@ -27,6 +27,22 @@ export async function GET() {
             },
           },
         },
+        _count: {
+          select: {
+            likes: true,
+            bookmarks: true,
+          },
+        },
+        likes: {
+          select: {
+            user_id: true,
+          },
+        },
+        bookmarks: {
+          select: {
+            user_id: true,
+          },
+        },
       },
     });
 

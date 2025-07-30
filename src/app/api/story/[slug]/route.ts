@@ -11,6 +11,37 @@ export async function GET(
       where: {
         slug,
       },
+      include: {
+        user: {
+          select: {
+            name: true,
+            profile: {
+              select: { avatar_url: true },
+            },
+          },
+        },
+        category: {
+          select: {
+            name: true,
+          },
+        },
+        _count: {
+          select: {
+            likes: true,
+            bookmarks: true,
+          },
+        },
+        likes: {
+          select: {
+            user_id: true,
+          },
+        },
+        bookmarks: {
+          select: {
+            user_id: true,
+          },
+        },
+      },
     });
 
     if (!storyDetail) {

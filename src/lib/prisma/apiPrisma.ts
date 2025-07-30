@@ -150,3 +150,21 @@ export async function postStory(params: PostStoryType) {
     throw new Error(message);
   }
 }
+
+export async function postLike(story_id: number) {
+  const session = await getSession();
+  return await apiAxios<{ message: string }>(ENDPOINTS.LIKE, {
+    method: 'POST',
+    data: { story_id },
+    headers: {
+      Authorization: `Bearer ${session?.user?.token}`,
+    },
+  });
+}
+
+export async function postBookmark(story_id: number, notes?: string) {
+  return await apiAxios<{ message: string }>(ENDPOINTS.BOOKMARK, {
+    method: 'POST',
+    data: { story_id, notes },
+  });
+}

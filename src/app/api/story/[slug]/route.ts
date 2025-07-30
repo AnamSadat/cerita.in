@@ -33,6 +33,7 @@ export async function GET(
         },
         likes: {
           select: {
+            id: true,
             user_id: true,
           },
         },

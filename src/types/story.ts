@@ -66,10 +66,12 @@ export type StoryFromDB = {
   isLiked?: boolean;
   isBookmarked?: boolean;
   likes?: {
+    id: number;
     user_id: number;
   }[];
 
   bookmarks?: {
+    id: number;
     user_id: number;
   }[];
 };

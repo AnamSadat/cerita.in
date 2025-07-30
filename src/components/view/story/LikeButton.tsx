@@ -1,7 +1,7 @@
 'use client';
 
 import { useAppDispatch, useAppSelector } from '@/lib/hook';
-import { fetchLike } from '@/lib/features/likeSlice';
+import { deleteLikes, fetchLike } from '@/lib/features/likeSlice';
 import { Heart, Info } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
@@ -24,6 +24,16 @@ export default function LikeButton({ storyId }: { storyId: number }) {
     )
   );
 
+  const userLikeId = useAppSelector(
+    (state) =>
+      state.story.detail?.likes?.find(
+        (like: { user_id: number }) => like.user_id === Number(userId)
+      )?.id
+  );
+
+  console.log('🧠 userId:', userId);
+  console.log('🔥 userLike:', userLikeId);
+
   const [isLiked, setIsLiked] = useState(likedByUser ?? false);
   const [localCount, setLocalCount] = useState(likesCount);
 
@@ -42,7 +52,15 @@ export default function LikeButton({ storyId }: { storyId: number }) {
     setIsLiked(nextLikeState);
     setLocalCount((prev) => (nextLikeState ? prev + 1 : prev - 1));
 
-    dispatch(fetchLike(storyId));
+    if (nextLikeState) {
+      dispatch(fetchLike(storyId)); // like
+    } else {
+      if (userLikeId) {
+        dispatch(deleteLikes({ storyId, likeId: userLikeId })); // unlike
+      } else {
+        console.warn('❗Like ID tidak ditemukan untuk user ini');
+      }
+    }
   };
 
   useEffect(() => {

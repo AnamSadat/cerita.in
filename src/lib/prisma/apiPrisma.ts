@@ -9,8 +9,6 @@ import { AxiosError, AxiosRequestConfig } from 'axios';
 import { getSession } from 'next-auth/react';
 import { formSchemaRegister, PostRegisterType } from '@/types/auth';
 
-const BASE_URL = process.env.NEXT_PUBLIC_STORY_API;
-
 const ENDPOINTS = {
   STORY: '/story',
   STORY_DETAIL: (slug: string) => `/story/${slug}`,
@@ -21,12 +19,6 @@ const ENDPOINTS = {
   BOOKMARK: '/bookmark',
   REGISTER: '/auth/signup',
 };
-
-if (!BASE_URL) {
-  throw new Error(
-    '❌ NEXT_PUBLIC_STORY_API environment variable is not defined'
-  );
-}
 
 export async function apiAxios<T>(
   url: string,
@@ -159,6 +151,13 @@ export async function postLike(story_id: number) {
     headers: {
       Authorization: `Bearer ${session?.user?.token}`,
     },
+  });
+}
+
+export async function deleteLike(likeId: number) {
+  return await apiAxios<{ status: number; message: string }>(ENDPOINTS.LIKE, {
+    method: 'DELETE',
+    data: { id: likeId },
   });
 }
 

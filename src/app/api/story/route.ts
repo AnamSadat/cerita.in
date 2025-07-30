@@ -43,6 +43,8 @@ export async function GET() {
           select: {
             id: true,
             user_id: true,
+            story_id: true,
+            notes: true,
           },
         },
       },

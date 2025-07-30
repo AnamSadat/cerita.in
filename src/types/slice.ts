@@ -13,3 +13,9 @@ export type AsyncThunkConfig<Return, Arg, Reject = string> = {
   argument: Arg;
   rejectValue: Reject;
 };
+
+export type BookmarkSliceState = {
+  loading: boolean;
+  success: boolean;
+  error: string | null;
+};

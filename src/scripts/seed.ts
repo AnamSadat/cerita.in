@@ -40,7 +40,8 @@ async function main() {
       slug: 'bromo',
       content: 'ini adalah cerita pertama saya',
       short_description: 'Cerita pembuka tentang pengalaman pertama',
-      img_url: 'https://4kwallpapers.com/images/walls/thumbs_3t/23027.jpg',
+      img_url:
+        'https://storage.googleapis.com/ceritain-images/19c2dbd0-6b6a-4c62-86bb-35d528188922.jpg',
       category_id: category.id,
     },
   });
@@ -49,6 +50,7 @@ async function main() {
     data: {
       user_id: user.id,
       story_id: story.id,
+      notes: 'Keren nih',
     },
   });
 

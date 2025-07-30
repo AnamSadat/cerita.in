@@ -69,10 +69,11 @@ export type StoryFromDB = {
     id: number;
     user_id: number;
   }[];
-
   bookmarks?: {
     id: number;
     user_id: number;
+    story_id: number;
+    notes?: string;
   }[];
 };
 
@@ -86,6 +87,16 @@ export type BookmarkFromDB = {
   user_id: number;
   notes: string;
   created_at: string;
+};
+
+export type BookmarkResponse = {
+  message: string;
+  data: {
+    id: number;
+    story_id: number;
+    user_id: number;
+    notes?: string | null;
+  };
 };
 
 export type bookmarkSchemaInput = z.infer<typeof bookmarkSchema>;

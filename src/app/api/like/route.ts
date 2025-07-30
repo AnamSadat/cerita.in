@@ -170,13 +170,12 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  console.log('ini req', req);
   try {
     const body = await req.json();
     const { id } = body;
     const likeId = Number(id);
 
-    console.log('ini likeId', likeId);
+    console.log('ini id', likeId);
     console.log('ini likeId', id);
 
     if (!id) {

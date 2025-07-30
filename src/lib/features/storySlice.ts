@@ -79,6 +79,9 @@ export const storySlice = createSlice({
         state.items[update] = action.payload;
       }
     },
+    setStoryDetail: (state, action) => {
+      state.detail = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -99,6 +102,7 @@ export const storySlice = createSlice({
         state.detail = null;
       })
       .addCase(fetchStoryBySlug.fulfilled, (state, action) => {
+        console.log('📦 PAYLOAD:', action.payload);
         state.loadingDetail = false;
         state.detail = action.payload;
       })
@@ -109,5 +113,6 @@ export const storySlice = createSlice({
   },
 });
 
-export const { addStory, deleteStory, updateStory } = storySlice.actions;
+export const { addStory, deleteStory, updateStory, setStoryDetail } =
+  storySlice.actions;
 export default storySlice.reducer;

@@ -17,9 +17,14 @@ VSCode Marketplace: https://marketplace.visualstudio.com/items?itemName=Gruntfug
 - [x] create api get category
 - [x] post new story
 - [x] create redux state management
+- [x] integrasi like and unlike
 
 <!-- RESTful API -->
 
+- [x] jad
+- [x] delete like
+- [x] post like
+- [ ]
 - [ ] post profile
 - [ ] get profile
 - [ ] update profile

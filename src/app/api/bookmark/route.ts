@@ -136,6 +136,7 @@ export async function POST(req: NextRequest) {
     const bookmark = await Prisma.bookmark.create({
       data: { user_id, story_id, notes },
     });
+    console.log('🚀 ~ POST ~ bookmark:', bookmark);
 
     return NextResponse.json(
       {

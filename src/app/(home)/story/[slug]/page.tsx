@@ -18,7 +18,6 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 
-import { Button } from '@/components/ui/button';
 import { CalendarDays, User } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
@@ -26,8 +25,13 @@ import { useAppDispatch, useAppSelector } from '@/lib/hook';
 import { useEffect } from 'react';
 import { fetchStoryBySlug } from '@/lib/features/storySlice';
 import LikeButton from '@/components/view/story/LikeButton';
+import { BookmarkButton } from '@/components/view/story/BookmarkButton';
+import { useSession } from 'next-auth/react';
 
 export default function StoryDetailPage() {
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
+
   const { slug } = useParams();
   const dispatch = useAppDispatch();
 
@@ -40,6 +44,16 @@ export default function StoryDetailPage() {
       dispatch(fetchStoryBySlug(slug));
     }
   }, [slug, dispatch]);
+
+  if (!detail) return null;
+
+  const userBookmark = detail.bookmarks?.find(
+    (bm) => bm.user_id === Number(userId)
+  );
+
+  console.log('🚀 ~ StoryDetailPage ~ userBookmark:', userBookmark);
+  console.log('✅ detail.bookmarks:', detail.bookmarks);
+  console.log('🧠 userId:', userId);
 
   if (loadingDetail) return <p>Loading detail...</p>;
   if (errorDetail) return <p className="text-red-500">{errorDetail}</p>;
@@ -76,14 +90,14 @@ export default function StoryDetailPage() {
               <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mt-2">
                 <span className="flex items-center gap-1">
                   <User size={14} />
-                  Anam Sadat
+                  {detail.user.name}
                 </span>
                 <span className="flex items-center gap-1">
                   <CalendarDays size={14} />
-                  29 Juli 2025
+                  {detail.created_at}
                 </span>
                 <span className="bg-blue-100 text-blue-600 px-2 py-0.5 rounded-md text-xs">
-                  Teknologi
+                  {detail.category.name}
                 </span>
               </div>
             </CardDescription>
@@ -92,7 +106,7 @@ export default function StoryDetailPage() {
             {/* Gambar utama */}
             <div className="relative w-full h-[250px] md:h-[300px] rounded-xl overflow-hidden">
               <Image
-                src="/placeholder-image.jpg"
+                src={detail.img_url}
                 alt="Story Thumbnail"
                 fill
                 className="object-cover"
@@ -116,7 +130,10 @@ export default function StoryDetailPage() {
             {/* Tombol aksi */}
             <div className="flex gap-3 pt-4">
               <LikeButton storyId={detail.id} />
-              <Button variant="outline">🔖 Simpan</Button>
+              <BookmarkButton
+                storyId={detail.id}
+                initialBookmarkId={userBookmark?.id}
+              />
             </div>
           </CardContent>
         </Card>

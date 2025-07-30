@@ -1,4 +1,5 @@
 import {
+  BookmarkResponse,
   Category,
   formSchemaStoryInput,
   PostStoryType,
@@ -155,15 +156,38 @@ export async function postLike(story_id: number) {
 }
 
 export async function deleteLike(likeId: number) {
-  return await apiAxios<{ status: number; message: string }>(ENDPOINTS.LIKE, {
-    method: 'DELETE',
-    data: { id: likeId },
-  });
+  return await apiAxios<{ status: number; message: string }>(
+    `${ENDPOINTS.LIKE}/${likeId}`, // misal: /api/like/123
+    {
+      method: 'DELETE',
+    }
+  );
 }
 
-export async function postBookmark(story_id: number, notes?: string) {
-  return await apiAxios<{ message: string }>(ENDPOINTS.BOOKMARK, {
+export async function postBookmark(
+  story_id: number,
+  notes?: string
+): Promise<BookmarkResponse> {
+  const session = await getSession();
+  const response = await apiAxios<BookmarkResponse>(ENDPOINTS.BOOKMARK, {
     method: 'POST',
     data: { story_id, notes },
+    headers: {
+      Authorization: `Bearer ${session?.user?.token}`,
+    },
+  });
+
+  return response; // ✅ ini adalah { message: string, data: {...} }
+}
+
+export async function deleteBookmark(id: number) {
+  const session = await getSession();
+  return await apiAxios<{ message: string }>(ENDPOINTS.BOOKMARK, {
+    method: 'DELETE',
+    data: JSON.stringify({ id }),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${session?.user?.token}`,
+    },
   });
 }

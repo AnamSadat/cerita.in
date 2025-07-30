@@ -39,6 +39,8 @@ export async function GET(
         },
         bookmarks: {
           select: {
+            id: true,
+            story_id: true,
             user_id: true,
           },
         },

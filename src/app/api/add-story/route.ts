@@ -65,6 +65,24 @@ async function parseForm(
   });
 }
 
+async function generateUniqueSlug(baseSlug: string): Promise<string> {
+  let slug = baseSlug;
+  let counter = 1;
+
+  while (true) {
+    const existing = await Prisma.stories.findUnique({
+      where: { slug },
+    });
+
+    if (!existing) break;
+
+    slug = `${baseSlug}-${counter}`;
+    counter++;
+  }
+
+  return slug;
+}
+
 export async function POST(req: NextRequest) {
   try {
     // Verifikasi token
@@ -155,11 +173,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const baseSlug = slugify(title, { lower: true });
+    const finalSlug = await generateUniqueSlug(baseSlug);
+
     // Simpan ke database
     const newStory = await Prisma.stories.create({
       data: {
         title,
-        slug: slugify(title, { lower: true }),
+        slug: finalSlug,
         short_description: sortDescription,
         content,
         img_url,

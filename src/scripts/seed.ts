@@ -15,7 +15,7 @@ async function main() {
           username: 'example',
           bio: 'Backend & Fullstack developer',
           avatar_url:
-            'https://4kwallpapers.com/images/walls/thumbs_3t/23027.jpg',
+            'https://storage.googleapis.com/ceritain-images/luffy.jpg',
           gender: 'Laki-laki',
         },
       },

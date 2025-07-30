@@ -5,7 +5,7 @@ import {
   createSlice,
   type PayloadAction,
 } from '@reduxjs/toolkit';
-import { getStory } from '../prisma/apiPrisma';
+import { getStory, getStoryBySlug } from '../prisma/apiPrisma';
 import { StoryFromDB } from '@/types/story';
 import { StorySlice } from '@/types/story';
 
@@ -35,10 +35,21 @@ export const fetchStory = createAsyncThunk<StoryFromDB[]>(
   }
 );
 
+export const fetchStoryBySlug = createAsyncThunk<StoryFromDB, string>(
+  'story/fetchStoryBySlug',
+  async (slug) => {
+    const res = await getStoryBySlug(slug);
+    return res;
+  }
+);
+
 const initialState: StorySlice = {
   items: [],
   loading: false,
   error: null,
+  detail: null,
+  loadingDetail: false,
+  errorDetail: null,
 };
 
 export const storySlice = createSlice({
@@ -74,6 +85,19 @@ export const storySlice = createSlice({
       .addCase(fetchStory.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message ?? 'Terjadi Kesalahan';
+      })
+      .addCase(fetchStoryBySlug.pending, (state) => {
+        state.loadingDetail = true;
+        state.errorDetail = null;
+        state.detail = null;
+      })
+      .addCase(fetchStoryBySlug.fulfilled, (state, action) => {
+        state.loadingDetail = false;
+        state.detail = action.payload;
+      })
+      .addCase(fetchStoryBySlug.rejected, (state, action) => {
+        state.loadingDetail = false;
+        state.errorDetail = action.error.message ?? 'Gagal memuat story detail';
       });
   },
 });

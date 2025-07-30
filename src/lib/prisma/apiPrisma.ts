@@ -13,7 +13,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_STORY_API;
 
 const ENDPOINTS = {
   STORY: '/story',
-  STORY_DETAIL: (id: number) => `/story/${id}`,
+  STORY_DETAIL: (slug: string) => `/story/${slug}`,
   CATEGORY: '/category',
   ADD_STORY: '/add-story',
   PROFILE: '/profile',
@@ -86,6 +86,21 @@ export async function getStory() {
     // const message = err?.response?.data?.message || 'Internal server error';
     console.error('❌ getStory error:', error);
     // throw new Error(message);
+    throw error;
+  }
+}
+
+export async function getStoryBySlug(slug: string) {
+  try {
+    const response = await apiAxios<{ status: number; data: StoryFromDB }>(
+      `${ENDPOINTS.STORY}/${slug}`
+    );
+
+    console.log('📦 response detail by slug:', response.data);
+
+    return response.data;
+  } catch (error) {
+    console.error('❌ getStoryBySlug error:', error);
     throw error;
   }
 }

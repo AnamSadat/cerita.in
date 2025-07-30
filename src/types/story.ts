@@ -35,6 +35,9 @@ export type StorySlice = {
   items: StoryFromDB[];
   loading: boolean;
   error: string | null;
+  detail: StoryFromDB | null; // ✅ Tambah
+  loadingDetail: boolean; // ✅ Tambah
+  errorDetail: string | null;
 };
 
 export type StoryFromDB = {

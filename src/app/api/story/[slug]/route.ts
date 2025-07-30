@@ -14,7 +14,7 @@ export async function GET(
       include: {
         user: {
           select: {
-            name: true,
+            username: true,
             profile: {
               select: { avatar_url: true },
             },

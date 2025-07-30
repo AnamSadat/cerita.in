@@ -26,7 +26,7 @@ export default function FormRegister() {
   const form = useForm<formSchemaRegister>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      name: '',
+      username: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -46,7 +46,7 @@ export default function FormRegister() {
     }
 
     const result = await postUser({
-      name: data.name,
+      username: data.username,
       email: data.email,
       password: data.password,
     });
@@ -69,10 +69,10 @@ export default function FormRegister() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
-            name="name"
+            name="username"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>Username</FormLabel>
                 <FormControl>
                   <Input type="name" placeholder="Jhon Doe" {...field} />
                 </FormControl>

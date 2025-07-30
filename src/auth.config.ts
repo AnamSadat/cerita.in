@@ -37,7 +37,7 @@ export const authOptions: NextAuthOptions = {
         //   throw new Error('Username is missing in profile');
         // }
 
-        const username = user.profile?.username || '';
+        const name = user.profile?.name || '';
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
@@ -47,10 +47,10 @@ export const authOptions: NextAuthOptions = {
 
         return {
           id: String(user.id),
-          name: user.name,
+          username: user.username,
           email: user.email,
           token,
-          username,
+          name,
         };
       },
     }),

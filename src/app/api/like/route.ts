@@ -150,7 +150,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(
       {
-        status: 200,
+        message: 'Like berhasil', // ✅ tambahkan ini
         data: newLikes,
       },
       { status: 200 }

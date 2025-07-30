@@ -90,7 +90,7 @@ export default function StoryDetailPage() {
               <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mt-2">
                 <span className="flex items-center gap-1">
                   <User size={14} />
-                  {detail.user.name}
+                  {detail.user.username}
                 </span>
                 <span className="flex items-center gap-1">
                   <CalendarDays size={14} />
@@ -128,7 +128,7 @@ export default function StoryDetailPage() {
             </article>
 
             {/* Tombol aksi */}
-            <div className="flex gap-3 pt-4">
+            <div className="flex gap-6 pt-4">
               <LikeButton storyId={detail.id} />
               <BookmarkButton
                 storyId={detail.id}

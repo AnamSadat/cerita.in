@@ -2,18 +2,16 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { AxiosError } from 'axios';
 import { postLike, deleteLike } from '../prisma/apiPrisma';
-import { AsyncThunkConfig, LikeState, PostLikeResponse } from '@/types/slice';
-
-type PostLikeConfig = AsyncThunkConfig<string, number>;
+import { Like, LikeState } from '@/types/slice';
 
 export const fetchLike = createAsyncThunk<
-  PostLikeConfig['returnType'],
-  PostLikeConfig['argument'],
-  { rejectValue: PostLikeConfig['rejectValue'] }
+  Like, // returnType diubah dari `string` ke `Like`
+  number, // argument type, story_id
+  { rejectValue: string }
 >('likes/fetchLike', async (story_id, thunkAPI) => {
   try {
-    const response: PostLikeResponse = await postLike(story_id);
-    return response.message;
+    const response = await postLike(story_id);
+    return response.data; // ⬅️ Ambil data dari response
   } catch (error) {
     const axiosError = error as AxiosError<{ message?: string }>;
     const msg = axiosError.response?.data?.message ?? 'Gagal toggle like';
@@ -33,6 +31,7 @@ const initialState: LikeState = {
   loading: false,
   error: null,
   message: null,
+  likeId: null,
 };
 
 const likeSlice = createSlice({
@@ -46,9 +45,11 @@ const likeSlice = createSlice({
         state.error = null;
         state.message = null;
       })
-      .addCase(fetchLike.fulfilled, (state, action: PayloadAction<string>) => {
+      .addCase(fetchLike.fulfilled, (state, action: PayloadAction<Like>) => {
         state.loading = false;
-        state.message = action.payload;
+        // state.message = action.payload;
+        state.message = `Berhasil like story ${action.payload.story_id}`;
+        state.likeId = action.payload;
       })
       .addCase(fetchLike.rejected, (state, action) => {
         state.loading = false;

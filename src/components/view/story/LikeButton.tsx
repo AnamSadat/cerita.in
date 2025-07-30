@@ -2,14 +2,13 @@
 
 import { useAppDispatch, useAppSelector } from '@/lib/hook';
 import { deleteLikes, fetchLike } from '@/lib/features/likeSlice';
+import { setStoryDetail } from '@/lib/features/storySlice';
 import { Heart, Info } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import toast from 'react-hot-toast';
 import { useEffect, useState } from 'react';
-import { fetchStory, setStoryDetail } from '@/lib/features/storySlice';
-import { StoryFromDB } from '@/types/story';
+import toast from 'react-hot-toast';
+import { motion } from 'framer-motion';
 
 export default function LikeButton({ storyId }: { storyId: number }) {
   const dispatch = useAppDispatch();
@@ -18,22 +17,17 @@ export default function LikeButton({ storyId }: { storyId: number }) {
   const userId = session?.user?.id;
 
   const { loading } = useAppSelector((state) => state.like);
-
-  const likes = useAppSelector((state) => state.story.detail?.likes ?? []);
-  const likesCount = useAppSelector(
-    (state) => state.story.detail?._count?.likes ?? 0
-  );
+  const storyDetail = useAppSelector((state) => state.story.detail);
+  const likes = storyDetail?.likes ?? [];
+  const likesCount = storyDetail?._count?.likes ?? 0;
 
   const likedByUser = likes.some((like) => like.user_id === Number(userId));
   const currentLike = likes.find((like) => like.user_id === Number(userId));
 
-  // 🧠 Local state for better UX
-  const [isLiked, setIsLiked] = useState<boolean>(likedByUser);
-  const [localCount, setLocalCount] = useState<number>(likesCount);
+  const [isLiked, setIsLiked] = useState(likedByUser);
   const [likeId, setLikeId] = useState<number | null>(currentLike?.id ?? null);
-  console.log('🚀 ~ LikeButton ~ likeId diluar handleLike:', likeId);
+  const [localCount, setLocalCount] = useState(likesCount);
 
-  // 💡 Handle like/unlike
   const handleLike = () => {
     if (!session) {
       toast('Silakan login terlebih dahulu', {
@@ -48,39 +42,61 @@ export default function LikeButton({ storyId }: { storyId: number }) {
     setLocalCount((prev) => (nextState ? prev + 1 : prev - 1));
 
     if (nextState) {
-      console.log('Berhasil tambahkan: ', likeId);
-      dispatch(fetchLike(storyId)).then(() => {
-        dispatch(fetchStory()).then((res) => {
-          if ('payload' in res && Array.isArray(res.payload)) {
-            const stories = res.payload as StoryFromDB[];
-            const updated = stories.find((story) => story.id === storyId);
-            if (updated) {
-              dispatch(setStoryDetail(updated));
-            }
-          }
-        });
+      // LIKE
+      dispatch(fetchLike(storyId)).then((res) => {
+        const newLike = res.payload;
+        if (!newLike) return;
+        if (
+          typeof newLike !== 'object' ||
+          newLike === null ||
+          !('id' in newLike)
+        ) {
+          console.warn('Gagal mendapatkan data Like');
+          return;
+        }
+
+        setLikeId(newLike.id);
+
+        // 🔄 Update Redux manual
+        dispatch(
+          setStoryDetail({
+            ...storyDetail!,
+            likes: [...likes, newLike],
+            _count: {
+              ...storyDetail!._count,
+              likes: likesCount + 1,
+            },
+          })
+        );
       });
     } else {
-      if (likeId) {
-        console.log('Berhasil dihapus: ', likeId);
-        dispatch(deleteLikes({ storyId, likeId })).then(() => {
-          dispatch(fetchStory()).then((res) => {
-            if ('payload' in res && Array.isArray(res.payload)) {
-              const stories = res.payload as StoryFromDB[]; // ✅ kasih tahu TypeScript
-              const updated = stories.find((story) => story.id === storyId);
-              if (updated) {
-                dispatch(setStoryDetail(updated));
-              }
-            }
-          });
-        });
-      } else {
-        console.warn('❗Like ID tidak ditemukan untuk user ini');
+      // UNLIKE
+      if (!likeId) {
+        console.warn('❗ Like ID tidak ditemukan');
+        return;
       }
+
+      dispatch(deleteLikes({ storyId, likeId })).then(() => {
+        setLikeId(null);
+
+        // 🔄 Hapus like user dari Redux manual
+        const filteredLikes = likes.filter((like) => like.id !== likeId);
+
+        dispatch(
+          setStoryDetail({
+            ...storyDetail!,
+            likes: filteredLikes,
+            _count: {
+              ...storyDetail!._count,
+              likes: likesCount - 1,
+            },
+          })
+        );
+      });
     }
   };
 
-  // 🔄 Update local like status when redux changes
+  // Sinkronisasi state lokal dengan Redux saat detail berubah
   useEffect(() => {
     setIsLiked(likedByUser);
     setLikeId(currentLike?.id ?? null);

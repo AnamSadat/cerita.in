@@ -69,12 +69,12 @@ export function StoryCard({ story }: PropsStoryCard) {
         <div className="flex items-center gap-2">
           <Image
             src={story.user.profile?.avatar_url ?? '/luffy.jpg'}
-            alt={story.user.name}
+            alt={story.user.username}
             width={40}
             height={40}
             className="rounded-full"
           />
-          <span>{story.user.name}</span>
+          <span>{story.user.username}</span>
         </div>
         <Button type="submit" variant={'outline'} className="" asChild>
           <Link href={`story/${story.slug}`} className="text-black">

@@ -26,7 +26,7 @@ import { BookmarkResponse } from '@/types/story';
 
 type Props = {
   storyId: number;
-  initialBookmarkId?: number; // kalau sudah disimpan sebelumnya
+  initialBookmarkId?: number;
 };
 
 type BookmarkForm = {
@@ -94,13 +94,17 @@ export function BookmarkButton({ storyId, initialBookmarkId }: Props) {
         variant="ghost"
         size="icon"
         onClick={handleToggle}
-        className="hover:bg-transparent"
+        className="bg-neutral-800 px-13 cursor-pointer hover:bg-neutral-800/70"
         disabled={loading}
       >
         {isBookmarked ? (
-          <BookmarkCheck className="w-5 h-5 text-yellow-400" />
+          <div className="flex">
+            <BookmarkCheck className="w-10 h-10 text-yellow-400" /> Tersimpan
+          </div>
         ) : (
-          <Bookmark className="w-5 h-5 text-white" />
+          <div className="flex">
+            <Bookmark className="w-10 h-10 text-white" /> &nbsp; Simpan
+          </div>
         )}
       </Button>
 

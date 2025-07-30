@@ -19,7 +19,7 @@ export async function GET() {
         },
         user: {
           select: {
-            name: true,
+            username: true,
             profile: {
               select: {
                 avatar_url: true,

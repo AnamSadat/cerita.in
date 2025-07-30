@@ -49,7 +49,7 @@ export const { auth, signIn, signOut } = NextAuth({
           return null;
         }
 
-        if (!user?.profile?.username) {
+        if (!user?.profile?.name) {
           console.log('❌ Username missing in profile');
           throw new Error('Username is missing in profile');
         }
@@ -68,10 +68,10 @@ export const { auth, signIn, signOut } = NextAuth({
 
         return {
           id: String(user.id),
-          name: user.name,
+          username: user.username,
           email: user.email,
           token,
-          username: user.profile.username,
+          name: user.profile.name,
         };
       },
     }),

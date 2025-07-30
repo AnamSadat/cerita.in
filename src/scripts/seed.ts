@@ -7,12 +7,12 @@ async function main() {
 
   const user = await Prisma.user.create({
     data: {
-      name: 'example',
+      username: 'example',
       email: 'contoh@example.com',
       password: hashingPassword,
       profile: {
         create: {
-          username: 'example',
+          name: 'example',
           bio: 'Backend & Fullstack developer',
           avatar_url:
             'https://storage.googleapis.com/ceritain-images/luffy.jpg',

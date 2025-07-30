@@ -9,6 +9,7 @@ import axiosInstance from '../axios';
 import { AxiosError, AxiosRequestConfig } from 'axios';
 import { getSession } from 'next-auth/react';
 import { formSchemaRegister, PostRegisterType } from '@/types/auth';
+import { Like } from '@/types/slice';
 
 const ENDPOINTS = {
   STORY: '/story',
@@ -146,7 +147,7 @@ export async function postStory(params: PostStoryType) {
 
 export async function postLike(story_id: number) {
   const session = await getSession();
-  return await apiAxios<{ message: string }>(ENDPOINTS.LIKE, {
+  return await apiAxios<{ message: string; data: Like }>(ENDPOINTS.LIKE, {
     method: 'POST',
     data: { story_id },
     headers: {

@@ -5,7 +5,7 @@ import { profileSchema, profileUpdateSchema } from '@/types/profile';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ username: string }> }
+  { params }: { params: Promise<{ name: string }> }
 ) {
   try {
     const authHeader = req.headers.get('authorization');
@@ -43,11 +43,13 @@ export async function GET(
     const user_id = Number(decoded.sub);
     console.log('🚀 ~ POST ~ user_id:', user_id);
 
-    const { username } = await params;
+    const { name } = await params;
 
-    const profile = await Prisma.profile.findUnique({
+    const profile = await Prisma.profile.findFirst({
       where: {
-        username: username,
+        user: {
+          username: name,
+        },
       },
       include: {
         user: true,
@@ -124,7 +126,7 @@ export async function POST(req: NextRequest) {
     const profile = await Prisma.profile.create({
       data: {
         userId: user_id,
-        username: parsed.data.username,
+        name: parsed.data.name,
         bio: parsed.data.bio || '',
         avatar_url: parsed.data.avatar_url || defaultAvatar,
         gender: parsed.data.gender,

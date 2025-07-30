@@ -46,8 +46,9 @@ export type StoryFromDB = {
   short_description: string;
   slug: string;
   user: {
-    name: string;
+    username: string;
     profile: {
+      name: string;
       avatar_url: string;
     };
   };

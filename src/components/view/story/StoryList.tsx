@@ -6,10 +6,14 @@ import { RootState } from '@/lib/store';
 import { useEffect } from 'react';
 import { fetchStory } from '@/lib/features/storySlice';
 import toast from 'react-hot-toast';
-// import { Skeleton } from '@/components/ui/skeleton';
 import { LoaderOne } from '@/components/ui/loader';
 
-export default function StoryList() {
+interface Props {
+  query: string;
+  category: string;
+}
+
+export default function StoryList({ query, category }: Props) {
   const dispatch = useAppDispatch();
   const { items, error, loading } = useAppSelector(
     (state: RootState) => state.story
@@ -25,11 +29,20 @@ export default function StoryList() {
     }
   }, [error]);
 
-  // if (error?.message.includes('timeout')) {
-  //   toast.error('Server lambat, coba lagi nanti.');
-  // }
+  // ✅ Logika filter
+  const filteredItems = items.filter((story) => {
+    const matchesQuery = story.title
+      .toLowerCase()
+      .includes(query.toLowerCase());
 
-  console.log({ loading, error, items });
+    const matchesCategory = category
+      ? story.category.name.toLowerCase() === category.toLowerCase()
+      : true;
+
+    return matchesQuery && matchesCategory;
+  });
+
+  console.log('Filtered:', filteredItems);
 
   if (loading) {
     return (
@@ -43,15 +56,17 @@ export default function StoryList() {
     return <p className="text-red-500 text-center">{error}</p>;
   }
 
-  console.log('story: ', items);
-
   return (
     <div className="space-y-4">
-      <div className="grid mx-auto lg:grid-cols-4  gap-5 md:grid-cols-3">
-        {items.map((story) => (
-          <StoryCard key={story.id} story={story} />
-        ))}
-      </div>
+      {filteredItems.length === 0 ? (
+        <p className="text-center text-gray-400">No stories found.</p>
+      ) : (
+        <div className="grid mx-auto lg:grid-cols-4 gap-5 md:grid-cols-3">
+          {filteredItems.map((story) => (
+            <StoryCard key={story.id} story={story} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

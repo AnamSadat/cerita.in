@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,22 +14,18 @@ import { Input } from '@/components/ui/input';
 // import { Button } from '@/components/ui/button';
 import { BookOpenText } from 'lucide-react';
 import {
-  Select,
-  SelectContent,
-  // SelectGroup,
-  // SelectItem,
-  // SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
   Search,
   Filter,
   // MapPin, Loader2
 } from 'lucide-react';
 import StoryList from '@/components/view/story/StoryList';
+import CategoryList from '@/components/view/story/CategoryList';
+import { useState } from 'react';
 
 export default function Story() {
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [query, setQuery] = useState('');
+
   return (
     <div className="min-h-screen pt-25 px-5 container mx-auto">
       <Breadcrumb>
@@ -65,6 +63,8 @@ export default function Story() {
             <Input
               type="text"
               placeholder="Search category story."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
               className="pl-10 h-12 border-2 border-gray-200 focus:border-orange-400 rounded-xl"
             />
           </div>
@@ -74,15 +74,13 @@ export default function Story() {
               <Filter className="w-4 h-4 text-white" />
               <span className="text-sm font-medium text-white">Filters:</span>
             </div>
-            <Select>
-              <SelectTrigger className="w-48 border-2 border-gray-200  rounded-lg">
-                <SelectValue placeholder="Select category" />
-              </SelectTrigger>
-              <SelectContent></SelectContent>
-            </Select>
+            <CategoryList
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+            />
           </div>
           <div className="flex flex-col">
-            <StoryList />
+            <StoryList query={query} category={selectedCategory} />
           </div>
         </div>
       </div>

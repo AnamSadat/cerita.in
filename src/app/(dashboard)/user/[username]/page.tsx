@@ -36,12 +36,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { LoaderOne } from '@/components/ui/loader';
 
 export default function ProfilePage() {
   const { data: session } = useSession();
   const username = session?.user?.username;
   const [profile, setProfile] = useState<ProfileType | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isLoading, isSetLoading] = useState(false);
 
   const [fullName, setFullName] = useState<string>('');
   const [bio, setBio] = useState<string>('');
@@ -80,6 +82,7 @@ export default function ProfilePage() {
   }, [username]);
 
   const handleSave = async () => {
+    isSetLoading(true);
     const payload: profileSchemaInput | profileUpdateSchemaInput = {
       name: fullName,
       bio: bio,
@@ -99,10 +102,12 @@ export default function ProfilePage() {
     try {
       if (profile && profile.userId === Number(session?.user?.id)) {
         await putProfile(payload);
+        isSetLoading(false);
         console.log('Profil berhasil diperbarui');
         toast.success('Profil berhasil diperbarui');
       } else {
         await postProfile(payload as profileSchemaInput);
+        isSetLoading(false);
         console.log('Profil berhasil dibuat');
         toast.success('Profil berhasil dibuat');
       }
@@ -110,6 +115,7 @@ export default function ProfilePage() {
       if (username) {
         const updated = await getProfileByUsername(username);
         setProfile(updated);
+        isSetLoading(false);
       }
     } catch (error: unknown) {
       const err = error as Error;
@@ -117,7 +123,13 @@ export default function ProfilePage() {
     }
   };
 
-  if (loading) return <p className="text-center text-gray-400">Memuat...</p>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center mt-20">
+        <LoaderOne />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-3xl mx-auto mt-24 px-4">
@@ -209,7 +221,35 @@ export default function ProfilePage() {
                 <DialogClose asChild>
                   <Button variant="outline">Batal</Button>
                 </DialogClose>
-                <Button onClick={handleSave}>Simpan</Button>
+                <Button onClick={handleSave}>
+                  {isLoading ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <svg
+                        className="w-4 h-4 animate-spin text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"
+                        ></path>
+                      </svg>
+                      Loading...
+                    </div>
+                  ) : (
+                    'Simpan'
+                  )}
+                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>

@@ -1,33 +1,34 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '@/lib/hook';
+import { fetchStory } from '@/lib/features/storySlice';
 import { Carousel } from '@/components/ui/carousel';
+
 export function CarouselDemo() {
-  const slideData = [
-    {
-      title: 'Mystic Mountains',
-      button: 'Explore Component',
-      src: 'https://images.unsplash.com/photo-1494806812796-244fe51b774d?q=80&w=3534&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    },
-    {
-      title: 'Urban Dreams',
-      button: 'Explore Component',
-      src: 'https://images.unsplash.com/photo-1518710843675-2540dd79065c?q=80&w=3387&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    },
-    {
-      title: 'Neon Nights',
-      button: 'Explore Component',
-      src: 'https://images.unsplash.com/photo-1590041794748-2d8eb73a571c?q=80&w=3456&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    },
-    {
-      title: 'Desert Whispers',
-      button: 'Explore Component',
-      src: 'https://images.unsplash.com/photo-1679420437432-80cfbf88986c?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    },
-  ];
+  const dispatch = useAppDispatch();
+  const { items: stories, loading } = useAppSelector((state) => state.story);
+
+  useEffect(() => {
+    dispatch(fetchStory());
+  }, [dispatch]);
+
+  const slideData = stories.map((story) => ({
+    title: story.title,
+    button: 'Baca Cerita',
+    src: story.img_url || 'https://via.placeholder.com/800x400?text=No+Image',
+    slug: story.slug,
+  }));
 
   return (
     <div className="relative overflow-hidden w-full h-full py-20">
-      <Carousel slides={slideData} />
+      {loading ? (
+        <div className="text-center text-gray-500">Memuat cerita...</div>
+      ) : stories.length === 0 ? (
+        <div className="text-center text-gray-500">Belum ada story.</div>
+      ) : (
+        <Carousel slides={slideData} />
+      )}
     </div>
   );
 }

@@ -92,4 +92,9 @@ model Bookmark {
   story               Stories   @relation(fields: [story_id], references: [id])
 
   @@unique([user_id, story_id], name: "user_story_unique")
+
+  // next buat flexibilats begitu pun buat like, tambahkan onDelete: Cascade
+  
+  // story Stories @relation(fields: [story_id], references: [id], onDelete: Cascade)
+
 }

@@ -9,7 +9,6 @@ import { fetchStory } from '@/lib/features/storySlice';
 import toast from 'react-hot-toast';
 import { useEffect } from 'react';
 import { deleteLikes } from '@/lib/features/likeSlice';
-import { Skeleton } from '@/components/ui/skeleton';
 
 import {
   AlertDialog,
@@ -22,6 +21,7 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from '@/components/ui/alert-dialog';
+import { LoaderOne } from '@/components/ui/loader';
 
 export default function LikesPage() {
   const { data: session } = useSession();
@@ -69,12 +69,9 @@ export default function LikesPage() {
           Total {likedStories.length} cerita
         </span>
         <div className="max-w-4xl mx-auto mt-10">
-          {Array.from({ length: 2 }).map((_, index) => (
-            <Skeleton
-              key={index}
-              className="w-full h-27 rounded-xl mt-5 bg-slate-200"
-            />
-          ))}
+          <div className="flex items-center justify-center mt-20">
+            <LoaderOne />
+          </div>
         </div>
       </div>
     );

@@ -1,5 +1,6 @@
 'use client';
 
+import { LoaderOne } from '@/components/ui/loader';
 import FormLogin from '@/components/view/auth/FormLogin';
 import Image from 'next/image';
 import { Suspense } from 'react';
@@ -9,7 +10,13 @@ export default function Login() {
     <div className="min-h-screen pt-25 px-5 container mx-auto">
       <div className="justify-center flex mx-auto">
         <div className="mx-auto justify-center flex">
-          <Suspense fallback={<div>Loading form...</div>}>
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center mt-20">
+                <LoaderOne />
+              </div>
+            }
+          >
             <FormLogin />
           </Suspense>
         </div>

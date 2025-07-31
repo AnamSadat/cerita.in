@@ -27,6 +27,7 @@ import { fetchStoryBySlug } from '@/lib/features/storySlice';
 import LikeButton from '@/components/view/story/LikeButton';
 import { BookmarkButton } from '@/components/view/story/BookmarkButton';
 import { useSession } from 'next-auth/react';
+import { LoaderOne } from '@/components/ui/loader';
 
 export default function StoryDetailPage() {
   const { data: session } = useSession();
@@ -56,7 +57,12 @@ export default function StoryDetailPage() {
   console.log('✅ detail.bookmarks:', detail.bookmarks);
   console.log('🧠 userId:', userId);
 
-  if (loadingDetail) return <p>Loading detail...</p>;
+  if (loadingDetail)
+    return (
+      <div className="flex items-center justify-center mt-20">
+        <LoaderOne />
+      </div>
+    );
   if (errorDetail) return <p className="text-red-500">{errorDetail}</p>;
   if (!detail) return null;
 

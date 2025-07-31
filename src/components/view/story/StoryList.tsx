@@ -6,7 +6,8 @@ import { RootState } from '@/lib/store';
 import { useEffect } from 'react';
 import { fetchStory } from '@/lib/features/storySlice';
 import toast from 'react-hot-toast';
-import { Skeleton } from '@/components/ui/skeleton';
+// import { Skeleton } from '@/components/ui/skeleton';
+import { LoaderOne } from '@/components/ui/loader';
 
 export default function StoryList() {
   const dispatch = useAppDispatch();
@@ -32,15 +33,8 @@ export default function StoryList() {
 
   if (loading) {
     return (
-      <div className="space-y-4">
-        <div className="grid mx-auto lg:grid-cols-4 gap-5 md:grid-cols-3">
-          {Array.from({ length: 4 }).map((_, index) => (
-            <Skeleton
-              key={index}
-              className="w-full h-100 rounded-lg bg-slate-200"
-            />
-          ))}
-        </div>
+      <div className="flex items-center justify-center mt-20">
+        <LoaderOne />
       </div>
     );
   }

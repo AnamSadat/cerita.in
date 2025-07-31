@@ -2,11 +2,14 @@
 import { IconArrowNarrowRight } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useState, useRef, useId, useEffect } from 'react';
+import { Button } from './button';
+import Link from 'next/link';
 
 interface SlideData {
   title: string;
   button: string;
   src: string;
+  slug: string;
 }
 
 interface SlideProps {
@@ -65,7 +68,7 @@ const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
     event.currentTarget.style.opacity = '1';
   };
 
-  const { src, button, title } = slide;
+  const { src, button, title, slug } = slide;
 
   return (
     <div className="[perspective:1200px] [transform-style:preserve-3d]">
@@ -120,9 +123,12 @@ const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
             {title}
           </h2>
           <div className="flex justify-center">
-            <button className="mt-6  px-4 py-2 w-fit mx-auto sm:text-sm text-black bg-white h-12 border border-transparent text-xs flex justify-center items-center rounded-2xl hover:shadow-lg transition duration-200 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]">
-              {button}
-            </button>
+            <Button
+              asChild
+              className="mt-6  px-4 py-2 w-fit mx-auto sm:text-sm text-black bg-white h-12 border border-transparent text-xs flex justify-center items-center rounded-2xl hover:shadow-lg transition duration-200 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]"
+            >
+              <Link href={`/story/${slug}`}>{button}</Link>
+            </Button>
           </div>
         </article>
       </li>
@@ -163,13 +169,11 @@ export function Carousel({ slides }: CarouselProps) {
 
   const handlePreviousClick = () => {
     const previous = current - 1;
-
     setCurrent(previous < 0 ? slides.length - 1 : previous);
   };
 
   const handleNextClick = () => {
     const next = current + 1;
-
     setCurrent(next === slides.length ? 0 : next);
   };
 
@@ -180,6 +184,15 @@ export function Carousel({ slides }: CarouselProps) {
   };
 
   const id = useId();
+
+  // AUTOPLAY EFFECT
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % slides.length);
+    }, 5000);
+
+    return () => clearInterval(interval); // cleanup saat unmount
+  }, [slides.length]);
 
   return (
     <div
@@ -209,7 +222,6 @@ export function Carousel({ slides }: CarouselProps) {
           title="Go to previous slide"
           handleClick={handlePreviousClick}
         />
-
         <CarouselControl
           type="next"
           title="Go to next slide"

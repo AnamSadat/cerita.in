@@ -5,7 +5,7 @@ import { InfiniteMovingCards } from '@/components/ui/infinite-moving-cards';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { CarouselDemo } from '@/components/view/home/LatestStory';
-import { StickyScrollRevealDemo } from '@/components/view/home/StickyScrollRevealDemo';
+// import { StickyScrollRevealDemo } from '@/components/view/home/StickyScrollRevealDemo';
 
 export default function User() {
   const words = ['kisah', 'hidup', 'diri', 'takdir', 'cinta'];
@@ -13,32 +13,33 @@ export default function User() {
   const testimonials = [
     {
       quote:
-        'It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair.',
-      name: 'Charles Dickens',
-      title: 'A Tale of Two Cities',
+        'Cerita.in benar-benar tempat terbaik untuk menemukan kisah-kisah inspiratif dan penuh makna yang membuat saya selalu ingin kembali membaca.',
+      name: 'Rina Sari',
+      title: 'Pembaca Setia Cerita.in',
     },
     {
       quote:
-        'To be, or not to be, that is the question: Whether tis nobler in the mind to suffer The slings and arrows of outrageous fortune, Or to take Arms against a Sea of troubles, And by opposing end them: to die, to sleep.',
-      name: 'William Shakespeare',
-      title: 'Hamlet',
-    },
-    {
-      quote: 'All that we see or seem is but a dream within a dream.',
-      name: 'Edgar Allan Poe',
-      title: 'A Dream Within a Dream',
+        'Platform ini memudahkan saya membagikan pengalaman pribadi saya dalam bentuk cerita yang mudah diakses dan diapresiasi banyak orang.',
+      name: 'Andi Pratama',
+      title: 'Penulis Cerita',
     },
     {
       quote:
-        'It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.',
-      name: 'Jane Austen',
-      title: 'Pride and Prejudice',
+        'Dengan Cerita.in, saya menemukan komunitas pembaca dan penulis yang suportif dan penuh semangat untuk berkarya.',
+      name: 'Dewi Lestari',
+      title: 'Pengguna Aktif Cerita.in',
     },
     {
       quote:
-        'Call me Ishmael. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world.',
-      name: 'Herman Melville',
-      title: 'Moby-Dick',
+        'Cerita yang saya baca di sini memberikan wawasan baru dan seringkali menyentuh hati, membuat hari saya lebih berwarna.',
+      name: 'Budi Santoso',
+      title: 'Penggemar Cerita Inspiratif',
+    },
+    {
+      quote:
+        'Antarmuka yang sederhana dan mudah digunakan membuat saya betah berlama-lama menjelajahi berbagai cerita di Cerita.in.',
+      name: 'Maya Putri',
+      title: 'Pengguna Baru',
     },
   ];
 
@@ -89,11 +90,11 @@ export default function User() {
       </div>
 
       {/* Sticky scroll */}
-      <div className="w-full mx-auto">
+      {/* <div className="w-full mx-auto">
         <div className="h-full">
           <StickyScrollRevealDemo />
         </div>
-      </div>
+      </div> */}
 
       {/* Call Action */}
       <div className=" mx-auto container py-20 px-4 bg-gradient-to-r from-purple-700 via-indigo-800 to-black text-white text-center overflow-hidden rounded-2xl mt-10 mb-10">

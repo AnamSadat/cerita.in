@@ -32,7 +32,7 @@ import { fetchStory } from '@/lib/features/storySlice';
 import { deleteBookmark, updateBookmark } from '@/lib/features/bookmarkSlice';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { Skeleton } from '@/components/ui/skeleton';
+import { LoaderOne } from '@/components/ui/loader';
 
 export default function BookmarkPage() {
   const { data: session } = useSession();
@@ -41,6 +41,8 @@ export default function BookmarkPage() {
   const { items, loading, error } = useAppSelector(
     (state: RootState) => state.story
   );
+
+  const [isLoading, setIsLoading] = useState(false);
 
   // Untuk simpan notes sementara
   const [notesMap, setNotesMap] = useState<Record<number, string>>({});
@@ -99,13 +101,8 @@ export default function BookmarkPage() {
         <span className="text-md text-gray-400 mb-6">
           Total {bookmarkedStories.length} cerita
         </span>
-        <div className="max-w-4xl mx-auto mt-10">
-          {Array.from({ length: 2 }).map((_, index) => (
-            <Skeleton
-              key={index}
-              className="w-full h-27 rounded-xl mt-5 bg-slate-200"
-            />
-          ))}
+        <div className="flex items-center justify-center mt-20">
+          <LoaderOne />
         </div>
       </div>
     );
@@ -199,7 +196,11 @@ export default function BookmarkPage() {
                           </DialogClose>
                           <Button
                             onClick={() => {
-                              if (!bookmark) return;
+                              setIsLoading(true);
+                              if (!bookmark) {
+                                setIsLoading(false);
+                                return;
+                              }
                               const updatedNote = notesMap[bookmark.id] ?? '';
                               dispatch(
                                 updateBookmark({
@@ -209,15 +210,42 @@ export default function BookmarkPage() {
                               )
                                 .unwrap()
                                 .then(() => {
-                                  toast.success('Catatan diperbarui');
+                                  setIsLoading(false);
                                   dispatch(fetchStory());
+                                  toast.success('Catatan diperbarui');
                                 })
                                 .catch(() =>
                                   toast.error('Gagal update catatan')
                                 );
                             }}
                           >
-                            Simpan
+                            {isLoading ? (
+                              <div className="flex items-center justify-center gap-2">
+                                <svg
+                                  className="w-4 h-4 animate-spin text-white"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <circle
+                                    className="opacity-25"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    strokeWidth="4"
+                                  ></circle>
+                                  <path
+                                    className="opacity-75"
+                                    fill="currentColor"
+                                    d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"
+                                  ></path>
+                                </svg>
+                                Loading...
+                              </div>
+                            ) : (
+                              'Simpan'
+                            )}
                           </Button>
                         </DialogFooter>
                       </DialogContent>

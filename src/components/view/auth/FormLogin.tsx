@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import toast from 'react-hot-toast';
 
@@ -23,9 +23,6 @@ export default function FormLogin() {
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const callbackUrl = searchParams.get('callbackUrl') || '/';
 
   const form = useForm<formSchemaLogin>({
     resolver: zodResolver(loginSchema),
@@ -43,7 +40,6 @@ export default function FormLogin() {
       redirect: false,
       email: data.email,
       password: data.password,
-      callbackUrl,
     });
 
     console.log('Login response:', result);
@@ -51,7 +47,7 @@ export default function FormLogin() {
 
     if (result?.ok) {
       toast.success('Success to login!');
-      router.push(callbackUrl);
+      router.push('/');
     } else {
       setIsLoading(false);
       setErrorMessage('Email atau passowrd salah');

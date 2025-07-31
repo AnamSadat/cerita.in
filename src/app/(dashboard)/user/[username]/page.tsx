@@ -1,0 +1,242 @@
+'use client';
+
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { toast } from 'react-hot-toast';
+import {
+  getProfileByUsername,
+  postProfile,
+  putProfile,
+} from '@/lib/prisma/apiPrisma';
+import type {
+  ProfileType,
+  profileSchemaInput,
+  profileUpdateSchemaInput,
+} from '@/types/profile';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+
+export default function ProfilePage() {
+  const { data: session } = useSession();
+  const username = session?.user?.username;
+  const [profile, setProfile] = useState<ProfileType | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const [fullName, setFullName] = useState<string>('');
+  const [bio, setBio] = useState<string>('');
+
+  const [avatarUrl, setAvatarUrl] = useState('');
+  const [gender, setGender] = useState<'Male' | 'Female' | 'Other'>('Male');
+
+  // Fetch profile saat halaman dimuat
+  useEffect(() => {
+    if (!username) return;
+
+    getProfileByUsername(username)
+      .then((data) => {
+        console.log('✅ PROFILE FROM API', data);
+        // const data = res.data;
+        setProfile(data);
+        setFullName(data.name ?? '');
+        setBio(data.bio ?? '');
+        setAvatarUrl(data.avatar_url ?? '');
+        setGender(
+          ['Male', 'Female', 'Other'].includes(data.gender)
+            ? (data.gender as 'Male' | 'Female' | 'Other')
+            : 'Male'
+        );
+      })
+      .catch((err) => {
+        // Cek apakah memang error karena profile belum dibuat
+        if (err.message?.toLowerCase().includes('not found')) {
+          setProfile(null);
+        } else {
+          toast.error('Gagal memuat profil');
+          console.error(err);
+        }
+      })
+      .finally(() => setLoading(false));
+  }, [username]);
+
+  const handleSave = async () => {
+    const payload: profileSchemaInput | profileUpdateSchemaInput = {
+      name: fullName,
+      bio: bio,
+      avatar_url: avatarUrl,
+      gender: gender,
+    };
+
+    console.log('ini profil di handlesave: ', profile);
+    console.log('ini username di handlesave: ', username);
+    console.log('ini session.user.email di handlesave: ', session?.user.email);
+    console.log('ini session.user.id di handlesave: ', session?.user.id);
+    console.log(
+      'ini session.user.username di handlesave: ',
+      session?.user.username
+    );
+
+    try {
+      if (profile && profile.userId === Number(session?.user?.id)) {
+        await putProfile(payload);
+        console.log('Profil berhasil diperbarui');
+        toast.success('Profil berhasil diperbarui');
+      } else {
+        await postProfile(payload as profileSchemaInput);
+        console.log('Profil berhasil dibuat');
+        toast.success('Profil berhasil dibuat');
+      }
+
+      if (username) {
+        const updated = await getProfileByUsername(username);
+        setProfile(updated);
+      }
+    } catch (error: unknown) {
+      const err = error as Error;
+      toast.error(err.message || 'Gagal menyimpan profil');
+    }
+  };
+
+  if (loading) return <p className="text-center text-gray-400">Memuat...</p>;
+
+  return (
+    <div className="max-w-3xl mx-auto mt-24 px-4">
+      {/* Header */}
+      <div className="flex items-center gap-6 mb-6">
+        <div className="relative w-28 h-28 rounded-full overflow-hidden border-2 border-border">
+          <Image
+            src={profile?.avatar_url ?? session?.user?.image ?? '/luffy.jpg'}
+            alt="Avatar"
+            fill
+            className="object-cover"
+          />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold">@{username}</h1>
+          <p className="text-muted-foreground">{profile?.gender ?? '-'}</p>
+        </div>
+      </div>
+
+      {/* Bio */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold mb-2">Bio</h2>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm">
+                Edit Profil
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="bg-neutral-900 border-0">
+              <DialogHeader>
+                <DialogTitle>Edit Profil</DialogTitle>
+                <DialogDescription>
+                  Perbarui semua informasi profil kamu.
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="space-y-3 mt-2">
+                {/* Nama */}
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-white">
+                    Nama Lengkap
+                  </label>
+                  <Input
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                  />
+                </div>
+
+                {/* Bio */}
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-white">
+                    Bio
+                  </label>
+                  <Textarea
+                    rows={4}
+                    value={bio}
+                    onChange={(e) => setBio(e.target.value)}
+                  />
+                </div>
+
+                {/* Gender */}
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-white">
+                    Jenis Kelamin
+                  </label>
+                  <Select
+                    value={gender}
+                    onValueChange={(value) =>
+                      setGender(value as 'Male' | 'Female' | 'Other')
+                    }
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Pilih jenis kelamin" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Jenis Kelamin</SelectLabel>
+                        <SelectItem value="Male">Laki-laki</SelectItem>
+                        <SelectItem value="Female">Perempuan</SelectItem>
+                        <SelectItem value="Other">Lainnya</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <DialogFooter className="mt-4">
+                <DialogClose asChild>
+                  <Button variant="outline">Batal</Button>
+                </DialogClose>
+                <Button onClick={handleSave}>Simpan</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+
+        <p className="text-muted-foreground whitespace-pre-line">
+          {profile?.bio || 'Belum ada bio.'}
+        </p>
+      </div>
+
+      {/* Info Lainnya */}
+      <div>
+        <h2 className="text-lg font-semibold mb-2">Informasi Tambahan</h2>
+        <ul className="text-muted-foreground list-disc list-inside space-y-1">
+          <li>Nama Lengkap: {profile?.name ?? '-'}</li>
+          <li>Email: {session?.user?.email ?? '-'}</li>
+          <li>
+            Bergabung sejak:{' '}
+            {profile?.created_at
+              ? new Date(profile.created_at).toLocaleDateString('id-ID', {
+                  year: 'numeric',
+                  month: 'long',
+                })
+              : '-'}
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
+}

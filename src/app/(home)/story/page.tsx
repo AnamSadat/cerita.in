@@ -81,7 +81,7 @@ export default function Story() {
               <SelectContent></SelectContent>
             </Select>
           </div>
-          <div>
+          <div className="flex flex-col">
             <StoryList />
           </div>
         </div>

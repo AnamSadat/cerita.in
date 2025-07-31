@@ -1,8 +1,16 @@
 import axios from 'axios';
 
+const BASE_URL = process.env.NEXT_PUBLIC_STORY_API;
+
+if (!BASE_URL) {
+  throw new Error(
+    '❌ NEXT_PUBLIC_STORY_API environment variable is not defined'
+  );
+}
+
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_STORY_API,
-  timeout: 5000,
+  baseURL: BASE_URL,
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
   },

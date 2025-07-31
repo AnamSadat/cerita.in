@@ -10,5 +10,5 @@ export default withAuth({
 });
 
 export const config = {
-  matcher: ['/add-story'],
+  matcher: ['/add-story', '/user/:path*'],
 };

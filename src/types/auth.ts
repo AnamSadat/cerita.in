@@ -23,7 +23,7 @@ export const loginSchema = z.object({
 // Types Register
 export const registerSchema = z
   .object({
-    name: z.string(),
+    username: z.string(),
     email: z.string().email({ message: 'Email tidak valid' }),
     password: z
       .string()
@@ -48,7 +48,7 @@ export const registerSchema = z
   });
 
 export type PostRegisterType = {
-  name: string;
+  username: string;
   email: string;
   password: string;
 };

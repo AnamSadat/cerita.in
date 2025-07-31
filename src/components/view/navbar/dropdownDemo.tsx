@@ -1,3 +1,5 @@
+'use client';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,10 +20,13 @@ import { signOut } from 'next-auth/react';
 
 import Image from 'next/image';
 import type { DropDownDemoProps } from '@/types/navbar';
-import { toast } from 'sonner';
-import { Info } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 export function DropdownMenuDemo({ session }: DropDownDemoProps) {
+  const router = useRouter();
+  const username = session?.user?.username;
+  // console.log('🚀 ~ DropdownMenuDemo ~ username:', username);
   if (!session) return <button>Login</button>;
 
   return (
@@ -46,8 +51,8 @@ export function DropdownMenuDemo({ session }: DropDownDemoProps) {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="start">
         <DropdownMenuLabel className="text-md">My Account</DropdownMenuLabel>
-        <DropdownMenuLabel>Nama</DropdownMenuLabel>
-        <DropdownMenuItem disabled>{session.user.name}</DropdownMenuItem>
+        <DropdownMenuLabel>Username</DropdownMenuLabel>
+        <DropdownMenuItem disabled>{session.user.username}</DropdownMenuItem>
         <DropdownMenuLabel>Email</DropdownMenuLabel>
         <DropdownMenuItem disabled>{session.user.email}</DropdownMenuItem>
         <DropdownMenuSeparator />
@@ -55,10 +60,11 @@ export function DropdownMenuDemo({ session }: DropDownDemoProps) {
           <DropdownMenuItem
             className="cursor-pointer"
             onClick={() => {
-              toast('Masih dalam tahap development', {
-                icon: <Info className="text-blue-500" />,
-                className: 'justify-center',
-              });
+              if (username) {
+                router.push(`/user/${username}`);
+              } else {
+                toast.error('Username not found');
+              }
             }}
           >
             Profile

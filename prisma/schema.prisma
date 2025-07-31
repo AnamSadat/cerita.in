@@ -16,11 +16,11 @@ datasource db {
 
 model User {
   id                  Int       @id @default(autoincrement())
-  name                String
+  username            String    @unique
   email               String    @unique
   password            String
   created_at          DateTime  @default(now())
-  update_at           DateTime  @updatedAt
+  updated_at          DateTime  @updatedAt
 
   profile             Profile?       
   stories             Stories[]   
@@ -31,12 +31,12 @@ model User {
 model Profile {
   id                  Int       @id @default(autoincrement())
   userId              Int       @unique
-  username            String     
+  name                String
   bio                 String
-  avatar_url          String
+  avatar_url          String?
   gender              String
   created_at          DateTime  @default(now())
-  updated_at           DateTime  @updatedAt
+  updated_at          DateTime  @updatedAt
   
   user                User      @relation(fields: [userId], references: [id])
 }
@@ -45,13 +45,13 @@ model Stories {
   id                  Int       @id @default(autoincrement())
   user_id             Int
   title               String
-  slug                String 
+  slug                String    @unique
   content             String
   short_description   String
   img_url             String
   category_id         Int
   created_at          DateTime  @default(now())
-  updated_at           DateTime  @updatedAt
+  updated_at          DateTime  @updatedAt
 
   user                User      @relation(fields: [user_id], references: [id])
   likes               Likes[]  
@@ -77,14 +77,19 @@ model Likes {
 
   user                User      @relation(fields: [user_id], references: [id])
   story               Stories   @relation(fields: [story_id], references: [id])
+
+  @@unique([user_id, story_id], name: "user_story_unique")
 }
 
 model Bookmark {
   id                  Int       @id @default(autoincrement())
   story_id            Int
   user_id             Int
+  notes               String?
   created_at          DateTime  @default(now())
 
   user                User      @relation(fields: [user_id], references: [id])
   story               Stories   @relation(fields: [story_id], references: [id])
+
+  @@unique([user_id, story_id], name: "user_story_unique")
 }

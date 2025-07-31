@@ -103,11 +103,79 @@ https://storage.googleapis.com/ceritain-images/namafile.jpg
 5. Klik tab **Keys**, lalu klik **Add Key > JSON**
 6. Simpan file `key.json` ke root project
 
-#### ⚠️ **JANGAN** lupa manambahkan `key.json` ke `.gitignore`!
+#### ⚠️ **JANGAN** lupa manambahkan `key.json` ke `.gitignore`
 
 ```bash
 # .gitignore
 key.json
+```
+
+### 5. Konfigurasi Credential Google Cloud Storage via `.env` untuk **Production**
+
+#### 1. Ubah `key.json` jadi 1 line (JSON string)
+
+Di terminal, jalankan perintah:
+
+```bash
+node -e "console.log(JSON.stringify(require('./key.json')))"
+# atau
+pnpm parse:keyjson
+```
+
+Contoh outputnya:
+
+```bash
+{"type":"service_account","project_id":"your-project-id","private_key_id":"xxx","private_key":"-----BEGIN PRIVATE KEY-----\\nabc\\n-----END PRIVATE KEY-----\\n", ...}
+```
+
+Lalu copy output-nya.
+
+#### 2. Tambahkan ke file `.env`
+
+```env
+GOOGLE_CLOUD_KEY={"type":"service_account", ...}
+```
+
+> ⚠️ Pastikan bagian `private_key` menggunakan \\\n (dua backslash), bukan newline beneran.
+
+#### 3. Konfigurasi `Code`
+
+Ubah inisialisasi Google Cloud Storage dari `key.json` ke `.env`
+
+**Sebelumnya:** Menggunakan `key.json` (kurang aman untuk production)
+
+```ts
+// src/lib/gcsUploader.ts
+
+const keyPath = path.join(process.cwd(), 'key.json');
+
+if (!fs.existsSync(keyPath)) {
+  throw new Error(
+    '❌ key.json is missing. Please provide the service account key file.'
+  );
+}
+
+const storage = new Storage({
+  keyFilename: keyPath,
+});
+```
+
+**Sekarang:** Menggunakan `.env` (rekomendasi untuk production)
+
+```ts
+// src/lib/gcsUploader.ts
+
+const serviceAccount = process.env.GOOGLE_CLOUD_KEY;
+
+if (!serviceAccount) {
+  throw new Error(
+    '❌ GOOGLE_CLOUD_KEY is missing. Please set the service account key in your environment variables.'
+  );
+}
+
+const storage = new Storage({
+  credentials: JSON.parse(serviceAccount),
+});
 ```
 
 ### ▶️ Running Application

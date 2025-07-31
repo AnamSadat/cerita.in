@@ -1,27 +1,33 @@
-import { Category, formSchemaStoryInput, PostStoryType } from '@/types/story';
+import {
+  Bookmark,
+  BookmarkResponse,
+  Category,
+  formSchemaStoryInput,
+  PostStoryType,
+  StoryFromDB,
+} from '@/types/story';
 import axiosInstance from '../axios';
 import { AxiosError, AxiosRequestConfig } from 'axios';
 import { getSession } from 'next-auth/react';
 import { formSchemaRegister, PostRegisterType } from '@/types/auth';
-
-const BASE_URL = process.env.NEXT_PUBLIC_STORY_API;
+import { Like } from '@/types/slice';
+import {
+  profileSchemaInput,
+  profileUpdateSchemaInput,
+  UserWithProfile,
+} from '@/types/profile';
 
 const ENDPOINTS = {
-  STORY: `${BASE_URL}/story`,
-  STORY_DETAIL: (id: number) => `${BASE_URL}/story/${id}`,
-  CATEGORY: `${BASE_URL}/category`,
-  ADD_STORY: `${BASE_URL}/add-story`,
-  PROFILE: `${BASE_URL}/profile`,
-  LIKE: `${BASE_URL}/like`,
-  BOOKMARK: `${BASE_URL}/bookmark`,
-  REGISTER: `${BASE_URL}/auth/signup`,
+  STORY: '/story',
+  STORY_DETAIL: (slug: string) => `/story/${slug}`,
+  CATEGORY: '/category',
+  ADD_STORY: '/add-story',
+  PROFILE: '/profile',
+  LIKE: '/like',
+  BOOKMARK: '/bookmark',
+  REGISTER: '/auth/signup',
+  USER: '/account',
 };
-
-if (!BASE_URL) {
-  throw new Error(
-    '❌ NEXT_PUBLIC_STORY_API environment variable is not defined'
-  );
-}
 
 export async function apiAxios<T>(
   url: string,
@@ -67,14 +73,36 @@ export async function postUser(params: PostRegisterType) {
 
 export async function getStory() {
   try {
-    const response = await apiAxios<formSchemaStoryInput[]>(ENDPOINTS.STORY);
+    const response = await apiAxios<{ status: number; data: StoryFromDB[] }>(
+      ENDPOINTS.STORY
+    );
 
-    return response;
+    console.log('📦 Full response:', response);
+
+    console.log('📦 response.data:', response.data); // ✅ ini bener
+
+    return response.data;
   } catch (error) {
-    const err = error as AxiosError<{ message?: string }>;
-    const message = err?.response?.data?.message || 'Internal server error';
+    // const err = error as AxiosError<{ message?: string }>;
+    // const message = err?.response?.data?.message || 'Internal server error';
+    console.error('❌ getStory error:', error);
+    // throw new Error(message);
+    throw error;
+  }
+}
 
-    throw new Error(message);
+export async function getStoryBySlug(slug: string) {
+  try {
+    const response = await apiAxios<{ status: number; data: StoryFromDB }>(
+      `${ENDPOINTS.STORY}/${slug}`
+    );
+
+    console.log('📦 response detail by slug:', response.data);
+
+    return response.data;
+  } catch (error) {
+    console.error('❌ getStoryBySlug error:', error);
+    throw error;
   }
 }
 
@@ -100,8 +128,12 @@ export async function postStory(params: PostStoryType) {
     formData.append('sortDescription', params.sortDescription);
 
     const session = await getSession();
+    console.log('🚀 ~ postStory ~ session:', session);
 
-    const response = await apiAxios<formSchemaStoryInput>(ENDPOINTS.ADD_STORY, {
+    const response = await apiAxios<{
+      status: number;
+      data: formSchemaStoryInput;
+    }>(ENDPOINTS.ADD_STORY, {
       method: 'POST',
       data: formData,
       headers: {
@@ -110,10 +142,164 @@ export async function postStory(params: PostStoryType) {
       },
     });
 
-    return response;
+    if (response.status !== 200)
+      throw new Error('❌ Gagal menambahkan story, error di apiPrisma.ts');
+
+    return response.data;
   } catch (error) {
     const err = error as AxiosError<{ message?: string }>;
     const message = err?.response?.data?.message || 'Failed to add story';
     throw new Error(message);
   }
 }
+
+export async function postLike(story_id: number) {
+  const session = await getSession();
+  console.log('🚀 ~ postLike ~ session:', session);
+
+  return await apiAxios<{ message: string; data: Like }>(ENDPOINTS.LIKE, {
+    method: 'POST',
+    data: { story_id },
+    headers: {
+      Authorization: `Bearer ${session?.user?.token}`,
+    },
+  });
+}
+
+export async function deleteLike(likeId: number) {
+  return await apiAxios<{ status: number; message: string }>(
+    `${ENDPOINTS.LIKE}/${likeId}`,
+    {
+      method: 'DELETE',
+    }
+  );
+}
+
+export async function postBookmark(
+  story_id: number,
+  notes?: string
+): Promise<BookmarkResponse> {
+  const session = await getSession();
+  console.log('🚀 ~ postBookmark ~ session:', session);
+
+  const response = await apiAxios<BookmarkResponse>(ENDPOINTS.BOOKMARK, {
+    method: 'POST',
+    data: { story_id, notes },
+    headers: {
+      Authorization: `Bearer ${session?.user?.token}`,
+    },
+  });
+
+  return response;
+}
+
+export async function deleteBookmark(id: number) {
+  const session = await getSession();
+  console.log('🚀 ~ deleteBookmark ~ session:', session);
+
+  return await apiAxios<{ message: string }>(ENDPOINTS.BOOKMARK, {
+    method: 'DELETE',
+    data: JSON.stringify({ id }),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${session?.user?.token}`,
+    },
+  });
+}
+
+export async function getBookmark<BookmarkResponse>() {
+  const session = await getSession();
+  console.log('🚀 ~ getBookmark ~ session:', session);
+
+  return await apiAxios<BookmarkResponse>(ENDPOINTS.BOOKMARK, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${session?.user?.token}`,
+    },
+  });
+}
+
+export async function updateBookmark(
+  id: number,
+  notes: string
+): Promise<{ data: { data: Bookmark } }> {
+  const session = await getSession();
+  console.log('🚀 ~ updateBookmark ~ session:', session);
+
+  return await apiAxios(ENDPOINTS.BOOKMARK, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${session?.user?.token}`,
+    },
+    data: {
+      id,
+      notes,
+    },
+  });
+}
+
+export const getProfileByUsername = async (username: string) => {
+  const session = await getSession();
+
+  const res = await apiAxios<{ status: number; data: UserWithProfile }>(
+    `${ENDPOINTS.PROFILE}/${username}`,
+    {
+      headers: {
+        Authorization: `Bearer ${session?.user?.token}`,
+      },
+    }
+  );
+  console.log('✅ RESPONSE:', res);
+
+  return res.data.profile;
+};
+
+export const postProfile = async (data: profileSchemaInput) => {
+  const session = await getSession();
+  console.log('🚀 ~ createProfile ~ session:', session);
+  const username = session?.user?.username;
+  console.log('🚀 ~ postProfile ~ username:', username);
+
+  return await apiAxios(`${ENDPOINTS.PROFILE}/${username}`, {
+    method: 'POST',
+    data,
+    headers: {
+      Authorization: `Bearer ${session?.user?.token}`,
+    },
+  });
+};
+
+export const putProfile = async (data: profileUpdateSchemaInput) => {
+  const session = await getSession();
+  console.log('🚀 ~ updateProfile ~ session:', session);
+  const username = session?.user?.username;
+  console.log('🚀 ~ putProfile ~ username:', username);
+
+  return await apiAxios(`${ENDPOINTS.PROFILE}/${username}`, {
+    method: 'PUT',
+    data,
+    headers: {
+      Authorization: `Bearer ${session?.user?.token}`,
+    },
+  });
+};
+
+export const putUser = async (payload: {
+  username: string;
+  email: string;
+  password?: string;
+}) => {
+  const session = await getSession();
+  return await apiAxios<{ status: number; data: PostRegisterType }>(
+    ENDPOINTS.USER,
+    {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${session?.user?.token}`,
+      },
+      data: payload,
+    }
+  );
+};

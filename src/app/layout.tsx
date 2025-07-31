@@ -1,9 +1,8 @@
-// app/layout.tsx
 import type { Metadata } from 'next';
 import './globals.css';
 import NextAuthSession from './NextSession';
-import Script from 'next/script';
-import { Toaster } from 'sonner';
+import { Toaster } from 'react-hot-toast';
+import StoreProvider from '@/components/Providers';
 
 export const metadata: Metadata = {
   title: 'Cerita.in',
@@ -22,16 +21,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <Script
-          src="https://kit.fontawesome.com/a076d05399.js"
-          crossOrigin="anonymous"
-        />
-      </head>
-      <body className="antialiased min-h-screen">
-        <Toaster position="top-center" richColors />
-        <NextAuthSession>{children}</NextAuthSession>
-      </body>
+      <StoreProvider>
+        <body className="antialiased min-h-screen">
+          <Toaster position="top-center" reverseOrder={false} />
+          <NextAuthSession>{children}</NextAuthSession>
+        </body>
+      </StoreProvider>
     </html>
   );
 }

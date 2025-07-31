@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { postUser } from '@/lib/prisma/apiPrisma';
 import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
+import toast from 'react-hot-toast';
 
 export default function FormRegister() {
   const [errorMessage, setErrorMessage] = useState('');
@@ -26,7 +26,7 @@ export default function FormRegister() {
   const form = useForm<formSchemaRegister>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      name: '',
+      username: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -40,12 +40,13 @@ export default function FormRegister() {
     console.log('Login submitted:', data);
 
     if (data.password !== data.confirmPassword) {
+      setIsLoading(false);
       setErrorMessage('Password tidak cocok');
       return;
     }
 
     const result = await postUser({
-      name: data.name,
+      username: data.username,
       email: data.email,
       password: data.password,
     });
@@ -68,10 +69,10 @@ export default function FormRegister() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
-            name="name"
+            name="username"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>Username</FormLabel>
                 <FormControl>
                   <Input type="name" placeholder="Jhon Doe" {...field} />
                 </FormControl>

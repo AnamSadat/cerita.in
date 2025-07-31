@@ -26,10 +26,18 @@ export const authOptions: NextAuthOptions = {
           where: {
             email,
           },
+          include: {
+            profile: true,
+          },
         });
 
         if (!user) throw new Error('No user found');
         if (!user.password) throw new Error('No password set for user');
+        // if (!user?.profile?.username) {
+        //   throw new Error('Username is missing in profile');
+        // }
+
+        const name = user.profile?.name || '';
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
@@ -39,9 +47,10 @@ export const authOptions: NextAuthOptions = {
 
         return {
           id: String(user.id),
-          name: user.name,
+          username: user.username,
           email: user.email,
           token,
+          name,
         };
       },
     }),
@@ -63,11 +72,16 @@ export const authOptions: NextAuthOptions = {
         session.user.token = token.token as string;
       }
 
+      if (session.user && token.username) {
+        session.user.username = token.username;
+      }
+
       return session;
     },
     async jwt({ token, user }) {
       if (user && typeof user.token === 'string') {
         token.token = user.token;
+        token.username = user.username ?? null;
       }
       console.log('🧠 JWT CALLBACK');
       console.log('token:', token.token);

@@ -100,6 +100,21 @@ export type BookmarkResponse = {
   };
 };
 
+export type Bookmark = {
+  id: number;
+  story_id: number;
+  user_id: number;
+  story: {
+    id: number;
+    title: string;
+    slug: string;
+    short_description: string;
+    user: {
+      username: string;
+    };
+  };
+};
+
 export type bookmarkSchemaInput = z.infer<typeof bookmarkSchema>;
 export type formBookmark = { id: number } & bookmarkSchemaInput;
 

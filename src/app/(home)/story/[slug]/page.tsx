@@ -30,6 +30,7 @@ import { useSession } from 'next-auth/react';
 
 export default function StoryDetailPage() {
   const { data: session } = useSession();
+  console.log('🚀 ~ StoryDetailPage ~ session:', session);
   const userId = session?.user?.id;
 
   const { slug } = useParams();

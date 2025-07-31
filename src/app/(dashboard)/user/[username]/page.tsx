@@ -1,15 +1,17 @@
 'use client';
 
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 
 export default function ProfilePage() {
+  const session = useSession();
   return (
     <div className="max-w-3xl mx-auto mt-24 px-4">
       {/* Header */}
       <div className="flex items-center gap-6 mb-6">
         <div className="relative w-28 h-28 rounded-full overflow-hidden border-2 border-border">
           <Image
-            src="/avatar-placeholder.png" // pastikan file ada di public/
+            src={session.data?.user.image ?? '/luffy.jpg'}
             alt="Avatar"
             fill
             className="object-cover"

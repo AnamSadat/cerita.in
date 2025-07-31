@@ -1,6 +1,6 @@
 'use client';
 
-import { Bookmark, BookmarkCheck } from 'lucide-react';
+import { Bookmark, BookmarkCheck, Info } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '@/lib/hook';
 import {
   fetchBookmark,
@@ -23,6 +23,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import toast from 'react-hot-toast';
 import { BookmarkResponse } from '@/types/story';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   storyId: number;
@@ -34,6 +36,8 @@ type BookmarkForm = {
 };
 
 export function BookmarkButton({ storyId, initialBookmarkId }: Props) {
+  const { data: session } = useSession();
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.bookmark);
   const [bookmarkId, setBookmarkId] = useState<number | null>(
@@ -53,6 +57,13 @@ export function BookmarkButton({ storyId, initialBookmarkId }: Props) {
   console.log('🚀 ~ BookmarkButton ~ isBookmarked:', isBookmarked);
 
   const handleToggle = () => {
+    if (!session) {
+      toast('Silakan login terlebih dahulu', {
+        icon: <Info className="text-blue-500" />,
+      });
+      router.push('/login');
+      return;
+    }
     if (isBookmarked) {
       dispatch(deleteBookmark(bookmarkId))
         .unwrap()

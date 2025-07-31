@@ -1,4 +1,5 @@
 import {
+  Bookmark,
   BookmarkResponse,
   Category,
   formSchemaStoryInput,
@@ -189,6 +190,36 @@ export async function deleteBookmark(id: number) {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${session?.user?.token}`,
+    },
+  });
+}
+
+export async function getBookmark<BookmarkResponse>() {
+  const session = await getSession();
+  return await apiAxios<BookmarkResponse>(ENDPOINTS.BOOKMARK, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${session?.user?.token}`,
+    },
+  });
+}
+
+export async function updateBookmark(
+  id: number,
+  notes: string
+): Promise<{ data: { data: Bookmark } }> {
+  const session = await getSession();
+
+  return await apiAxios(ENDPOINTS.BOOKMARK, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${session?.user?.token}`,
+    },
+    data: {
+      id,
+      notes,
     },
   });
 }

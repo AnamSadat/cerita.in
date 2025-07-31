@@ -4,9 +4,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { User, Heart, Bookmark, Settings } from 'lucide-react';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
+import toast from 'react-hot-toast';
 
 export function DashboardSidebar() {
   const pathname = usePathname();
@@ -21,7 +22,7 @@ export function DashboardSidebar() {
   ];
 
   return (
-    <aside className="w-full max-w-[240px] bg-neutral-800/90  min-h-screen p-4 text-white flex flex-col justify-between">
+    <aside className="w-full max-w-[285px] bg-neutral-800/90  min-h-screen p-4 text-white flex flex-col justify-between">
       <div>
         <Link href={'/'}>
           <Image
@@ -50,11 +51,13 @@ export function DashboardSidebar() {
                 <Icon
                   size={18}
                   className={cn(
-                    'transition-colors',
+                    'transition-colors ',
                     isActive
                       ? 'text-black'
                       : 'text-white group-hover:text-black'
                   )}
+                  fill={isActive ? 'black' : 'none'}
+                  stroke={isActive ? 'black' : 'white'}
                 />
                 <span>{label}</span>
               </Link>
@@ -64,7 +67,15 @@ export function DashboardSidebar() {
       </div>
 
       <div className="mt-10">
-        <Button className="w-full bg-muted/70 hover:bg-muted/50 font-semibold cursor-pointer text-black">
+        <Button
+          className="w-full bg-muted/70 hover:bg-muted/50 font-semibold cursor-pointer text-black"
+          onClick={async () => {
+            toast.success('Success to logout');
+            setTimeout(() => {
+              signOut();
+            }, 2000);
+          }}
+        >
           Logout
         </Button>
       </div>

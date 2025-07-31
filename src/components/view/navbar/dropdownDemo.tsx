@@ -51,8 +51,8 @@ export function DropdownMenuDemo({ session }: DropDownDemoProps) {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="start">
         <DropdownMenuLabel className="text-md">My Account</DropdownMenuLabel>
-        <DropdownMenuLabel>Nama</DropdownMenuLabel>
-        <DropdownMenuItem disabled>{session.user.name}</DropdownMenuItem>
+        <DropdownMenuLabel>Username</DropdownMenuLabel>
+        <DropdownMenuItem disabled>{session.user.username}</DropdownMenuItem>
         <DropdownMenuLabel>Email</DropdownMenuLabel>
         <DropdownMenuItem disabled>{session.user.email}</DropdownMenuItem>
         <DropdownMenuSeparator />

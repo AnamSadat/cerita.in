@@ -7,6 +7,14 @@ export async function GET(
 ) {
   try {
     const { slug } = await params;
+
+    if (!slug) {
+      return NextResponse.json(
+        { status: 400, message: 'Slug is required' },
+        { status: 400 }
+      );
+    }
+
     const storyDetail = await Prisma.stories.findUnique({
       where: {
         slug,

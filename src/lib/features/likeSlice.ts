@@ -5,13 +5,13 @@ import { postLike, deleteLike } from '../prisma/apiPrisma';
 import { Like, LikeState } from '@/types/slice';
 
 export const fetchLike = createAsyncThunk<
-  Like, // returnType diubah dari `string` ke `Like`
-  number, // argument type, story_id
+  Like,
+  number,
   { rejectValue: string }
 >('likes/fetchLike', async (story_id, thunkAPI) => {
   try {
     const response = await postLike(story_id);
-    return response.data; // ⬅️ Ambil data dari response
+    return response.data;
   } catch (error) {
     const axiosError = error as AxiosError<{ message?: string }>;
     const msg = axiosError.response?.data?.message ?? 'Gagal toggle like';

@@ -26,4 +26,5 @@ export type BookmarkSliceState = {
   loading: boolean;
   success: boolean;
   error: string | null;
+  bookmarks: [];
 };

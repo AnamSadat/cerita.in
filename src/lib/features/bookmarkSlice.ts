@@ -1,10 +1,17 @@
 'use client';
 
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { postBookmark } from '../prisma/apiPrisma';
+import {
+  getBookmark as getBookmarkApi,
+  postBookmark,
+} from '../prisma/apiPrisma';
 import { BookmarkSliceState } from '@/types/slice';
-import { deleteBookmark as deleteBookmarkApi } from '../prisma/apiPrisma';
-import { BookmarkResponse } from '@/types/story';
+import {
+  deleteBookmark as deleteBookmarkApi,
+  updateBookmark as updateBookmarkApi,
+} from '../prisma/apiPrisma';
+import { Bookmark, BookmarkResponse } from '@/types/story';
+import { AxiosError } from 'axios';
 
 // 👇 Tambahkan BookmarkResponse sebagai return type
 export const fetchBookmark = createAsyncThunk<
@@ -37,10 +44,47 @@ export const deleteBookmark = createAsyncThunk<
   }
 });
 
+export const getBookmark = createAsyncThunk<
+  Bookmark[],
+  void,
+  { rejectValue: string }
+>('bookmark/fetch', async (_, thunkAPI) => {
+  try {
+    const res = await getBookmarkApi<Bookmark[]>();
+    return res;
+  } catch (error) {
+    const err = error as AxiosError<{ message?: string }>;
+    return thunkAPI.rejectWithValue(
+      err.response?.data?.message ?? 'Gagal ambil bookmark'
+    );
+  }
+});
+
+export const updateBookmark = createAsyncThunk<
+  Bookmark, // return type
+  { id: number; notes: string },
+  { rejectValue: string }
+>('bookmark/update', async ({ id, notes }, thunkAPI) => {
+  try {
+    const res: { data: { data: Bookmark } } = await updateBookmarkApi(
+      id,
+      notes
+    );
+
+    return res.data.data;
+  } catch (error) {
+    const err = error as AxiosError<{ message?: string }>;
+    return thunkAPI.rejectWithValue(
+      err.response?.data?.message ?? 'Gagal update bookmark'
+    );
+  }
+});
+
 const initialState: BookmarkSliceState = {
   loading: false,
   success: false,
   error: null,
+  bookmarks: [],
 };
 
 export const bookmarkSlice = createSlice({
@@ -83,6 +127,21 @@ export const bookmarkSlice = createSlice({
         state.loading = false;
         state.success = false;
         state.error = action.payload ?? 'Gagal hapus bookmark';
+      })
+      .addCase(updateBookmark.pending, (state) => {
+        state.loading = true;
+        state.success = false;
+        state.error = null;
+      })
+      .addCase(updateBookmark.fulfilled, (state) => {
+        state.loading = false;
+        state.success = true;
+        state.error = null;
+      })
+      .addCase(updateBookmark.rejected, (state, action) => {
+        state.loading = false;
+        state.success = false;
+        state.error = action.payload ?? 'Gagal update bookmark';
       });
   },
 });

@@ -11,6 +11,11 @@ import { AxiosError, AxiosRequestConfig } from 'axios';
 import { getSession } from 'next-auth/react';
 import { formSchemaRegister, PostRegisterType } from '@/types/auth';
 import { Like } from '@/types/slice';
+import {
+  profileSchemaInput,
+  profileUpdateSchemaInput,
+  UserWithProfile,
+} from '@/types/profile';
 
 const ENDPOINTS = {
   STORY: '/story',
@@ -21,6 +26,7 @@ const ENDPOINTS = {
   LIKE: '/like',
   BOOKMARK: '/bookmark',
   REGISTER: '/auth/signup',
+  USER: '/account',
 };
 
 export async function apiAxios<T>(
@@ -122,6 +128,7 @@ export async function postStory(params: PostStoryType) {
     formData.append('sortDescription', params.sortDescription);
 
     const session = await getSession();
+    console.log('🚀 ~ postStory ~ session:', session);
 
     const response = await apiAxios<{
       status: number;
@@ -148,6 +155,8 @@ export async function postStory(params: PostStoryType) {
 
 export async function postLike(story_id: number) {
   const session = await getSession();
+  console.log('🚀 ~ postLike ~ session:', session);
+
   return await apiAxios<{ message: string; data: Like }>(ENDPOINTS.LIKE, {
     method: 'POST',
     data: { story_id },
@@ -159,7 +168,7 @@ export async function postLike(story_id: number) {
 
 export async function deleteLike(likeId: number) {
   return await apiAxios<{ status: number; message: string }>(
-    `${ENDPOINTS.LIKE}/${likeId}`, // misal: /api/like/123
+    `${ENDPOINTS.LIKE}/${likeId}`,
     {
       method: 'DELETE',
     }
@@ -171,6 +180,8 @@ export async function postBookmark(
   notes?: string
 ): Promise<BookmarkResponse> {
   const session = await getSession();
+  console.log('🚀 ~ postBookmark ~ session:', session);
+
   const response = await apiAxios<BookmarkResponse>(ENDPOINTS.BOOKMARK, {
     method: 'POST',
     data: { story_id, notes },
@@ -179,11 +190,13 @@ export async function postBookmark(
     },
   });
 
-  return response; // ✅ ini adalah { message: string, data: {...} }
+  return response;
 }
 
 export async function deleteBookmark(id: number) {
   const session = await getSession();
+  console.log('🚀 ~ deleteBookmark ~ session:', session);
+
   return await apiAxios<{ message: string }>(ENDPOINTS.BOOKMARK, {
     method: 'DELETE',
     data: JSON.stringify({ id }),
@@ -196,6 +209,8 @@ export async function deleteBookmark(id: number) {
 
 export async function getBookmark<BookmarkResponse>() {
   const session = await getSession();
+  console.log('🚀 ~ getBookmark ~ session:', session);
+
   return await apiAxios<BookmarkResponse>(ENDPOINTS.BOOKMARK, {
     method: 'GET',
     headers: {
@@ -210,6 +225,7 @@ export async function updateBookmark(
   notes: string
 ): Promise<{ data: { data: Bookmark } }> {
   const session = await getSession();
+  console.log('🚀 ~ updateBookmark ~ session:', session);
 
   return await apiAxios(ENDPOINTS.BOOKMARK, {
     method: 'PUT',
@@ -223,3 +239,67 @@ export async function updateBookmark(
     },
   });
 }
+
+export const getProfileByUsername = async (username: string) => {
+  const session = await getSession();
+
+  const res = await apiAxios<{ status: number; data: UserWithProfile }>(
+    `${ENDPOINTS.PROFILE}/${username}`,
+    {
+      headers: {
+        Authorization: `Bearer ${session?.user?.token}`,
+      },
+    }
+  );
+  console.log('✅ RESPONSE:', res);
+
+  return res.data.profile;
+};
+
+export const postProfile = async (data: profileSchemaInput) => {
+  const session = await getSession();
+  console.log('🚀 ~ createProfile ~ session:', session);
+  const username = session?.user?.username;
+  console.log('🚀 ~ postProfile ~ username:', username);
+
+  return await apiAxios(`${ENDPOINTS.PROFILE}/${username}`, {
+    method: 'POST',
+    data,
+    headers: {
+      Authorization: `Bearer ${session?.user?.token}`,
+    },
+  });
+};
+
+export const putProfile = async (data: profileUpdateSchemaInput) => {
+  const session = await getSession();
+  console.log('🚀 ~ updateProfile ~ session:', session);
+  const username = session?.user?.username;
+  console.log('🚀 ~ putProfile ~ username:', username);
+
+  return await apiAxios(`${ENDPOINTS.PROFILE}/${username}`, {
+    method: 'PUT',
+    data,
+    headers: {
+      Authorization: `Bearer ${session?.user?.token}`,
+    },
+  });
+};
+
+export const putUser = async (payload: {
+  username: string;
+  email: string;
+  password?: string;
+}) => {
+  const session = await getSession();
+  return await apiAxios<{ status: number; data: PostRegisterType }>(
+    ENDPOINTS.USER,
+    {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${session?.user?.token}`,
+      },
+      data: payload,
+    }
+  );
+};

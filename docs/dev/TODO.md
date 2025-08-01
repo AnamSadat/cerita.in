@@ -18,6 +18,8 @@ VSCode Marketplace: https://marketplace.visualstudio.com/items?itemName=Gruntfug
 - [x] post new story
 - [x] create redux state management
 - [x] integrasi like and unlike
+- [ ] otomatis close ketika update
+- [ ] add authorized
 
 <!-- RESTful API -->
 

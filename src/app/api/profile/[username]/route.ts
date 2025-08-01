@@ -45,7 +45,7 @@ export async function GET(
 
     const { username } = await context.params;
 
-    const profile = await Prisma.user.findUnique({
+    let profile = await Prisma.user.findUnique({
       where: {
         username: username,
       },
@@ -62,6 +62,24 @@ export async function GET(
         },
         { status: 404 }
       );
+    }
+
+    if (!profile.profile) {
+      const createdProfile = await Prisma.profile.create({
+        data: {
+          userId: profile.id,
+          name: '',
+          bio: '',
+          avatar_url: '',
+          gender: 'Male',
+        },
+      });
+
+      // update profile hasil query agar ada profile-nya
+      profile = {
+        ...profile,
+        profile: createdProfile,
+      };
     }
 
     return NextResponse.json({ status: 200, data: profile }, { status: 200 });

@@ -67,7 +67,7 @@ export default function Footer() {
                 </svg>
               </Link>
               <Link
-                href="#"
+                href="https://discord.com/users/434200430088683545"
                 target="_blank"
                 className="discord hover:text-sky-400"
               >

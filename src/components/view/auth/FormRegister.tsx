@@ -17,6 +17,7 @@ import { useState } from 'react';
 import { postUser } from '@/lib/prisma/apiPrisma';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import Link from 'next/link';
 
 export default function FormRegister() {
   const [errorMessage, setErrorMessage] = useState('');
@@ -64,7 +65,10 @@ export default function FormRegister() {
   };
 
   return (
-    <div>
+    <div className="max-w-sm min-w-sm">
+      <div>
+        <h1 className="text-4xl font-bold mb-5">REGISTER</h1>
+      </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
@@ -98,7 +102,6 @@ export default function FormRegister() {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="password"
@@ -120,7 +123,6 @@ export default function FormRegister() {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="confirmPassword"
@@ -142,14 +144,12 @@ export default function FormRegister() {
               </FormItem>
             )}
           />
-
           {errorMessage && (
             <p className="text-sm text-red-500">{errorMessage}</p>
           )}
-
           <Button
             type="submit"
-            className="w-full cursor-pointer"
+            className="w-full cursor-pointer hover:bg-neutral-800"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -182,6 +182,13 @@ export default function FormRegister() {
           </Button>
         </form>
       </Form>
+      <p className="text-center">
+        Sudah punya akun?{' '}
+        <Link href={'/login'} className="underline underline-offset-1">
+          Login
+        </Link>{' '}
+        aja
+      </p>
     </div>
   );
 }

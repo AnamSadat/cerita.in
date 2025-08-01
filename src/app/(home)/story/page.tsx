@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,33 +10,43 @@ import {
 } from '@/components/ui/breadcrumb';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
-// import { Label } from '@/components/ui/label';
-// import { Button } from '@/components/ui/button';
-import { BookOpenText } from 'lucide-react';
-import {
-  Select,
-  SelectContent,
-  // SelectGroup,
-  // SelectItem,
-  // SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  Search,
-  Filter,
-  // MapPin, Loader2
-} from 'lucide-react';
+import { BookOpenText, XCircle } from 'lucide-react';
+import { Search, Filter } from 'lucide-react';
 import StoryList from '@/components/view/story/StoryList';
+import CategoryList from '@/components/view/story/CategoryList';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 
 export default function Story() {
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [query, setQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
+  const [totalFilteredItems, setTotalFilteredItems] = useState(0);
+  console.log('🚀 ~ Story ~ totalFilteredItems:', totalFilteredItems);
+
+  const handleClearFilter = () => {
+    setQuery('');
+    setSelectedCategory('');
+  };
+
+  const isFiltering = query !== '' || selectedCategory !== '';
+
   return (
     <div className="min-h-screen pt-25 px-5 container mx-auto">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link href="/" className="text-zinc-400">
+              <Link href="/" className="text-zinc-400 hover:text-white">
                 Home
               </Link>
             </BreadcrumbLink>
@@ -64,8 +76,10 @@ export default function Story() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <Input
               type="text"
-              placeholder="Search category story."
-              className="pl-10 h-12 border-2 border-gray-200 focus:border-orange-400 rounded-xl"
+              placeholder="Search nama story."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="pl-10 h-10 border-2 border-gray-200 focus:border-orange-400 rounded-xl"
             />
           </div>
 
@@ -74,15 +88,74 @@ export default function Story() {
               <Filter className="w-4 h-4 text-white" />
               <span className="text-sm font-medium text-white">Filters:</span>
             </div>
-            <Select>
-              <SelectTrigger className="w-48 border-2 border-gray-200  rounded-lg">
-                <SelectValue placeholder="Select category" />
-              </SelectTrigger>
-              <SelectContent></SelectContent>
-            </Select>
+            <CategoryList
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+            />
+            {isFiltering && (
+              <Button
+                onClick={handleClearFilter}
+                className="flex items-center gap-1 px-3 py-2 cursor-pointer rounded-md bg-red-500 text-white text-sm hover:bg-red-600 transition"
+              >
+                <XCircle className="w-4 h-4" />
+                Clear
+              </Button>
+            )}
           </div>
           <div className="flex flex-col">
-            <StoryList />
+            <StoryList
+              query={query}
+              category={selectedCategory}
+              currentPage={currentPage}
+              itemsPerPage={itemsPerPage}
+              onTotalChange={setTotalFilteredItems}
+            />
+          </div>
+          <div>
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                    className={
+                      currentPage === 1 ? 'pointer-events-none opacity-50' : ''
+                    }
+                  />
+                </PaginationItem>
+
+                {[...Array(Math.ceil(totalFilteredItems / itemsPerPage))].map(
+                  (_, i) => (
+                    <PaginationItem key={i} className="">
+                      <PaginationLink
+                        className="bg-neutral-800/80 border-0 text-white hover:text-white hover:bg-neutral-800/80"
+                        isActive={currentPage === i + 1}
+                        onClick={() => setCurrentPage(i + 1)}
+                      >
+                        {i + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  )
+                )}
+
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() =>
+                      setCurrentPage((p) =>
+                        p < Math.ceil(totalFilteredItems / itemsPerPage)
+                          ? p + 1
+                          : p
+                      )
+                    }
+                    className={
+                      currentPage ===
+                      Math.ceil(totalFilteredItems / itemsPerPage)
+                        ? 'pointer-events-none opacity-50'
+                        : ''
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           </div>
         </div>
       </div>

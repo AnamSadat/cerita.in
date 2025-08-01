@@ -4,8 +4,8 @@ import { FlipWords } from '@/components/ui/flip-words';
 import { InfiniteMovingCards } from '@/components/ui/infinite-moving-cards';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { CarouselDemo } from '@/components/view/home/LatestStory';
-import { StickyScrollRevealDemo } from '@/components/view/home/StickyScrollRevealDemo';
+import { LatestStory } from '@/components/view/home/LatestStory';
+// import { StickyScrollRevealDemo } from '@/components/view/home/StickyScrollRevealDemo';
 
 export default function User() {
   const words = ['kisah', 'hidup', 'diri', 'takdir', 'cinta'];
@@ -13,32 +13,33 @@ export default function User() {
   const testimonials = [
     {
       quote:
-        'It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair.',
-      name: 'Charles Dickens',
-      title: 'A Tale of Two Cities',
+        'Cerita.in benar-benar tempat terbaik untuk menemukan kisah-kisah inspiratif dan penuh makna yang membuat saya selalu ingin kembali membaca.',
+      name: 'Rina Sari',
+      title: 'Pembaca Setia Cerita.in',
     },
     {
       quote:
-        'To be, or not to be, that is the question: Whether tis nobler in the mind to suffer The slings and arrows of outrageous fortune, Or to take Arms against a Sea of troubles, And by opposing end them: to die, to sleep.',
-      name: 'William Shakespeare',
-      title: 'Hamlet',
-    },
-    {
-      quote: 'All that we see or seem is but a dream within a dream.',
-      name: 'Edgar Allan Poe',
-      title: 'A Dream Within a Dream',
+        'Platform ini memudahkan saya membagikan pengalaman pribadi saya dalam bentuk cerita yang mudah diakses dan diapresiasi banyak orang.',
+      name: 'Andi Pratama',
+      title: 'Penulis Cerita',
     },
     {
       quote:
-        'It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.',
-      name: 'Jane Austen',
-      title: 'Pride and Prejudice',
+        'Dengan Cerita.in, saya menemukan komunitas pembaca dan penulis yang suportif dan penuh semangat untuk berkarya.',
+      name: 'Dewi Lestari',
+      title: 'Pengguna Aktif Cerita.in',
     },
     {
       quote:
-        'Call me Ishmael. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world.',
-      name: 'Herman Melville',
-      title: 'Moby-Dick',
+        'Cerita yang saya baca di sini memberikan wawasan baru dan seringkali menyentuh hati, membuat hari saya lebih berwarna.',
+      name: 'Budi Santoso',
+      title: 'Penggemar Cerita Inspiratif',
+    },
+    {
+      quote:
+        'Antarmuka yang sederhana dan mudah digunakan membuat saya betah berlama-lama menjelajahi berbagai cerita di Cerita.in.',
+      name: 'Maya Putri',
+      title: 'Pengguna Baru',
     },
   ];
 
@@ -63,10 +64,7 @@ export default function User() {
       {/* Ini DILUAR background utama */}
       <div className="container mx-auto mt-15">
         <div className="flex justify-between text-white">
-          <h1 className="text-white text-3xl font-bold">Top Story</h1>
-          <Link href={'#'} className="hover:text-zinc-300">
-            View All {'->'}
-          </Link>
+          <h1 className="text-white text-3xl font-bold">Feedback Flow</h1>
         </div>
         <div className="my-10 px-4 w-full flex justify-center mx-auto">
           <div className="w-screen overflow-hidden">
@@ -81,22 +79,27 @@ export default function User() {
       </div>
 
       {/* carousel */}
-      <div className="container mx-auto">
-        <h1 className="text-white text-3xl font-bold">Latest Story</h1>
+      <div className="container mx-auto mt-30">
+        <div className="flex justify-between text-white">
+          <h1 className="text-white text-3xl font-bold">Latest Story</h1>
+          <Link href={'/story'} className="hover:text-zinc-300">
+            View All {'->'}
+          </Link>
+        </div>
         <div>
-          <CarouselDemo />
+          <LatestStory />
         </div>
       </div>
 
       {/* Sticky scroll */}
-      <div className="w-full mx-auto">
+      {/* <div className="w-full mx-auto">
         <div className="h-full">
           <StickyScrollRevealDemo />
         </div>
-      </div>
+      </div> */}
 
       {/* Call Action */}
-      <div className=" mx-auto container py-20 px-4 bg-gradient-to-r from-purple-700 via-indigo-800 to-black text-white text-center overflow-hidden rounded-2xl mt-10 mb-10">
+      <div className=" mx-auto container py-20 px-4 bg-[url(/buku.jpeg)] h-120 bg-cover text-white text-center overflow-hidden rounded-2xl mt-30 mb-30">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 leading-tight">
           Setiap kisah layak didengar.
         </h2>
@@ -106,7 +109,7 @@ export default function User() {
           berarti.
         </p>
         <Button
-          className="bg-white text-black hover:bg-neutral-200 font-semibold px-8 py-3 rounded-full text-lg transition"
+          className="bg-white text-black hover:bg-neutral-400 font-semibold py-6  rounded-2xl text-lg transition"
           asChild
         >
           <Link href={'/add-story'}>✍️ Ceritakan Sekarang</Link>

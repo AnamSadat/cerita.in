@@ -102,19 +102,18 @@ export function BookmarkButton({ storyId, initialBookmarkId }: Props) {
   return (
     <>
       <Button
-        variant="ghost"
-        size="icon"
         onClick={handleToggle}
-        className="bg-neutral-800 px-13 cursor-pointer hover:bg-neutral-800/70"
+        className="bg-neutral-800 cursor-pointer hover:bg-amber-400/20"
         disabled={loading}
       >
         {isBookmarked ? (
-          <div className="flex">
-            <BookmarkCheck className="w-10 h-10 text-yellow-400" /> Tersimpan
+          <div className="flex items-center">
+            <BookmarkCheck className="size-5 text-yellow-400" /> &nbsp;
+            Tersimpan
           </div>
         ) : (
-          <div className="flex">
-            <Bookmark className="w-10 h-10 text-white" /> &nbsp; Simpan
+          <div className="flex items-center">
+            <Bookmark className="size-5 text-white" /> &nbsp; Simpan
           </div>
         )}
       </Button>
@@ -140,14 +139,18 @@ export function BookmarkButton({ storyId, initialBookmarkId }: Props) {
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button type="button" variant="destructive">
+                <Button
+                  type="button"
+                  variant="destructive"
+                  className="cursor-pointer"
+                >
                   Batal
                 </Button>
               </DialogClose>
               <Button
                 type="submit"
                 disabled={isSubmitting || loading}
-                className="bg-neutral-800 hover:bg-neutral-700"
+                className="bg-neutral-800 hover:bg-neutral-700 cursor-pointer"
               >
                 {isSubmitting || loading ? 'Menyimpan...' : 'Simpan'}
               </Button>

@@ -5,8 +5,17 @@ import {
   createSlice,
   type PayloadAction,
 } from '@reduxjs/toolkit';
-import { getStory, getStoryBySlug } from '../prisma/apiPrisma';
-import { StoryFromDB } from '@/types/story';
+import {
+  getStory,
+  getStoryBySlug,
+  updateStory as updateStoryApi,
+  deleteStory as deleteStoryApi,
+} from '../prisma/apiPrisma';
+import {
+  // formUpdate,
+  StoryFromDB,
+  // UpdateStoryType
+} from '@/types/story';
 import { StorySlice } from '@/types/story';
 
 export const fetchStory = createAsyncThunk<StoryFromDB[], number | undefined>(
@@ -30,7 +39,11 @@ export const fetchStory = createAsyncThunk<StoryFromDB[], number | undefined>(
       content: story.content,
       img_url: story.img_url,
       created_at: story.created_at,
-      user: story.user,
+      user: {
+        id: story.user.id,
+        username: story.user.username,
+        profile: story.user.profile,
+      },
       likesCount: story._count?.likes ?? 0,
       bookmarksCount: story._count?.bookmarks ?? 0,
       isLiked: story.likes?.some((like) => like.user_id === userId) ?? false,
@@ -47,6 +60,24 @@ export const fetchStoryBySlug = createAsyncThunk<StoryFromDB, string>(
   async (slug) => {
     const res = await getStoryBySlug(slug);
     return res;
+  }
+);
+
+// UPDATE STORY
+export const updateStoryThunk = createAsyncThunk(
+  'story/updateStory',
+  async (formData: FormData) => {
+    const res = await updateStoryApi(formData);
+    return res;
+  }
+);
+
+// DELETE STORY
+export const deleteStoryThunk = createAsyncThunk(
+  'story/deleteStory',
+  async (storyId: number) => {
+    await deleteStoryApi(storyId);
+    return storyId; // Kita balikin ID biar slice bisa hapus dari items
   }
 );
 
@@ -109,6 +140,17 @@ export const storySlice = createSlice({
       .addCase(fetchStoryBySlug.rejected, (state, action) => {
         state.loadingDetail = false;
         state.errorDetail = action.error.message ?? 'Gagal memuat story detail';
+      })
+      .addCase(updateStoryThunk.fulfilled, (state, action) => {
+        const index = state.items.findIndex(
+          (item) => item.id === action.payload.id
+        );
+        if (index !== -1) {
+          state.items[index] = action.payload;
+        }
+      })
+      .addCase(deleteStoryThunk.fulfilled, (state, action) => {
+        state.items = state.items.filter((item) => item.id !== action.payload);
       });
   },
 });

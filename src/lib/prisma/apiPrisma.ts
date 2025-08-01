@@ -3,8 +3,10 @@ import {
   BookmarkResponse,
   Category,
   formSchemaStoryInput,
+  // formUpdate,
   PostStoryType,
   StoryFromDB,
+  // UpdateStoryType,
 } from '@/types/story';
 import axiosInstance from '../axios';
 import { AxiosError, AxiosRequestConfig } from 'axios';
@@ -27,6 +29,7 @@ const ENDPOINTS = {
   BOOKMARK: '/bookmark',
   REGISTER: '/auth/signup',
   USER: '/account',
+  DELETE_STORY: '/story/delete',
 };
 
 export async function apiAxios<T>(
@@ -149,6 +152,46 @@ export async function postStory(params: PostStoryType) {
   } catch (error) {
     const err = error as AxiosError<{ message?: string }>;
     const message = err?.response?.data?.message || 'Failed to add story';
+    throw new Error(message);
+  }
+}
+
+export async function updateStory(formData: FormData) {
+  const session = await getSession();
+  const response = await apiAxios<{
+    status: number;
+    data: StoryFromDB;
+  }>(ENDPOINTS.STORY, {
+    method: 'PUT',
+    data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${session?.user?.token}`,
+    },
+  });
+  return response.data;
+}
+
+export async function deleteStory(storyId: number) {
+  try {
+    const session = await getSession();
+
+    const response = await apiAxios<{
+      status: number;
+      message: string;
+    }>(`${ENDPOINTS.DELETE_STORY}?id=${storyId}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${session?.user?.token}`,
+      },
+    });
+
+    if (response.status !== 200) throw new Error('❌ Gagal menghapus story');
+
+    return response.message;
+  } catch (error) {
+    const err = error as AxiosError<{ message?: string }>;
+    const message = err?.response?.data?.message || 'Failed to delete story';
     throw new Error(message);
   }
 }

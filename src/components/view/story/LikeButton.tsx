@@ -110,7 +110,7 @@ export default function LikeButton({ storyId }: { storyId: number }) {
     <motion.button
       onClick={handleLike}
       whileTap={{ scale: 1.3 }}
-      className="flex items-center py-2 px-2 cursor-pointer gap-2 text-sm font-medium text-white/80 hover:text-white transition rounded-md hover:bg-neutral-800"
+      className="flex items-center py-2 px-2 cursor-pointer gap-2 text-sm font-medium text-white/80 hover:text-white transition rounded-md hover:bg-red-400/80 bg-neutral-800"
       disabled={loading}
     >
       <motion.div
@@ -126,7 +126,7 @@ export default function LikeButton({ storyId }: { storyId: number }) {
         />
       </motion.div>
       <span>
-        {localCount} Suka ({isLiked ? 'Kamu menyukai ini' : 'Belum kamu sukai'})
+        {localCount} {isLiked ? 'Liked' : 'Like'}
       </span>
     </motion.button>
   );

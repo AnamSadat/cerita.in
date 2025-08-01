@@ -37,6 +37,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { LoaderOne } from '@/components/ui/loader';
+import { Badge } from '@/components/ui/badge';
+import { Pencil } from 'lucide-react';
 
 export default function ProfilePage() {
   const { data: session } = useSession();
@@ -53,6 +55,7 @@ export default function ProfilePage() {
 
   // Fetch profile saat halaman dimuat
   useEffect(() => {
+    console.log('🚀 ~ ProfilePage ~ username:', username);
     if (!username) return;
 
     getProfileByUsername(username)
@@ -125,41 +128,58 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center mt-20">
-        <LoaderOne />
+      <div className="max-w-4xl mx-auto mt-10 px-4">
+        <h1 className="text-4xl font-bold text-white mb-10">Profile</h1>
+        <div className="max-w-4xl mx-auto mt-10">
+          <div className="flex items-center justify-center mt-20">
+            <LoaderOne />
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-3xl mx-auto mt-24 px-4">
+    <div className="max-w-4xl mx-auto mt-10 px-4">
       {/* Header */}
+      <h1 className="text-4xl font-bold text-white mb-10">Profile</h1>
       <div className="flex items-center gap-6 mb-6">
         <div className="relative w-28 h-28 rounded-full overflow-hidden border-2 border-border">
           <Image
-            src={profile?.avatar_url ?? session?.user?.image ?? '/luffy.jpg'}
+            src={
+              profile?.avatar_url && profile.avatar_url.trim() !== ''
+                ? profile.avatar_url
+                : session?.user?.image && session.user.image.trim() !== ''
+                ? session.user.image
+                : '/luffy.jpg'
+            }
             alt="Avatar"
             fill
             className="object-cover"
           />
         </div>
         <div>
-          <h1 className="text-2xl font-bold">@{username}</h1>
-          <p className="text-muted-foreground">{profile?.gender ?? '-'}</p>
+          <h1 className="text-2xl font-bold mb-1">@{username}</h1>
+          <Badge>{profile?.gender ?? '-'}</Badge>
         </div>
       </div>
 
       {/* Bio */}
-      <div className="mb-8">
+      <div className="mb-8 border border-neutral-800 bg-neutral-900 rounded-xl p-4 shadow-lg">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold mb-2">Bio</h2>
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline" size="sm">
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-2 hover:bg-neutral-300 cursor-pointer"
+              >
+                <Pencil className="w-4 h-4 mr-1" />
                 Edit Profil
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-neutral-900 border-0">
+            <DialogContent className="bg-neutral-900 border-0 max-h-[630px] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Edit Profil</DialogTitle>
                 <DialogDescription>
@@ -219,9 +239,14 @@ export default function ProfilePage() {
 
               <DialogFooter className="mt-4">
                 <DialogClose asChild>
-                  <Button variant="outline">Batal</Button>
+                  <Button className="cursor-pointer bg-neutral-700 hover:bg-neutral-800">
+                    Batal
+                  </Button>
                 </DialogClose>
-                <Button onClick={handleSave}>
+                <Button
+                  className="cursor-pointer bg-neutral-700 hover:bg-neutral-800"
+                  onClick={handleSave}
+                >
                   {isLoading ? (
                     <div className="flex items-center justify-center gap-2">
                       <svg
@@ -261,7 +286,8 @@ export default function ProfilePage() {
       </div>
 
       {/* Info Lainnya */}
-      <div>
+      {/* TODO */}
+      <div className="border border-neutral-800 bg-neutral-900 rounded-xl p-4 shadow-lg">
         <h2 className="text-lg font-semibold mb-2">Informasi Tambahan</h2>
         <ul className="text-muted-foreground list-disc list-inside space-y-1">
           <li>Nama Lengkap: {profile?.name ?? '-'}</li>

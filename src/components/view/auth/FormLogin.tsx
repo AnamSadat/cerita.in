@@ -61,9 +61,9 @@ export default function FormLogin() {
   };
 
   return (
-    <div className="">
+    <div className="max-w-sm min-w-sm">
       <div>
-        <h1></h1>
+        <h1 className="text-4xl font-bold mb-5">LOGIN</h1>
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
@@ -117,7 +117,7 @@ export default function FormLogin() {
 
           <Button
             type="submit"
-            className="w-full cursor-pointer"
+            className="w-full cursor-pointer hover:bg-neutral-800"
             disabled={isLoading}
           >
             {isLoading ? (

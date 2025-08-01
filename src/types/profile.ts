@@ -1,14 +1,14 @@
 import z from 'zod';
 
 export const profileSchema = z.object({
-  name: z.string().min(3),
+  name: z.string().min(3, { message: 'Minimal 3 karakter' }),
   bio: z.string().optional(),
   avatar_url: z.string().optional(),
   gender: z.enum(['Male', 'Female', 'Other']),
 });
 
 export const profileUpdateSchema = z.object({
-  name: z.string().min(3).optional(),
+  name: z.string().min(3, { message: 'Minimal 3 karakter' }).optional(),
   bio: z.string().optional(),
   avatar_url: z.string().optional(),
   gender: z.enum(['Male', 'Female', 'Other']).optional(),

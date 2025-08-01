@@ -22,6 +22,15 @@ import {
   AlertDialogAction,
 } from '@/components/ui/alert-dialog';
 import { LoaderOne } from '@/components/ui/loader';
+import { Button } from '@/components/ui/button';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
 
 export default function LikesPage() {
   const { data: session } = useSession();
@@ -62,6 +71,23 @@ export default function LikesPage() {
   if (loading) {
     return (
       <div className="max-w-4xl mx-auto mt-10 px-4">
+        <div className="mb-10">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link href="/" className="text-zinc-400 hover:text-white">
+                    Home
+                  </Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage className="text-white">Like</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
         <h1 className="text-4xl font-bold text-white mb-2">
           Cerita yang Kamu Sukai
         </h1>
@@ -79,6 +105,23 @@ export default function LikesPage() {
 
   return (
     <div className="max-w-4xl mx-auto mt-10 px-4">
+      <div className="mb-10">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link href="/" className="text-zinc-400">
+                  Home
+                </Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage className="text-white">Like</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
       <h1 className="text-4xl font-bold text-white mb-2">
         Cerita yang Kamu Sukai
       </h1>
@@ -89,11 +132,8 @@ export default function LikesPage() {
       {likedStories.length === 0 ? (
         <div className="text-center text-muted-foreground mt-12">
           <p className="mb-3">Kamu belum menyukai cerita apa pun.</p>
-          <Link
-            href="/stories"
-            className="text-blue-500 hover:underline text-sm"
-          >
-            Telusuri cerita menarik →
+          <Link href="/story" className="text-blue-500 hover:underline text-sm">
+            Buat ceritamu
           </Link>
         </div>
       ) : (
@@ -104,7 +144,7 @@ export default function LikesPage() {
             return (
               <li
                 key={story.id}
-                className="border border-neutral-800 rounded-xl p-4 hover:bg-neutral-900 transition"
+                className="border border-neutral-800 rounded-xl p-4 hover:bg-neutral-900 transition bg-neutral-800/30"
               >
                 <div className="flex justify-between items-start">
                   <div>
@@ -127,12 +167,13 @@ export default function LikesPage() {
                   {/* AlertDialog untuk hapus suka */}
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <button
-                        className="text-red-500 hover:text-red-600 transition hover:bg-neutral-900/70 p-2 rounded"
+                      <Button
+                        size="icon"
+                        className="text-red-500 bg-neutral-900/30 hover:text-white transition hover:bg-red-500 p-2 rounded cursor-pointer"
                         title="Hapus dari suka"
                       >
                         <Trash2 className="w-4 h-4" />
-                      </button>
+                      </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
@@ -142,8 +183,11 @@ export default function LikesPage() {
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel>Batal</AlertDialogCancel>
+                        <AlertDialogCancel className="cursor-pointer hover:text-white bg-neutral-700 hover:bg-neutral-800 border-0 text-white">
+                          Batal
+                        </AlertDialogCancel>
                         <AlertDialogAction
+                          className="cursor-pointer bg-neutral-700 hover:bg-neutral-800"
                           onClick={() => handleUnlike(story.id, like?.id)}
                         >
                           Hapus

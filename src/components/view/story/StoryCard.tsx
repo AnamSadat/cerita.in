@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import formatDate from '@/lib/formatDate';
 import { StoryFromDB } from '@/types/story';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -16,25 +17,7 @@ type PropsStoryCard = {
 };
 
 export function StoryCard({ story }: PropsStoryCard) {
-  const date = new Date(story.created_at);
-
-  const time = date.toLocaleTimeString('id-ID', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  });
-
-  const day = date.toLocaleDateString('id-ID', {
-    weekday: 'long',
-  });
-
-  const fullDate = date.toLocaleDateString('id-ID', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
-
-  const formatted = `${time} ${day}, ${fullDate}`;
+  const convertFormatDate = formatDate(story.created_at);
 
   console.log('✅ StoryCard item:', story);
 
@@ -52,7 +35,7 @@ export function StoryCard({ story }: PropsStoryCard) {
             unoptimized
           />
         </div>
-        <p className="">{formatted}</p>
+        <p className="">{convertFormatDate}</p>
         <CardTitle>{story.title}</CardTitle>
         <div className="flex flex-wrap gap-2">
           <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
@@ -68,7 +51,11 @@ export function StoryCard({ story }: PropsStoryCard) {
       <CardFooter className="flex justify-between">
         <div className="flex items-center gap-2">
           <Image
-            src={story.user.profile?.avatar_url ?? '/luffy.jpg'}
+            src={
+              story.user.profile?.avatar_url?.trim()
+                ? story.user.profile.avatar_url
+                : '/luffy.jpg'
+            }
             alt={story.user.username}
             width={40}
             height={40}

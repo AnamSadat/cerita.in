@@ -2,28 +2,26 @@
 
 import { LoaderOne } from '@/components/ui/loader';
 import FormLogin from '@/components/view/auth/FormLogin';
-import Image from 'next/image';
 import { Suspense } from 'react';
 
 export default function Login() {
   return (
-    <div className="min-h-screen pt-25 px-5 container mx-auto">
-      <div className="justify-center flex mx-auto">
-        <div className="mx-auto justify-center flex">
-          <Suspense
-            fallback={
-              <div className="flex items-center justify-center mt-20">
-                <LoaderOne />
-              </div>
-            }
-          >
-            <FormLogin />
-          </Suspense>
-        </div>
-        <div>
-          <Image src={'/nature.jpg'} alt="alam" width={400} height={200} />
-        </div>
+    <div className="min-h-screen flex px-5 mx-auto">
+      {/* Kolom Kiri */}
+      <div className="w-2/5 flex items-center justify-center">
+        <Suspense
+          fallback={
+            <div className="flex items-center justify-center mt-20">
+              <LoaderOne />
+            </div>
+          }
+        >
+          <FormLogin />
+        </Suspense>
       </div>
+
+      {/* Kolom Kanan */}
+      <div className="w-3/5 bg-[url('/gurun.jpg')] bg-cover bg-center flex items-center justify-center m-3 rounded-2xl"></div>
     </div>
   );
 }

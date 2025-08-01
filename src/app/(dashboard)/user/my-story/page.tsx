@@ -36,6 +36,25 @@ import { LoaderOne } from '@/components/ui/loader';
 import { Pencil, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { getCategory } from '@/lib/prisma/apiPrisma';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export default function MyOwnStoryPage() {
   const { data: session } = useSession();
@@ -153,6 +172,25 @@ export default function MyOwnStoryPage() {
 
   return (
     <div className="max-w-4xl mx-auto mt-10 px-4">
+      <div className="mb-10">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link href="/" className="text-zinc-400 hover:text-white">
+                  Home
+                </Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage className="text-white">
+                My Bookmark
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
       <h1 className="text-4xl font-bold text-white mb-2">Ceritaku</h1>
       <p className="text-md text-gray-400 mb-6">
         Total {myStories.length} cerita
@@ -165,7 +203,10 @@ export default function MyOwnStoryPage() {
       ) : myStories.length === 0 ? (
         <div className="text-center text-muted-foreground mt-12">
           <p className="mb-3">Kamu belum menulis cerita apa pun.</p>
-          <Link href="/write" className="text-blue-500 hover:underline text-sm">
+          <Link
+            href="/add-story"
+            className="text-blue-500 hover:underline text-sm"
+          >
             Tulis cerita pertama →
           </Link>
         </div>
@@ -174,7 +215,7 @@ export default function MyOwnStoryPage() {
           {myStories.map((story) => (
             <li
               key={story.id}
-              className="border border-neutral-800 bg-neutral-950 rounded-xl p-5 shadow-lg"
+              className="border border-neutral-800 bg-neutral-900/30 hover:bg-neutral-900 transition rounded-xl p-4 shadow-lg"
             >
               <div className="flex justify-between items-start gap-4">
                 <div className="w-full">
@@ -189,11 +230,15 @@ export default function MyOwnStoryPage() {
 
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button variant="outline" size="sm" className="mt-3">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="mt-2 hover:bg-neutral-300 cursor-pointer"
+                      >
                         <Pencil className="w-4 h-4 mr-1" /> Edit Cerita
                       </Button>
                     </DialogTrigger>
-                    <DialogContent>
+                    <DialogContent className="max-h-[630px] overflow-y-auto">
                       <DialogHeader>
                         <DialogTitle>Edit Cerita</DialogTitle>
                         <DialogDescription>
@@ -202,8 +247,8 @@ export default function MyOwnStoryPage() {
                       </DialogHeader>
 
                       {/* Title */}
-                      <input
-                        className="w-full mt-2 bg-neutral-800 text-white p-2 border border-neutral-700 rounded"
+                      <Input
+                        className="w-full mt-2 p-2 "
                         defaultValue={story.title}
                         placeholder="Judul"
                         onChange={(e) =>
@@ -218,25 +263,39 @@ export default function MyOwnStoryPage() {
                       />
 
                       {/* Category */}
-                      <select className="border rounded-md p-2 w-full text-white">
-                        <option value="" className="text-black">
-                          Pilih kategori
-                        </option>
-                        {categories.map((item) => (
-                          <option
-                            key={item.id}
-                            value={item.name}
-                            className="text-black"
-                          >
-                            {item.name}
-                          </option>
-                        ))}
-                      </select>
+                      <Select
+                        value={
+                          editFields[story.id]?.category || story.category.name
+                        }
+                        onValueChange={(value) =>
+                          setEditFields((prev) => ({
+                            ...prev,
+                            [story.id]: {
+                              ...prev[story.id],
+                              category: value,
+                            },
+                          }))
+                        }
+                      >
+                        <SelectTrigger className="w-full border-2 border-gray-200 rounded-l">
+                          <SelectValue placeholder="Pilih kategori" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Pilih Kategori</SelectLabel>
+                            {categories.map((story) => (
+                              <SelectItem key={story.id} value={story.name}>
+                                {story.name}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
 
                       {/* Content */}
-                      <textarea
+                      <Textarea
                         rows={5}
-                        className="w-full mt-2 bg-neutral-800 text-white p-2 border border-neutral-700 rounded"
+                        className="w-full mt-2 "
                         defaultValue={story.content}
                         placeholder="Isi Cerita"
                         onChange={(e) =>
@@ -251,9 +310,9 @@ export default function MyOwnStoryPage() {
                       />
 
                       {/* Short Description */}
-                      <textarea
+                      <Textarea
                         rows={3}
-                        className="w-full mt-2 bg-neutral-800 text-white p-2 border border-neutral-700 rounded"
+                        className="w-full mt-2 "
                         defaultValue={story.short_description}
                         placeholder="Deskripsi Singkat"
                         onChange={(e) =>
@@ -268,10 +327,10 @@ export default function MyOwnStoryPage() {
                       />
 
                       {/* File */}
-                      <input
+                      <Input
                         type="file"
                         accept="image/*"
-                        className="w-full mt-2 bg-neutral-800 text-white p-2 border border-neutral-700 rounded"
+                        className="w-full mt-2 "
                         onChange={(e) => {
                           const file = e.target.files?.[0] ?? null;
                           setEditFields((prev) => ({
@@ -286,9 +345,14 @@ export default function MyOwnStoryPage() {
 
                       <DialogFooter>
                         <DialogClose asChild>
-                          <Button variant="outline">Batal</Button>
+                          <Button className="cursor-pointer bg-neutral-700 hover:bg-neutral-800">
+                            Batal
+                          </Button>
                         </DialogClose>
-                        <Button onClick={() => handleUpdateStory(story.id)}>
+                        <Button
+                          className="cursor-pointer bg-neutral-700 hover:bg-neutral-800"
+                          onClick={() => handleUpdateStory(story.id)}
+                        >
                           {isLoading ? (
                             <div className="flex items-center justify-center gap-2">
                               <svg
@@ -325,9 +389,8 @@ export default function MyOwnStoryPage() {
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button
-                      variant="destructive"
                       size="icon"
-                      className="mt-1"
+                      className="text-red-500 bg-neutral-900/30 hover:text-white transition hover:bg-red-500 p-2 rounded cursor-pointer"
                       title="Hapus cerita"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -341,8 +404,13 @@ export default function MyOwnStoryPage() {
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Batal</AlertDialogCancel>
-                      <AlertDialogAction onClick={() => handleDelete(story.id)}>
+                      <AlertDialogCancel className="cursor-pointer hover:text-white bg-neutral-700 hover:bg-neutral-800 border-0 text-white">
+                        Batal
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        className="cursor-pointer bg-neutral-700 hover:bg-neutral-800"
+                        onClick={() => handleDelete(story.id)}
+                      >
                         Hapus
                       </AlertDialogAction>
                     </AlertDialogFooter>

@@ -1,10 +1,10 @@
 import z from 'zod';
 
 export const storySchema = z.object({
-  title: z.string().min(3),
-  sortDescription: z.string().min(10),
+  title: z.string().min(3, { message: 'Minimal 3 karakter' }),
+  sortDescription: z.string().min(10, { message: 'Minimal 10 karakter' }),
   category: z.string().min(1, { message: 'Pilih setidaknya 1 tag' }),
-  content: z.string().min(30),
+  content: z.string().min(30, { message: 'Minimal 30 karakter' }),
   img_url: z
     .any()
     .refine((file) => file instanceof File, {
@@ -126,10 +126,10 @@ export type UpdateStoryType = {
 };
 
 export const formUpdateStory = z.object({
-  title: z.string().min(3),
-  sortDescription: z.string().min(10),
+  title: z.string().min(3, { message: 'Minimal 3 karakter' }),
+  sortDescription: z.string().min(10, { message: 'Minimal 10 karakter' }),
   category: z.string().min(1, { message: 'Pilih setidaknya 1 tag' }),
-  content: z.string().min(30),
+  content: z.string().min(30, { message: 'Minimal 30 karakter' }),
   img_url: z
     .any()
     .refine((file) => file instanceof File, {

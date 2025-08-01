@@ -24,7 +24,7 @@ import {
 import { Button } from '@/components/ui/button';
 
 import Link from 'next/link';
-import { Trash2 } from 'lucide-react';
+import { Pencil, Trash2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useAppDispatch, useAppSelector } from '@/lib/hook';
 import { RootState } from '@/lib/store';
@@ -33,6 +33,14 @@ import { deleteBookmark, updateBookmark } from '@/lib/features/bookmarkSlice';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { LoaderOne } from '@/components/ui/loader';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
 
 export default function BookmarkPage() {
   const { data: session } = useSession();
@@ -95,6 +103,23 @@ export default function BookmarkPage() {
   if (loading) {
     return (
       <div className="max-w-4xl mx-auto mt-10 px-4">
+        <div className="mb-10">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link href="/" className="text-zinc-400 hover:text-white">
+                    Home
+                  </Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage className="text-white">Bookmark</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
         <h1 className="text-4xl font-bold text-white mb-2">
           Cerita yang Kamu Simpan
         </h1>
@@ -110,6 +135,23 @@ export default function BookmarkPage() {
 
   return (
     <div className="max-w-4xl mx-auto mt-10 px-4">
+      <div className="mb-10">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link href="/" className="text-zinc-400">
+                  Home
+                </Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage className="text-white">Bookmark</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
       <h1 className="text-4xl font-bold text-white mb-2">
         Cerita yang Kamu Simpan
       </h1>
@@ -120,10 +162,7 @@ export default function BookmarkPage() {
       {bookmarkedStories.length === 0 ? (
         <div className="text-center text-muted-foreground mt-12">
           <p className="mb-3">Kamu belum menyimpan cerita apa pun.</p>
-          <Link
-            href="/stories"
-            className="text-blue-500 hover:underline text-sm"
-          >
+          <Link href="/story" className="text-blue-500 hover:underline text-sm">
             Telusuri cerita menarik →
           </Link>
         </div>
@@ -138,24 +177,61 @@ export default function BookmarkPage() {
             return (
               <li
                 key={story.id}
-                className="border border-neutral-800 rounded-xl p-4 hover:bg-neutral-900 transition"
+                className="border border-neutral-800 bg-neutral-900/30 rounded-xl p-4 hover:bg-neutral-900 transition"
               >
                 <div className="flex justify-between items-start gap-2">
                   <div className="w-full">
-                    <Link href={`/story/${story.slug}`}>
-                      <h2 className="text-lg font-semibold text-white hover:underline">
-                        {story.title}
-                      </h2>
-                    </Link>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {story.short_description}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      oleh{' '}
-                      <span className="font-medium">
-                        {story.user?.username ?? 'Penulis'}
-                      </span>
-                    </p>
+                    <div className="flex justify-between">
+                      <div>
+                        <Link href={`/story/${story.slug}`}>
+                          <h2 className="text-lg font-semibold text-white hover:underline">
+                            {story.title}
+                          </h2>
+                        </Link>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          {story.short_description}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          oleh{' '}
+                          <span className="font-medium">
+                            {story.user?.username ?? 'Penulis'}
+                          </span>
+                        </p>
+                      </div>
+                      {/* Delete Alert */}
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            size="icon"
+                            className="text-red-500 bg-neutral-900/30 hover:text-white transition hover:bg-red-500 p-2 rounded cursor-pointer"
+                            title="Hapus dari bookmark"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="max-h-[630px] overflow-y-auto">
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Hapus Bookmark?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Tindakan ini tidak dapat dibatalkan.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel className="cursor-pointer hover:text-white bg-neutral-700 hover:bg-neutral-800 border-0 text-white">
+                              Batal
+                            </AlertDialogCancel>
+                            <AlertDialogAction
+                              className="cursor-pointer bg-neutral-700 hover:bg-neutral-800"
+                              onClick={() =>
+                                handleRemoveBookmark(story.id, bookmark?.id)
+                              }
+                            >
+                              Hapus
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
 
                     {/* Notes readonly */}
                     <textarea
@@ -168,8 +244,12 @@ export default function BookmarkPage() {
                     {/* Dialog for editing */}
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button variant="outline" size="sm" className="mt-2">
-                          Edit Catatan
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="mt-2 hover:bg-neutral-300 cursor-pointer"
+                        >
+                          <Pencil className="w-4 h-4 mr-1" /> Edit Catatan
                         </Button>
                       </DialogTrigger>
                       <DialogContent>
@@ -180,7 +260,7 @@ export default function BookmarkPage() {
                           </DialogDescription>
                         </DialogHeader>
                         <textarea
-                          className="w-full mt-2 bg-neutral-800 text-white p-2 border border-neutral-700 rounded resize-none"
+                          className="w-full mt-2 text-black p-2 border bg-white border-white rounded resize-none"
                           rows={4}
                           value={notesMap[bookmark?.id ?? 0] ?? currentNotes}
                           onChange={(e) =>
@@ -192,9 +272,12 @@ export default function BookmarkPage() {
                         />
                         <DialogFooter>
                           <DialogClose asChild>
-                            <Button variant="outline">Batal</Button>
+                            <Button className="cursor-pointer bg-neutral-700 hover:bg-neutral-800">
+                              Batal
+                            </Button>
                           </DialogClose>
                           <Button
+                            className="cursor-pointer bg-neutral-700 hover:bg-neutral-800"
                             onClick={() => {
                               setIsLoading(true);
                               if (!bookmark) {
@@ -251,38 +334,6 @@ export default function BookmarkPage() {
                       </DialogContent>
                     </Dialog>
                   </div>
-
-                  {/* Delete Alert */}
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button
-                        variant="destructive"
-                        size="icon"
-                        className="mt-1"
-                        title="Hapus dari bookmark"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Hapus Bookmark?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Tindakan ini tidak dapat dibatalkan.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Batal</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={() =>
-                            handleRemoveBookmark(story.id, bookmark?.id)
-                          }
-                        >
-                          Hapus
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
                 </div>
               </li>
             );

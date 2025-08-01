@@ -41,17 +41,13 @@ export default function CategoryList({
   return (
     <Select value={selectedCategory} onValueChange={setSelectedCategory}>
       <SelectTrigger className="w-48 border-2 border-gray-200 rounded-lg">
-        <SelectValue placeholder="Select category" />
+        <SelectValue placeholder="Select category" className="text-white" />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
           <SelectLabel>Pilih Kategori</SelectLabel>
           {categories.map((story) => (
-            <SelectItem
-              key={story.id}
-              value={story.name}
-              className="text-white"
-            >
+            <SelectItem key={story.id} value={story.name} className="">
               {story.name}
             </SelectItem>
           ))}

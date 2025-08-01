@@ -4,7 +4,7 @@ import { FlipWords } from '@/components/ui/flip-words';
 import { InfiniteMovingCards } from '@/components/ui/infinite-moving-cards';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { CarouselDemo } from '@/components/view/home/LatestStory';
+import { LatestStory } from '@/components/view/home/LatestStory';
 // import { StickyScrollRevealDemo } from '@/components/view/home/StickyScrollRevealDemo';
 
 export default function User() {
@@ -64,10 +64,7 @@ export default function User() {
       {/* Ini DILUAR background utama */}
       <div className="container mx-auto mt-15">
         <div className="flex justify-between text-white">
-          <h1 className="text-white text-3xl font-bold">Top Story</h1>
-          <Link href={'#'} className="hover:text-zinc-300">
-            View All {'->'}
-          </Link>
+          <h1 className="text-white text-3xl font-bold">Feedback Flow</h1>
         </div>
         <div className="my-10 px-4 w-full flex justify-center mx-auto">
           <div className="w-screen overflow-hidden">
@@ -82,10 +79,15 @@ export default function User() {
       </div>
 
       {/* carousel */}
-      <div className="container mx-auto">
-        <h1 className="text-white text-3xl font-bold">Latest Story</h1>
+      <div className="container mx-auto mt-30">
+        <div className="flex justify-between text-white">
+          <h1 className="text-white text-3xl font-bold">Latest Story</h1>
+          <Link href={'/story'} className="hover:text-zinc-300">
+            View All {'->'}
+          </Link>
+        </div>
         <div>
-          <CarouselDemo />
+          <LatestStory />
         </div>
       </div>
 
@@ -97,7 +99,7 @@ export default function User() {
       </div> */}
 
       {/* Call Action */}
-      <div className=" mx-auto container py-20 px-4 bg-gradient-to-r from-purple-700 via-indigo-800 to-black text-white text-center overflow-hidden rounded-2xl mt-10 mb-10">
+      <div className=" mx-auto container py-20 px-4 bg-[url(/buku.jpeg)] h-120 bg-cover text-white text-center overflow-hidden rounded-2xl mt-30 mb-30">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 leading-tight">
           Setiap kisah layak didengar.
         </h2>
@@ -107,7 +109,7 @@ export default function User() {
           berarti.
         </p>
         <Button
-          className="bg-white text-black hover:bg-neutral-200 font-semibold px-8 py-3 rounded-full text-lg transition"
+          className="bg-white text-black hover:bg-neutral-400 font-semibold py-6  rounded-2xl text-lg transition"
           asChild
         >
           <Link href={'/add-story'}>✍️ Ceritakan Sekarang</Link>

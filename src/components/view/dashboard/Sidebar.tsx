@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { User, Heart, Bookmark, Settings, NotebookPen } from 'lucide-react';
+import { User, Heart, Bookmark, NotebookPen } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
@@ -19,7 +19,6 @@ export function DashboardSidebar() {
     { href: '/user/likes', label: 'Likes', icon: Heart },
     { href: '/user/bookmark', label: 'Bookmark', icon: Bookmark },
     { href: '/user/my-story', label: 'My Story', icon: NotebookPen },
-    { href: '/user/account', label: 'Account', icon: Settings },
   ];
 
   return (
@@ -29,7 +28,7 @@ export function DashboardSidebar() {
           <Image
             src={'/logo-white.png'}
             alt="logo"
-            width={150}
+            width={160}
             height={0}
             className="mb-6"
           />

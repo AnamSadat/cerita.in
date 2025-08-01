@@ -35,8 +35,8 @@ export function StoryCard({ story }: PropsStoryCard) {
             unoptimized
           />
         </div>
-        <p className="">{convertFormatDate}</p>
-        <CardTitle>{story.title}</CardTitle>
+        <p className="text-sm">{convertFormatDate}</p>
+        <CardTitle className="text-xl">{story.title}</CardTitle>
         <div className="flex flex-wrap gap-2">
           <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
             {story.category.name}

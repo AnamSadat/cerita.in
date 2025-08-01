@@ -41,6 +41,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+import { Textarea } from '@/components/ui/textarea';
 
 export default function BookmarkPage() {
   const { data: session } = useSession();
@@ -259,7 +260,7 @@ export default function BookmarkPage() {
                             Ubah catatan untuk cerita ini.
                           </DialogDescription>
                         </DialogHeader>
-                        <textarea
+                        <Textarea
                           className="w-full mt-2 text-black p-2 border bg-white border-white rounded resize-none"
                           rows={4}
                           value={notesMap[bookmark?.id ?? 0] ?? currentNotes}

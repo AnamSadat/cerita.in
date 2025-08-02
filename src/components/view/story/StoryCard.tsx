@@ -64,7 +64,7 @@ export function StoryCard({ story }: PropsStoryCard) {
             alt={story.user.username}
             width={40}
             height={40}
-            className="rounded-full"
+            className="rounded-full h-10 object-cover"
           />
           <span>{story.user.username}</span>
         </div>

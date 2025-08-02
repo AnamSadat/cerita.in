@@ -1,7 +1,7 @@
 import { verifyJwt } from '@/lib/jwt';
 import { Prisma } from '@/lib/prisma/prismaClient';
 import { NextRequest, NextResponse } from 'next/server';
-import { profileSchema, profileUpdateSchema } from '@/types/profile';
+// import { profileSchema, profileUpdateSchema } from '@/types/profile';
 
 export async function GET(
   req: NextRequest,
@@ -95,125 +95,110 @@ export async function GET(
   }
 }
 
+// ============================
+// 🛠️ 1. BACKEND - Tambahkan upload Gambar di POST & PUT profile
+// ============================
+
+// File: /app/api/profile/route.ts
+
+import { uploadImageToGCS } from '@/lib/gcsUploader';
+import { nextRequestToIncomingMessage, parseForm } from '@/lib/helperApiStory';
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
 export async function POST(req: NextRequest) {
-  try {
-    const authHeader = req.headers.get('authorization');
-    const token = authHeader?.split(' ')[1];
-    const decoded = token ? verifyJwt(token) : null;
-
-    if (!decoded || typeof decoded !== 'object' || !('sub' in decoded)) {
-      return NextResponse.json(
-        { status: 401, message: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
-    const user_id = Number(decoded.sub);
-    const body = await req.json();
-    const parsed = profileSchema.safeParse(body);
-
-    if (!parsed.success) {
-      return NextResponse.json(
-        {
-          status: 400,
-          message: 'Invalid input',
-          errors: parsed.error.flatten(),
-        },
-        { status: 400 }
-      );
-    }
-
-    // Cek apakah sudah punya profile
-    const existingProfile = await Prisma.profile.findUnique({
-      where: { userId: user_id },
-    });
-
-    if (existingProfile) {
-      return NextResponse.json(
-        { status: 400, message: 'Profile already exists' },
-        { status: 400 }
-      );
-    }
-
-    // Set avatar default kalau tidak dikirim
-    const defaultAvatar =
-      'https://raw.githubusercontent.com/AnamSadat/hosting-image/main/profile.png';
-
-    const profile = await Prisma.profile.create({
-      data: {
-        userId: user_id,
-        name: parsed.data.name,
-        bio: parsed.data.bio || '',
-        avatar_url: parsed.data.avatar_url || defaultAvatar,
-        gender: parsed.data.gender,
-      },
-    });
-
-    return NextResponse.json({ status: 201, data: profile }, { status: 201 });
-  } catch (error) {
-    console.error('Failed to post profile:', error);
+  const authHeader = req.headers.get('authorization');
+  const token = authHeader?.split(' ')[1];
+  const decoded = token ? verifyJwt(token) : null;
+  if (!decoded || typeof decoded !== 'object' || !('sub' in decoded)) {
     return NextResponse.json(
-      { status: 500, message: 'Internal server error' },
-      { status: 500 }
+      { status: 401, message: 'Unauthorized' },
+      { status: 401 }
     );
   }
+
+  const user_id = Number(decoded.sub);
+  const incomingReq = nextRequestToIncomingMessage(req);
+  const { fields, files } = await parseForm(incomingReq);
+
+  const name = fields.name?.[0];
+  const bio = fields.bio?.[0] || '';
+  const gender = fields.gender?.[0];
+  const imageFile = files.imageFile?.[0];
+
+  if (!name || !gender) {
+    return NextResponse.json(
+      { status: 400, message: 'Invalid input' },
+      { status: 400 }
+    );
+  }
+
+  const existing = await Prisma.profile.findUnique({
+    where: { userId: user_id },
+  });
+  if (existing) {
+    return NextResponse.json(
+      { status: 400, message: 'Profile already exists' },
+      { status: 400 }
+    );
+  }
+
+  let avatar_url =
+    'https://raw.githubusercontent.com/AnamSadat/hosting-image/main/profile.png';
+  if (imageFile) {
+    avatar_url = await uploadImageToGCS(imageFile);
+  }
+
+  const profile = await Prisma.profile.create({
+    data: { userId: user_id, name, bio, avatar_url, gender },
+  });
+
+  return NextResponse.json({ status: 201, data: profile }, { status: 201 });
 }
 
 export async function PUT(req: NextRequest) {
-  try {
-    const authHeader = req.headers.get('authorization');
-    const token = authHeader?.split(' ')[1];
-    const decoded = token ? verifyJwt(token) : null;
-
-    if (!decoded || typeof decoded !== 'object' || !('sub' in decoded)) {
-      return NextResponse.json(
-        { status: 401, message: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
-    const user_id = Number(decoded.sub);
-    const body = await req.json();
-    const parsed = profileUpdateSchema.safeParse(body);
-
-    if (!parsed.success) {
-      return NextResponse.json(
-        {
-          status: 400,
-          message: 'Invalid input',
-          errors: parsed.error.flatten(),
-        },
-        { status: 400 }
-      );
-    }
-
-    const existingProfile = await Prisma.profile.findUnique({
-      where: { userId: user_id },
-    });
-
-    if (!existingProfile) {
-      return NextResponse.json(
-        { status: 404, message: 'Profile not found' },
-        { status: 404 }
-      );
-    }
-
-    const updatedProfile = await Prisma.profile.update({
-      where: { userId: user_id },
-      data: {
-        ...parsed.data,
-      },
-    });
-
+  const authHeader = req.headers.get('authorization');
+  const token = authHeader?.split(' ')[1];
+  const decoded = token ? verifyJwt(token) : null;
+  if (!decoded || typeof decoded !== 'object' || !('sub' in decoded)) {
     return NextResponse.json(
-      { status: 200, message: 'Profile updated', data: updatedProfile },
-      { status: 200 }
-    );
-  } catch (error) {
-    console.error('Failed to update profile:', error);
-    return NextResponse.json(
-      { status: 500, message: 'Internal server error' },
-      { status: 500 }
+      { status: 401, message: 'Unauthorized' },
+      { status: 401 }
     );
   }
+
+  const user_id = Number(decoded.sub);
+  const incomingReq = nextRequestToIncomingMessage(req);
+  const { fields, files } = await parseForm(incomingReq);
+
+  const name = fields.name?.[0];
+  const bio = fields.bio?.[0] || '';
+  const gender = fields.gender?.[0];
+  const imageFile = files.imageFile?.[0];
+
+  const existing = await Prisma.profile.findUnique({
+    where: { userId: user_id },
+  });
+  if (!existing) {
+    return NextResponse.json(
+      { status: 404, message: 'Profile not found' },
+      { status: 404 }
+    );
+  }
+
+  let avatar_url = existing.avatar_url;
+  if (imageFile) {
+    avatar_url = await uploadImageToGCS(imageFile);
+  }
+
+  const updated = await Prisma.profile.update({
+    where: { userId: user_id },
+    data: { name, bio, avatar_url, gender },
+  });
+
+  return NextResponse.json({ status: 200, data: updated }, { status: 200 });
 }

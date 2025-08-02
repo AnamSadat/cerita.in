@@ -184,9 +184,7 @@ export default function MyOwnStoryPage() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage className="text-white">
-                My Bookmark
-              </BreadcrumbPage>
+              <BreadcrumbPage className="text-white">My Story</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>

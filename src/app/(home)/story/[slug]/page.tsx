@@ -29,6 +29,7 @@ import { BookmarkButton } from '@/components/view/story/BookmarkButton';
 import { useSession } from 'next-auth/react';
 import { LoaderOne } from '@/components/ui/loader';
 import formatDate from '@/lib/formatDate';
+import toast from 'react-hot-toast';
 
 export default function StoryDetailPage() {
   const { data: session } = useSession();
@@ -150,9 +151,13 @@ export default function StoryDetailPage() {
             <div className="relative w-full h-[250px] md:h-[300px] rounded-xl overflow-hidden">
               <Image
                 src={detail.img_url}
-                alt="Story Thumbnail"
+                alt={detail.slug}
                 fill
                 className="object-cover"
+                unoptimized
+                onError={() => {
+                  toast.error('Gagal memuat gambar. Silakan refresh halaman!');
+                }}
               />
             </div>
 

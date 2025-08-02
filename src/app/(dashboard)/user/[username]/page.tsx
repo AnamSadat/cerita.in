@@ -22,10 +22,12 @@ import {
   postProfile,
   putProfile,
 } from '@/lib/prisma/apiPrisma';
-import type {
-  ProfileType,
-  profileSchemaInput,
-  profileUpdateSchemaInput,
+import {
+  // FormTypeProfile,
+  // profileToFormData,
+  type ProfileType,
+  // profileSchemaInput,
+  // profileUpdateSchemaInput,
 } from '@/types/profile';
 import {
   Select,
@@ -50,8 +52,9 @@ export default function ProfilePage() {
   const [fullName, setFullName] = useState<string>('');
   const [bio, setBio] = useState<string>('');
 
-  const [avatarUrl, setAvatarUrl] = useState('');
+  // const [avatarUrl, setAvatarUrl] = useState('');
   const [gender, setGender] = useState<'Male' | 'Female' | 'Other'>('Male');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   // Fetch profile saat halaman dimuat
   useEffect(() => {
@@ -65,7 +68,7 @@ export default function ProfilePage() {
         setProfile(data);
         setFullName(data.name ?? '');
         setBio(data.bio ?? '');
-        setAvatarUrl(data.avatar_url ?? '');
+        // setAvatarUrl(data.avatar_url ?? '');
         setGender(
           ['Male', 'Female', 'Other'].includes(data.gender)
             ? (data.gender as 'Male' | 'Female' | 'Other')
@@ -86,43 +89,38 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     isSetLoading(true);
-    const payload: profileSchemaInput | profileUpdateSchemaInput = {
+
+    if (!fullName || fullName.length < 3) {
+      toast.error('Nama minimal 3 karakter');
+      isSetLoading(false);
+      return;
+    }
+
+    const formData = {
       name: fullName,
       bio: bio,
-      avatar_url: avatarUrl,
       gender: gender,
+      file: selectedFile ?? undefined,
     };
-
-    console.log('ini profil di handlesave: ', profile);
-    console.log('ini username di handlesave: ', username);
-    console.log('ini session.user.email di handlesave: ', session?.user.email);
-    console.log('ini session.user.id di handlesave: ', session?.user.id);
-    console.log(
-      'ini session.user.username di handlesave: ',
-      session?.user.username
-    );
 
     try {
       if (profile && profile.userId === Number(session?.user?.id)) {
-        await putProfile(payload);
-        isSetLoading(false);
-        console.log('Profil berhasil diperbarui');
+        await putProfile(formData);
         toast.success('Profil berhasil diperbarui');
       } else {
-        await postProfile(payload as profileSchemaInput);
-        isSetLoading(false);
-        console.log('Profil berhasil dibuat');
+        await postProfile(formData);
         toast.success('Profil berhasil dibuat');
       }
 
       if (username) {
         const updated = await getProfileByUsername(username);
         setProfile(updated);
-        isSetLoading(false);
       }
     } catch (error: unknown) {
       const err = error as Error;
       toast.error(err.message || 'Gagal menyimpan profil');
+    } finally {
+      isSetLoading(false);
     }
   };
 
@@ -235,6 +233,20 @@ export default function ProfilePage() {
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1 text-white">
+                  Gambar Profil
+                </label>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) setSelectedFile(file);
+                  }}
+                />
               </div>
 
               <DialogFooter className="mt-4">

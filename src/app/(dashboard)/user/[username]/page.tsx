@@ -179,7 +179,7 @@ export default function ProfilePage() {
                 Edit Profil
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-neutral-900 border-0 max-h-[630px] overflow-y-auto">
+            <DialogContent className="bg-neutral-900 border-0 max-h-[630px] overflow-y-auto scroll-hidden">
               <DialogHeader>
                 <DialogTitle>Edit Profil</DialogTitle>
                 <DialogDescription>
@@ -239,7 +239,7 @@ export default function ProfilePage() {
 
               <DialogFooter className="mt-4">
                 <DialogClose asChild>
-                  <Button className="cursor-pointer bg-neutral-700 hover:bg-neutral-800">
+                  <Button className="cursor-pointer bg-red-500 hover:bg-red-600">
                     Batal
                   </Button>
                 </DialogClose>

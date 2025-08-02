@@ -49,7 +49,7 @@ export default function User() {
         <BackgroundBeams /> {/* Background khusus area atas */}
         <div className="container flex justify-center items-center px-4">
           <div className="hero text-center mx-auto w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-4xl">
-            <div className="text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-6xl mb-10 leading-tight">
+            <div className="text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-6xl mb-8 text-center leading-tight">
               Tiap hari adalah halaman baru dari
               <FlipWords words={words} className="" /> <br />
               yang layak ditulis.
@@ -81,7 +81,9 @@ export default function User() {
       {/* carousel */}
       <div className="container mx-auto mt-30">
         <div className="flex justify-between text-white">
-          <h1 className="text-white text-3xl font-bold">Latest Story</h1>
+          <h1 className="text-white text-xl lg:text-3xl font-bold">
+            Latest Story
+          </h1>
           <Link href={'/story'} className="hover:text-zinc-300">
             View All {'->'}
           </Link>

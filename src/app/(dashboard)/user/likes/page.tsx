@@ -187,7 +187,7 @@ export default function LikesPage() {
                           Batal
                         </AlertDialogCancel>
                         <AlertDialogAction
-                          className="cursor-pointer bg-neutral-700 hover:bg-neutral-800"
+                          className="cursor-pointer bg-red-500 hover:bg-red-600"
                           onClick={() => handleUnlike(story.id, like?.id)}
                         >
                           Hapus

@@ -10,7 +10,6 @@ import {
 import formatDate from '@/lib/formatDate';
 import { StoryFromDB } from '@/types/story';
 import Image from 'next/image';
-import Link from 'next/link';
 
 type PropsStoryCard = {
   story: StoryFromDB;
@@ -22,7 +21,7 @@ export function StoryCard({ story }: PropsStoryCard) {
   console.log('✅ StoryCard item:', story);
 
   return (
-    <Card className="transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg bg-neutral-800/80 border-0 text-white">
+    <Card className="transition-all duration-300 hover:-translate-y-1 hover:shadow-lg bg-neutral-800/80 hover:bg-neutral-700/60 border-0 text-white">
       <CardHeader className="gap-3">
         <div className="">
           <Image
@@ -35,8 +34,14 @@ export function StoryCard({ story }: PropsStoryCard) {
             unoptimized
           />
         </div>
-        <p className="text-sm">{convertFormatDate}</p>
-        <CardTitle className="text-xl">{story.title}</CardTitle>
+        <p className="text-sm">
+          {convertFormatDate.day} {convertFormatDate.fullDate}
+          {', '}
+          {`${convertFormatDate.time}`}
+        </p>
+        <CardTitle className="text-xl min-h-[60px] max-h-[60px]">
+          {story.title}
+        </CardTitle>
         <div className="flex flex-wrap gap-2">
           <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
             {story.category.name}
@@ -63,10 +68,11 @@ export function StoryCard({ story }: PropsStoryCard) {
           />
           <span>{story.user.username}</span>
         </div>
-        <Button type="submit" variant={'outline'} className="" asChild>
-          <Link href={`story/${story.slug}`} className="text-black">
-            Details
-          </Link>
+        <Button
+          variant={'outline'}
+          className="text-black hover:bg-neutral-300 cursor-pointer"
+        >
+          Details
         </Button>
       </CardFooter>
     </Card>

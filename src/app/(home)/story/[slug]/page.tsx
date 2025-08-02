@@ -18,7 +18,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 
-import { CalendarDays, User } from 'lucide-react';
+import { CalendarDays, Clock, User } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/lib/hook';
@@ -94,7 +94,7 @@ export default function StoryDetailPage() {
     (bm) => bm.user_id === Number(userId)
   );
 
-  const converFormatDate = formatDate(detail.created_at);
+  const convertFormatDate = formatDate(detail.created_at);
   if (!detail) return null;
 
   return (
@@ -134,7 +134,10 @@ export default function StoryDetailPage() {
                 </span>
                 <span className="flex items-center gap-1">
                   <CalendarDays size={14} />
-                  {converFormatDate}
+                  {convertFormatDate.day} {convertFormatDate.fullDate}
+                  &nbsp;
+                  <Clock size={14} />
+                  {convertFormatDate.time}
                 </span>
                 <span className="bg-blue-100 text-blue-600 px-2 py-0.5 rounded-md text-xs">
                   {detail.category.name}

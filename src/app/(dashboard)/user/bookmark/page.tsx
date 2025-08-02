@@ -222,7 +222,7 @@ export default function BookmarkPage() {
                               Batal
                             </AlertDialogCancel>
                             <AlertDialogAction
-                              className="cursor-pointer bg-neutral-700 hover:bg-neutral-800"
+                              className="cursor-pointer bg-red-500 hover:bg-red-600"
                               onClick={() =>
                                 handleRemoveBookmark(story.id, bookmark?.id)
                               }
@@ -273,7 +273,7 @@ export default function BookmarkPage() {
                         />
                         <DialogFooter>
                           <DialogClose asChild>
-                            <Button className="cursor-pointer bg-neutral-700 hover:bg-neutral-800">
+                            <Button className="cursor-pointer bg-red-500 hover:bg-red-600">
                               Batal
                             </Button>
                           </DialogClose>

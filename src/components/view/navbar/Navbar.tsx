@@ -87,6 +87,18 @@ export function Nav() {
             isOpen={isMobileMenuOpen}
             onClose={() => setIsMobileMenuOpen(false)}
           >
+            {status === 'loading' ? (
+              <Skeleton className="h-8 w-8 rounded-full mb-4" />
+            ) : session ? (
+              <div className="mb-4 flex gap-4">
+                <DropdownMenuDemo session={session} />
+                <div className="text-sm text-neutral-500">
+                  <p className="text-neutral-500">{session.user.username}</p>
+                  <p className="text-neutral-500">{session.user.email}</p>
+                </div>
+              </div>
+            ) : null}
+
             {navItems.map((item, idx) => (
               <Link
                 key={`mobile-link-${idx}`}
@@ -97,21 +109,26 @@ export function Nav() {
                 <span className="block">{item.name}</span>
               </Link>
             ))}
-            <div className="flex w-full flex-col gap-4">
+
+            <div className="flex w-full flex-col gap-4 mt-4">
               <NavbarButton
+                href="/add-story"
                 onClick={() => setIsMobileMenuOpen(false)}
                 variant="primary"
                 className="w-full"
               >
                 Add Story
               </NavbarButton>
-              <NavbarButton
-                onClick={() => setIsMobileMenuOpen(false)}
-                variant="primary"
-                className="w-full"
-              >
-                Login
-              </NavbarButton>
+              {!session && (
+                <NavbarButton
+                  href="/login"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  variant="primary"
+                  className="w-full"
+                >
+                  Login
+                </NavbarButton>
+              )}
             </div>
           </MobileNavMenu>
         </MobileNav>

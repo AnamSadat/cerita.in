@@ -238,7 +238,7 @@ export default function MyOwnStoryPage() {
                         <Pencil className="w-4 h-4 mr-1" /> Edit Cerita
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="max-h-[630px] overflow-y-auto">
+                    <DialogContent className="max-h-[630px] overflow-y-auto scroll-hidden">
                       <DialogHeader>
                         <DialogTitle>Edit Cerita</DialogTitle>
                         <DialogDescription>
@@ -345,7 +345,7 @@ export default function MyOwnStoryPage() {
 
                       <DialogFooter>
                         <DialogClose asChild>
-                          <Button className="cursor-pointer bg-neutral-700 hover:bg-neutral-800">
+                          <Button className="cursor-pointer bg-red-500 hover:bg-red-600">
                             Batal
                           </Button>
                         </DialogClose>
@@ -408,7 +408,7 @@ export default function MyOwnStoryPage() {
                         Batal
                       </AlertDialogCancel>
                       <AlertDialogAction
-                        className="cursor-pointer bg-neutral-700 hover:bg-neutral-800"
+                        className="cursor-pointer bg-red-500 hover:bg-red-600"
                         onClick={() => handleDelete(story.id)}
                       >
                         Hapus

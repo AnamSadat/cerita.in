@@ -17,7 +17,12 @@ export default function formatDate(story: string) {
     year: 'numeric',
   });
 
-  const formatted = `${day}, ${fullDate} [${time}]`;
+  // const formatted = `${day}, ${fullDate} [${time}]`;
+  const formatted = {
+    day: day,
+    fullDate: fullDate,
+    time: time,
+  };
 
   return formatted;
 }

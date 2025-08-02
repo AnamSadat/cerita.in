@@ -14,14 +14,20 @@ export function LatestStory() {
     dispatch(fetchStory());
   }, [dispatch]);
 
-  const slideData = stories.slice(0, 7).map((story) => ({
-    title: story.title,
-    button: 'Baca Cerita',
-    src:
-      story.img_url ||
-      'https://storage.googleapis.com/ceritain-images/19c2dbd0-6b6a-4c62-86bb-35d528188922.jpg',
-    slug: story.slug,
-  }));
+  const slideData = [...stories]
+    .sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    )
+    .slice(0, 7)
+    .map((story) => ({
+      title: story.title,
+      button: 'Baca Cerita',
+      src:
+        story.img_url ||
+        'https://storage.googleapis.com/ceritain-images/19c2dbd0-6b6a-4c62-86bb-35d528188922.jpg',
+      slug: story.slug,
+    }));
 
   return (
     <div className="relative overflow-hidden w-full h-full py-20">

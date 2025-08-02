@@ -24,7 +24,7 @@ import {
 import { Button } from '@/components/ui/button';
 
 import Link from 'next/link';
-import { Frown, Pencil, Trash2 } from 'lucide-react';
+import { Frown, Pencil, Trash2, User } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useAppDispatch, useAppSelector } from '@/lib/hook';
 import { RootState } from '@/lib/store';
@@ -199,8 +199,8 @@ export default function BookmarkPage() {
                         <p className="text-sm text-muted-foreground mt-1">
                           {story.short_description}
                         </p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          oleh{' '}
+                        <p className="text-xs text-muted-foreground mt-1 flex gap-1">
+                          <User size={14} />
                           <span className="font-medium">
                             {story.user?.username ?? 'Penulis'}
                           </span>

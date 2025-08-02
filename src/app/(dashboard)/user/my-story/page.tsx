@@ -209,7 +209,7 @@ export default function MyOwnStoryPage() {
             Opsss Kamu Belum Menulis Cerita Apapun...
           </h2>
           <Link
-            href="/story"
+            href="/add-story"
             className="text-blue-500  hover:underline text-lg"
           >
             Buat cerita →

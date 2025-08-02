@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Trash2 } from 'lucide-react';
+import { Frown, Trash2, User } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useAppDispatch, useAppSelector } from '@/lib/hook';
 import { RootState } from '@/lib/store';
@@ -31,6 +31,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+import { Card } from '@/components/ui/card';
 
 export default function LikesPage() {
   const { data: session } = useSession();
@@ -130,13 +131,25 @@ export default function LikesPage() {
       </p>
 
       {likedStories.length === 0 ? (
-        <div className="text-center text-muted-foreground mt-12">
-          <p className="mb-3">Kamu belum menyukai cerita apa pun.</p>
-          <Link href="/story" className="text-blue-500 hover:underline text-sm">
-            Buat ceritamu
+        <Card className="p-7 items-center border-0 flex flex-col bg-neutral-900/80">
+          <Frown className="text-white size-50" />
+          <h2 className="text-white text-2xl font-bold">
+            Opsss Kamu Belum Menyukai Cerita Apapun...
+          </h2>
+          <Link
+            href="/story"
+            className="text-blue-500  hover:underline text-lg"
+          >
+            Telusuri cerita menarik →
           </Link>
-        </div>
+        </Card>
       ) : (
+        // <div className="text-center text-muted-foreground mt-12">
+        //   <p className="mb-3">Kamu belum menyukai cerita apa pun.</p>
+        //   <Link href="/story" className="text-blue-500 hover:underline text-sm">
+        //     Buat ceritamu
+        //   </Link>
+        // </div>
         <ul className="space-y-6">
           {likedStories.map((story) => {
             const like = story.likes?.find((l) => l.user_id === Number(userId));
@@ -156,8 +169,8 @@ export default function LikesPage() {
                     <p className="text-sm text-muted-foreground mt-1">
                       {story.short_description}
                     </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      oleh{' '}
+                    <p className="text-xs text-muted-foreground mt-1 flex gap-1">
+                      <User size={14} />
                       <span className="font-medium">
                         {story.user?.username ?? 'Penulis'}
                       </span>

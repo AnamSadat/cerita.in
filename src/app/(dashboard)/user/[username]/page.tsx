@@ -40,7 +40,7 @@ import {
 } from '@/components/ui/select';
 import { LoaderOne } from '@/components/ui/loader';
 import { Badge } from '@/components/ui/badge';
-import { Pencil } from 'lucide-react';
+import { CalendarClock, Contact, Mail, Pencil } from 'lucide-react';
 
 export default function ProfilePage() {
   const { data: session } = useSession();
@@ -48,6 +48,7 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<ProfileType | null>(null);
   const [loading, setLoading] = useState(true);
   const [isLoading, isSetLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const [fullName, setFullName] = useState<string>('');
   const [bio, setBio] = useState<string>('');
@@ -89,6 +90,7 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     isSetLoading(true);
+    setIsOpen(true);
 
     if (!fullName || fullName.length < 3) {
       toast.error('Nama minimal 3 karakter');
@@ -107,9 +109,11 @@ export default function ProfilePage() {
       if (profile && profile.userId === Number(session?.user?.id)) {
         await putProfile(formData);
         toast.success('Profil berhasil diperbarui');
+        setIsOpen(false);
       } else {
         await postProfile(formData);
         toast.success('Profil berhasil dibuat');
+        setIsOpen(false);
       }
 
       if (username) {
@@ -119,6 +123,7 @@ export default function ProfilePage() {
     } catch (error: unknown) {
       const err = error as Error;
       toast.error(err.message || 'Gagal menyimpan profil');
+      isSetLoading(false);
     } finally {
       isSetLoading(false);
     }
@@ -166,7 +171,7 @@ export default function ProfilePage() {
       <div className="mb-8 border border-neutral-800 bg-neutral-900 rounded-xl p-4 shadow-lg">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold mb-2">Bio</h2>
-          <Dialog>
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
               <Button
                 variant="outline"
@@ -258,6 +263,7 @@ export default function ProfilePage() {
                 <Button
                   className="cursor-pointer bg-neutral-700 hover:bg-neutral-800"
                   onClick={handleSave}
+                  disabled={isLoading}
                 >
                   {isLoading ? (
                     <div className="flex items-center justify-center gap-2">
@@ -301,11 +307,17 @@ export default function ProfilePage() {
       {/* TODO */}
       <div className="border border-neutral-800 bg-neutral-900 rounded-xl p-4 shadow-lg">
         <h2 className="text-lg font-semibold mb-2">Informasi Tambahan</h2>
-        <ul className="text-muted-foreground list-disc list-inside space-y-1">
-          <li>Nama Lengkap: {profile?.name ?? '-'}</li>
-          <li>Email: {session?.user?.email ?? '-'}</li>
-          <li>
-            Bergabung sejak:{' '}
+        <ul className="text-muted-foreground space-y-1">
+          <li className="flex items-center">
+            <Contact size={14} /> &nbsp; Nama Lengkap: {profile?.name ?? '-'}
+          </li>
+          <li className="flex items-center">
+            <Mail size={14} />
+            &nbsp; Email: {session?.user?.email ?? '-'}
+          </li>
+          <li className="flex items-center">
+            <CalendarClock size={14} />
+            &nbsp; Bergabung sejak:{' '}
             {profile?.created_at
               ? new Date(profile.created_at).toLocaleDateString('id-ID', {
                   year: 'numeric',

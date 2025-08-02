@@ -5,6 +5,8 @@ import { useAppDispatch, useAppSelector } from '@/lib/hook';
 import { fetchStory } from '@/lib/features/storySlice';
 import { Carousel } from '@/components/ui/carousel';
 import { LoaderOne } from '@/components/ui/loader';
+import { Card } from '@/components/ui/card';
+import { Frown } from 'lucide-react';
 
 export function LatestStory() {
   const dispatch = useAppDispatch();
@@ -36,7 +38,12 @@ export function LatestStory() {
           <LoaderOne />
         </div>
       ) : stories.length === 0 ? (
-        <div className="text-center text-gray-500">Belum ada story.</div>
+        <Card className="p-7 items-center border-0 flex flex-col bg-neutral-900/80">
+          <Frown className="text-white size-50" />
+          <h2 className="text-white text-2xl font-bold">
+            Opsss Belum Ada Cerita Apapun...
+          </h2>
+        </Card>
       ) : (
         <Carousel slides={slideData} />
       )}

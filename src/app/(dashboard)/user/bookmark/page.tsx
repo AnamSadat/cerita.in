@@ -24,7 +24,7 @@ import {
 import { Button } from '@/components/ui/button';
 
 import Link from 'next/link';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Frown, Pencil, Trash2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useAppDispatch, useAppSelector } from '@/lib/hook';
 import { RootState } from '@/lib/store';
@@ -42,6 +42,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { Textarea } from '@/components/ui/textarea';
+import { Card } from '@/components/ui/card';
 
 export default function BookmarkPage() {
   const { data: session } = useSession();
@@ -161,12 +162,18 @@ export default function BookmarkPage() {
       </p>
 
       {bookmarkedStories.length === 0 ? (
-        <div className="text-center text-muted-foreground mt-12">
-          <p className="mb-3">Kamu belum menyimpan cerita apa pun.</p>
-          <Link href="/story" className="text-blue-500 hover:underline text-sm">
+        <Card className="p-7 items-center border-0 flex flex-col bg-neutral-900/80">
+          <Frown className="text-white size-50" />
+          <h2 className="text-white text-2xl font-bold">
+            Opsss Kamu Belum Menyimpan Cerita Apapun...
+          </h2>
+          <Link
+            href="/story"
+            className="text-blue-500  hover:underline text-lg"
+          >
             Telusuri cerita menarik →
           </Link>
-        </div>
+        </Card>
       ) : (
         <ul className="space-y-6">
           {bookmarkedStories.map((story) => {
@@ -279,6 +286,7 @@ export default function BookmarkPage() {
                           </DialogClose>
                           <Button
                             className="cursor-pointer bg-neutral-700 hover:bg-neutral-800"
+                            disabled={isLoading}
                             onClick={() => {
                               setIsLoading(true);
                               if (!bookmark) {

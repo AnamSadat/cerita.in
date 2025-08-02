@@ -14,8 +14,10 @@ import { getSession } from 'next-auth/react';
 import { formSchemaRegister, PostRegisterType } from '@/types/auth';
 import { Like } from '@/types/slice';
 import {
-  profileSchemaInput,
-  profileUpdateSchemaInput,
+  FormTypeProfile,
+  FormTypeProfileUpdate,
+  // profileSchemaInput,
+  // profileUpdateSchemaInput,
   UserWithProfile,
 } from '@/types/profile';
 
@@ -299,32 +301,42 @@ export const getProfileByUsername = async (username: string) => {
   return res.data.profile;
 };
 
-export const postProfile = async (data: profileSchemaInput) => {
+export const postProfile = async (data: FormTypeProfile) => {
   const session = await getSession();
-  console.log('🚀 ~ createProfile ~ session:', session);
   const username = session?.user?.username;
-  console.log('🚀 ~ postProfile ~ username:', username);
+
+  const formData = new FormData();
+  formData.append('name', data.name);
+  formData.append('bio', data.bio ?? '');
+  formData.append('gender', data.gender);
+  if (data.file) formData.append('imageFile', data.file);
 
   return await apiAxios(`${ENDPOINTS.PROFILE}/${username}`, {
     method: 'POST',
-    data,
+    data: formData,
     headers: {
       Authorization: `Bearer ${session?.user?.token}`,
+      'Content-Type': 'multipart/form-data',
     },
   });
 };
 
-export const putProfile = async (data: profileUpdateSchemaInput) => {
+export const putProfile = async (data: FormTypeProfileUpdate) => {
   const session = await getSession();
-  console.log('🚀 ~ updateProfile ~ session:', session);
   const username = session?.user?.username;
-  console.log('🚀 ~ putProfile ~ username:', username);
+
+  const formData = new FormData();
+  if (data.name) formData.append('name', data.name);
+  if (data.bio) formData.append('bio', data.bio);
+  if (data.gender) formData.append('gender', data.gender);
+  if (data.file) formData.append('imageFile', data.file);
 
   return await apiAxios(`${ENDPOINTS.PROFILE}/${username}`, {
     method: 'PUT',
-    data,
+    data: formData,
     headers: {
       Authorization: `Bearer ${session?.user?.token}`,
+      'Content-Type': 'multipart/form-data',
     },
   });
 };

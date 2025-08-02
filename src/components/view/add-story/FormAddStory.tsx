@@ -90,7 +90,7 @@ export default function FormAddStory() {
   };
 
   return (
-    <Card className="p-5 bg-neutral-950/20 border-0 backdrop-blur-md shadow-neutral-200">
+    <Card className="p-5 bg-neutral-950/20 border-0 backdrop-blur-md shadow-neutral-200 max-h-[630px] overflow-y-auto scroll-hidden">
       <h1 className="text-4xl text-center font-bold ">Story</h1>
       <div className="max-w-md min-w-md">
         <Form {...form}>

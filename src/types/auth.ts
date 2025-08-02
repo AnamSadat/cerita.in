@@ -23,7 +23,12 @@ export const loginSchema = z.object({
 // Types Register
 export const registerSchema = z
   .object({
-    username: z.string(),
+    username: z
+      .string()
+      .transform((val) => val.toLowerCase()) // ubah ke huruf kecil
+      .refine((val) => !/\s/.test(val), {
+        message: 'Username tidak boleh mengandung spasi',
+      }),
     email: z.string().email({ message: 'Email tidak valid' }),
     password: z
       .string()

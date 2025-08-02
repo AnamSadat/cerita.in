@@ -18,7 +18,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 
-import { CalendarDays, User } from 'lucide-react';
+import { CalendarDays, Clock, User } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/lib/hook';
@@ -29,10 +29,10 @@ import { BookmarkButton } from '@/components/view/story/BookmarkButton';
 import { useSession } from 'next-auth/react';
 import { LoaderOne } from '@/components/ui/loader';
 import formatDate from '@/lib/formatDate';
+import toast from 'react-hot-toast';
 
 export default function StoryDetailPage() {
   const { data: session } = useSession();
-  console.log('🚀 ~ StoryDetailPage ~ session:', session);
   const userId = session?.user?.id;
 
   const { slug } = useParams();
@@ -94,7 +94,7 @@ export default function StoryDetailPage() {
     (bm) => bm.user_id === Number(userId)
   );
 
-  const converFormatDate = formatDate(detail.created_at);
+  const convertFormatDate = formatDate(detail.created_at);
   if (!detail) return null;
 
   return (
@@ -134,7 +134,10 @@ export default function StoryDetailPage() {
                 </span>
                 <span className="flex items-center gap-1">
                   <CalendarDays size={14} />
-                  {converFormatDate}
+                  {convertFormatDate.day} {convertFormatDate.fullDate}
+                  &nbsp;
+                  <Clock size={14} />
+                  {convertFormatDate.time}
                 </span>
                 <span className="bg-blue-100 text-blue-600 px-2 py-0.5 rounded-md text-xs">
                   {detail.category.name}
@@ -147,9 +150,13 @@ export default function StoryDetailPage() {
             <div className="relative w-full h-[250px] md:h-[300px] rounded-xl overflow-hidden">
               <Image
                 src={detail.img_url}
-                alt="Story Thumbnail"
+                alt={detail.slug}
                 fill
                 className="object-cover"
+                unoptimized
+                onError={() => {
+                  toast.error('Gagal memuat gambar. Silakan refresh halaman!');
+                }}
               />
             </div>
 

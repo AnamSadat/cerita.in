@@ -1,8 +1,14 @@
 import z from 'zod';
 
 export const storySchema = z.object({
-  title: z.string().min(3, { message: 'Minimal 3 karakter' }),
-  sortDescription: z.string().min(10, { message: 'Minimal 10 karakter' }),
+  title: z
+    .string()
+    .min(3, { message: 'Minimal 3 karakter' })
+    .max(40, { message: 'Maksimal 40 karakter' }),
+  sortDescription: z
+    .string()
+    .min(10, { message: 'Minimal 10 karakter' })
+    .max(100, { message: 'Maksimal 100 karakter' }),
   category: z.string().min(1, { message: 'Pilih setidaknya 1 tag' }),
   content: z.string().min(30, { message: 'Minimal 30 karakter' }),
   img_url: z
@@ -126,8 +132,14 @@ export type UpdateStoryType = {
 };
 
 export const formUpdateStory = z.object({
-  title: z.string().min(3, { message: 'Minimal 3 karakter' }),
-  sortDescription: z.string().min(10, { message: 'Minimal 10 karakter' }),
+  title: z
+    .string()
+    .min(3, { message: 'Minimal 3 karakter' })
+    .max(40, { message: 'Maksimal 40 karakter' }),
+  sortDescription: z
+    .string()
+    .min(10, { message: 'Minimal 10 karakter' })
+    .max(100, { message: 'Maksimal 100 karakter' }),
   category: z.string().min(1, { message: 'Pilih setidaknya 1 tag' }),
   content: z.string().min(30, { message: 'Minimal 30 karakter' }),
   img_url: z

@@ -29,7 +29,7 @@ export default function Story() {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [query, setQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
+  const itemsPerPage = 12;
   const [totalFilteredItems, setTotalFilteredItems] = useState(0);
   console.log('🚀 ~ Story ~ totalFilteredItems:', totalFilteredItems);
 
@@ -76,7 +76,7 @@ export default function Story() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <Input
               type="text"
-              placeholder="Search nama story."
+              placeholder="Search nama story..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="pl-10 h-10 border-2 border-gray-200 focus:border-orange-400 rounded-xl"
@@ -127,7 +127,11 @@ export default function Story() {
                   (_, i) => (
                     <PaginationItem key={i} className="">
                       <PaginationLink
-                        className="bg-neutral-800/80 border-0 text-white hover:text-white hover:bg-neutral-800/80"
+                        className={`border-0 px-3 py-1 rounded-md ${
+                          currentPage === i + 1
+                            ? 'bg-neutral-800/80 text-white hover:bg-neutral-800/80 hover:text-white' // ✅ Aktif
+                            : 'bg-neutral-800/50 text-white/50 hover:text-white hover:bg-neutral-800/80 cursor-pointer'
+                        }`}
                         isActive={currentPage === i + 1}
                         onClick={() => setCurrentPage(i + 1)}
                       >

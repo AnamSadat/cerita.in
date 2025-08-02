@@ -49,7 +49,7 @@ export default function User() {
         <BackgroundBeams /> {/* Background khusus area atas */}
         <div className="container flex justify-center items-center px-4">
           <div className="hero text-center mx-auto w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-4xl">
-            <div className="text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-6xl mb-10 leading-tight">
+            <div className="text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-6xl mb-8 text-center leading-tight">
               Tiap hari adalah halaman baru dari
               <FlipWords words={words} className="" /> <br />
               yang layak ditulis.
@@ -81,7 +81,9 @@ export default function User() {
       {/* carousel */}
       <div className="container mx-auto mt-30">
         <div className="flex justify-between text-white">
-          <h1 className="text-white text-3xl font-bold">Latest Story</h1>
+          <h1 className="text-white text-xl lg:text-3xl font-bold">
+            Latest Story
+          </h1>
           <Link href={'/story'} className="hover:text-zinc-300">
             View All {'->'}
           </Link>
@@ -101,12 +103,12 @@ export default function User() {
       {/* Call Action */}
       <div className=" mx-auto container py-20 px-4 bg-[url(/buku.jpeg)] h-120 bg-cover text-white text-center overflow-hidden rounded-2xl mt-30 mb-30">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 leading-tight">
-          Setiap kisah layak didengar.
+          Setiap kisah layak didengar
         </h2>
         <p className="text-base sm:text-lg md:text-xl text-neutral-200 max-w-2xl mx-auto mb-8">
           Mulailah menulis ceritamu hari ini dan temukan orang-orang yang
           terhubung lewat pengalaman yang serupa. Kamu tidak sendiri, suaramu
-          berarti.
+          berarti
         </p>
         <Button
           className="bg-white text-black hover:bg-neutral-400 font-semibold py-6  rounded-2xl text-lg transition"

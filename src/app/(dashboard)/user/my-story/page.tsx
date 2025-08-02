@@ -33,7 +33,7 @@ import {
   AlertDialogAction,
 } from '@/components/ui/alert-dialog';
 import { LoaderOne } from '@/components/ui/loader';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Frown, Pencil, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { getCategory } from '@/lib/prisma/apiPrisma';
 import {
@@ -55,6 +55,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Card } from '@/components/ui/card';
 
 export default function MyOwnStoryPage() {
   const { data: session } = useSession();
@@ -67,6 +68,7 @@ export default function MyOwnStoryPage() {
     []
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const [editFields, setEditFields] = useState<
     Record<
@@ -107,8 +109,8 @@ export default function MyOwnStoryPage() {
     if (items.length > 0) {
       items.forEach((story) => {
         console.log('📦 story.id:', story.id);
-        console.log('👤 story.user:', story.user); // Lihat isi user
-        console.log('🔑 story.user.id:', story.user?.id); // Kalau udah ada
+        console.log('👤 story.user:', story.user);
+        console.log('🔑 story.user.id:', story.user?.id);
       });
     }
   }, [items]);
@@ -126,6 +128,7 @@ export default function MyOwnStoryPage() {
 
   const handleUpdateStory = (storyId: number) => {
     setIsLoading(true);
+    setIsOpen(true);
     const story = myStories.find((s) => s.id === storyId);
     if (!story) {
       setIsLoading(false);
@@ -163,6 +166,7 @@ export default function MyOwnStoryPage() {
       .then(() => {
         setIsLoading(false);
         toast.success('Cerita berhasil diperbarui');
+        setIsOpen(false);
       })
       .catch(() => {
         setIsLoading(false);
@@ -184,9 +188,7 @@ export default function MyOwnStoryPage() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage className="text-white">
-                My Bookmark
-              </BreadcrumbPage>
+              <BreadcrumbPage className="text-white">My Story</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -201,15 +203,18 @@ export default function MyOwnStoryPage() {
           <LoaderOne />
         </div>
       ) : myStories.length === 0 ? (
-        <div className="text-center text-muted-foreground mt-12">
-          <p className="mb-3">Kamu belum menulis cerita apa pun.</p>
+        <Card className="p-7 items-center border-0 flex flex-col bg-neutral-900/80">
+          <Frown className="text-white size-50" />
+          <h2 className="text-white text-2xl font-bold">
+            Opsss Kamu Belum Menulis Cerita Apapun...
+          </h2>
           <Link
             href="/add-story"
-            className="text-blue-500 hover:underline text-sm"
+            className="text-blue-500  hover:underline text-lg"
           >
-            Tulis cerita pertama →
+            Buat cerita →
           </Link>
-        </div>
+        </Card>
       ) : (
         <ul className="space-y-6">
           {myStories.map((story) => (
@@ -224,11 +229,11 @@ export default function MyOwnStoryPage() {
                       {story.title}
                     </h2>
                   </Link>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-sm text-muted-foreground my-2">
                     {story.short_description}
                   </p>
 
-                  <Dialog>
+                  <Dialog open={isOpen} onOpenChange={setIsOpen}>
                     <DialogTrigger asChild>
                       <Button
                         variant="outline"
@@ -238,7 +243,7 @@ export default function MyOwnStoryPage() {
                         <Pencil className="w-4 h-4 mr-1" /> Edit Cerita
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="max-h-[630px] overflow-y-auto">
+                    <DialogContent className="max-h-[630px] overflow-y-auto scroll-hidden">
                       <DialogHeader>
                         <DialogTitle>Edit Cerita</DialogTitle>
                         <DialogDescription>
@@ -345,13 +350,14 @@ export default function MyOwnStoryPage() {
 
                       <DialogFooter>
                         <DialogClose asChild>
-                          <Button className="cursor-pointer bg-neutral-700 hover:bg-neutral-800">
+                          <Button className="cursor-pointer bg-red-500 hover:bg-red-600">
                             Batal
                           </Button>
                         </DialogClose>
                         <Button
                           className="cursor-pointer bg-neutral-700 hover:bg-neutral-800"
                           onClick={() => handleUpdateStory(story.id)}
+                          disabled={isLoading}
                         >
                           {isLoading ? (
                             <div className="flex items-center justify-center gap-2">
@@ -408,7 +414,7 @@ export default function MyOwnStoryPage() {
                         Batal
                       </AlertDialogCancel>
                       <AlertDialogAction
-                        className="cursor-pointer bg-neutral-700 hover:bg-neutral-800"
+                        className="cursor-pointer bg-red-500 hover:bg-red-600"
                         onClick={() => handleDelete(story.id)}
                       >
                         Hapus

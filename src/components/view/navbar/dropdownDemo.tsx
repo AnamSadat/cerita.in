@@ -22,12 +22,29 @@ import Image from 'next/image';
 import type { DropDownDemoProps } from '@/types/navbar';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { getProfileByUsername } from '@/lib/prisma/apiPrisma';
 
 export function DropdownMenuDemo({ session }: DropDownDemoProps) {
   const router = useRouter();
   const username = session?.user?.username;
-  // console.log('🚀 ~ DropdownMenuDemo ~ username:', username);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  useEffect(() => {
+    if (!username) return;
+
+    getProfileByUsername(username)
+      .then((data) => {
+        if (data?.avatar_url) {
+          setProfileImage(data.avatar_url);
+        }
+      })
+      .catch(() => {
+        setProfileImage(null);
+      });
+  }, [username]);
+
   if (!session) return <button>Login</button>;
+  console.log('ini di navbar; ', session.user.image);
 
   return (
     <DropdownMenu>
@@ -36,7 +53,7 @@ export function DropdownMenuDemo({ session }: DropDownDemoProps) {
           <Tooltip>
             <TooltipTrigger asChild>
               <Image
-                src={session.user?.image || '/luffy.jpg'}
+                src={profileImage || session.user?.image || '/luffy.jpg'}
                 alt="Profile"
                 className="w-8 h-8 rounded-full"
                 width={20}

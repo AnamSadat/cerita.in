@@ -22,10 +22,12 @@ import {
   postProfile,
   putProfile,
 } from '@/lib/prisma/apiPrisma';
-import type {
-  ProfileType,
-  profileSchemaInput,
-  profileUpdateSchemaInput,
+import {
+  // FormTypeProfile,
+  // profileToFormData,
+  type ProfileType,
+  // profileSchemaInput,
+  // profileUpdateSchemaInput,
 } from '@/types/profile';
 import {
   Select,
@@ -38,7 +40,7 @@ import {
 } from '@/components/ui/select';
 import { LoaderOne } from '@/components/ui/loader';
 import { Badge } from '@/components/ui/badge';
-import { Pencil } from 'lucide-react';
+import { CalendarClock, Contact, Mail, Pencil } from 'lucide-react';
 
 export default function ProfilePage() {
   const { data: session } = useSession();
@@ -46,12 +48,14 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<ProfileType | null>(null);
   const [loading, setLoading] = useState(true);
   const [isLoading, isSetLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const [fullName, setFullName] = useState<string>('');
   const [bio, setBio] = useState<string>('');
 
-  const [avatarUrl, setAvatarUrl] = useState('');
+  // const [avatarUrl, setAvatarUrl] = useState('');
   const [gender, setGender] = useState<'Male' | 'Female' | 'Other'>('Male');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   // Fetch profile saat halaman dimuat
   useEffect(() => {
@@ -65,7 +69,7 @@ export default function ProfilePage() {
         setProfile(data);
         setFullName(data.name ?? '');
         setBio(data.bio ?? '');
-        setAvatarUrl(data.avatar_url ?? '');
+        // setAvatarUrl(data.avatar_url ?? '');
         setGender(
           ['Male', 'Female', 'Other'].includes(data.gender)
             ? (data.gender as 'Male' | 'Female' | 'Other')
@@ -86,43 +90,42 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     isSetLoading(true);
-    const payload: profileSchemaInput | profileUpdateSchemaInput = {
+    setIsOpen(true);
+
+    if (!fullName || fullName.length < 3) {
+      toast.error('Nama minimal 3 karakter');
+      isSetLoading(false);
+      return;
+    }
+
+    const formData = {
       name: fullName,
       bio: bio,
-      avatar_url: avatarUrl,
       gender: gender,
+      file: selectedFile ?? undefined,
     };
-
-    console.log('ini profil di handlesave: ', profile);
-    console.log('ini username di handlesave: ', username);
-    console.log('ini session.user.email di handlesave: ', session?.user.email);
-    console.log('ini session.user.id di handlesave: ', session?.user.id);
-    console.log(
-      'ini session.user.username di handlesave: ',
-      session?.user.username
-    );
 
     try {
       if (profile && profile.userId === Number(session?.user?.id)) {
-        await putProfile(payload);
-        isSetLoading(false);
-        console.log('Profil berhasil diperbarui');
+        await putProfile(formData);
         toast.success('Profil berhasil diperbarui');
+        setIsOpen(false);
       } else {
-        await postProfile(payload as profileSchemaInput);
-        isSetLoading(false);
-        console.log('Profil berhasil dibuat');
+        await postProfile(formData);
         toast.success('Profil berhasil dibuat');
+        setIsOpen(false);
       }
 
       if (username) {
         const updated = await getProfileByUsername(username);
         setProfile(updated);
-        isSetLoading(false);
       }
     } catch (error: unknown) {
       const err = error as Error;
       toast.error(err.message || 'Gagal menyimpan profil');
+      isSetLoading(false);
+    } finally {
+      isSetLoading(false);
     }
   };
 
@@ -168,7 +171,7 @@ export default function ProfilePage() {
       <div className="mb-8 border border-neutral-800 bg-neutral-900 rounded-xl p-4 shadow-lg">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold mb-2">Bio</h2>
-          <Dialog>
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
               <Button
                 variant="outline"
@@ -179,7 +182,7 @@ export default function ProfilePage() {
                 Edit Profil
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-neutral-900 border-0 max-h-[630px] overflow-y-auto">
+            <DialogContent className="bg-neutral-900 border-0 max-h-[630px] overflow-y-auto scroll-hidden">
               <DialogHeader>
                 <DialogTitle>Edit Profil</DialogTitle>
                 <DialogDescription>
@@ -237,15 +240,30 @@ export default function ProfilePage() {
                 </div>
               </div>
 
+              <div>
+                <label className="block text-sm font-medium mb-1 text-white">
+                  Gambar Profil
+                </label>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) setSelectedFile(file);
+                  }}
+                />
+              </div>
+
               <DialogFooter className="mt-4">
                 <DialogClose asChild>
-                  <Button className="cursor-pointer bg-neutral-700 hover:bg-neutral-800">
+                  <Button className="cursor-pointer bg-red-500 hover:bg-red-600">
                     Batal
                   </Button>
                 </DialogClose>
                 <Button
                   className="cursor-pointer bg-neutral-700 hover:bg-neutral-800"
                   onClick={handleSave}
+                  disabled={isLoading}
                 >
                   {isLoading ? (
                     <div className="flex items-center justify-center gap-2">
@@ -289,11 +307,17 @@ export default function ProfilePage() {
       {/* TODO */}
       <div className="border border-neutral-800 bg-neutral-900 rounded-xl p-4 shadow-lg">
         <h2 className="text-lg font-semibold mb-2">Informasi Tambahan</h2>
-        <ul className="text-muted-foreground list-disc list-inside space-y-1">
-          <li>Nama Lengkap: {profile?.name ?? '-'}</li>
-          <li>Email: {session?.user?.email ?? '-'}</li>
-          <li>
-            Bergabung sejak:{' '}
+        <ul className="text-muted-foreground space-y-1">
+          <li className="flex items-center">
+            <Contact size={14} /> &nbsp; Nama Lengkap: {profile?.name ?? '-'}
+          </li>
+          <li className="flex items-center">
+            <Mail size={14} />
+            &nbsp; Email: {session?.user?.email ?? '-'}
+          </li>
+          <li className="flex items-center">
+            <CalendarClock size={14} />
+            &nbsp; Bergabung sejak:{' '}
             {profile?.created_at
               ? new Date(profile.created_at).toLocaleDateString('id-ID', {
                   year: 'numeric',

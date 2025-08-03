@@ -1,6 +1,149 @@
 # 🚀 Cerita.in
 
-Website bercerita modern menggunakan **Next.js**, **Tailwind CSS**, dan **Google Cloud Storage** untuk mengunggah gambar.
+**Ceritain** adalah platform berbasis web tempat pengguna bisa membagikan cerita, pengalaman, atau curahan hati, baik secara publik maupun pribadi. Cocok untuk yang suka menulis, membaca, atau hanya ingin mengekspresikan diri dengan aman.
+
+## Introduction
+
+### 🔑 Fitur Autentikasi
+
+#### 1. Registrasi Manual
+
+- Pengguna daftar dengan username, email, password
+
+- Validasi form client dan server
+
+- Password di-hash sebelum disimpan (via Prisma + bcrypt)
+
+#### 2. Login Credential
+
+- Login menggunakan email dan password
+
+- Setelah login, diarahkan ke halaman utama
+
+##### 🧑‍💻 Akun Uji Coba (Testing Account)
+
+- `Email`: lumiere@gmail.com
+  
+- `Password`: Admin1234*
+
+> ⚠️ Pastikan logout terlebih dahulu jika sebelumnya sudah login, agar sesi tidak bentrok.
+
+#### 3. Session & Proteksi
+
+- Menggunakan NextAuth (dengan strategi JWT)
+
+- Middleware melindungi semua halaman dashboard dan fitur CRUD
+
+- Hanya user yang sudah login bisa melihat, mengedit, atau menghapus ceritanya sendiri
+
+### 📦 Fitur Utama CRUD
+
+#### 1. 📖 Story (Cerita)
+
+- Create: Menulis cerita baru dengan judul, deskripsi singkat, kategori, isi, dan gambar
+
+- Read: Cerita bisa dilihat publik atau hanya oleh pemilik
+
+- Update: Pemilik cerita bisa mengedit seluruh isi cerita
+
+- Delete: Cerita bisa dihapus oleh pemilik
+
+#### 2. 🔖 Bookmark
+
+- Create: Simpan cerita orang lain sebagai bookmark dan notes (opsional)
+
+- Read: Lihat daftar cerita yang telah dibookmark di halaman khusus
+
+- Delete: Hapus bookmark dari daftar
+- Update: Mengedit notes dari bookmark
+
+### 🔎 Fitur Dashboard
+
+- Menampilkan cerita milik user
+
+- Menampilkan aktivitas user seperti cerita yang sudah di like atau di bookmark
+
+- Fitur edit profil (nama, bio, gender, gambar)
+
+- Manajemen cerita: edit, hapus
+
+- Manajemen bookmark: edit, hapus
+
+### 🧩 Teknologi yang Digunakan
+
+- Next.js – Framework React untuk frontend dan backend (App Router)
+
+- Tailwind CSS – Utility-first CSS untuk styling responsif dan modern
+
+- Prisma ORM – ORM untuk akses database yang efisien dan typesafe
+
+- Neon PostgreSQL – Database PostgreSQL berbasis cloud dengan support serverless & branching
+
+- NextAuth.js – Autentikasi berbasis credential (tanpa OAuth)
+
+- TypeScript – Supaya aman dan terstruktur saat ngoding
+
+### 🛡️ Keamanan
+
+- Semua operasi CRUD (story dan bookmark) hanya dapat diakses oleh pengguna yang telah autentikasi (login).
+
+- Authorization diterapkan: pengguna hanya dapat mengakses dan mengelola resource miliknya sendiri (berdasarkan session ID).
+
+- Input dari user divalidasi secara ketat menggunakan Zod (termasuk tipe data, panjang teks, dan format yang diperbolehkan).
+
+- Sistem autentikasi menggunakan email dan password dengan pendekatan credential-based login, tanpa integrasi pihak ketiga (OAuth).
+
+- Gambar (misalnya avatar atau cover cerita) disimpan di Google Cloud Storage (GCS).
+
+- Akses gambar dilakukan melalui URL langsung dari GCS yang telah disimpan di database.
+
+- Upload hanya diperbolehkan oleh user yang valid dan dilakukan via API yang aman (auth protected).
+
+### Structure Project
+
+```markdown
+📁 cerita-in
+├── docs/                  # Dokumentasi teknis dan markdown
+├── prisma/                # Skema dan migrasi database
+├── public/                # Aset statis
+├── src/                   # Sumber utama aplikasi
+│   ├── app/               # Routing (Next.js App Router)
+│   ├── components/        # UI dan section
+│   ├── lib/               # Logic seperti GCS, Prisma
+│   ├── scripts/           # Script CLI internal
+│   ├── types/             # Tipe global
+│   └── auth.ts            # Konfigurasi NextAuth
+├── .env.example
+├── package.json
+└── README.md
+```
+
+### 🌐 Documentation API
+
+#### Ringkasan Endpoint Utama
+
+| Metode | Path                      | Deskripsi                                                  | Autentikasi |
+| ------ | ------------------------- | ---------------------------------------------------------- | ----------- |
+| POST   | `/api/auth/signup`        | Mendaftarkan pengguna baru.                                | ❌ Tidak    |
+| POST   | `/api/auth/[...nextauth]` | Autentikasi login menggunakan email & password (NextAuth). | ❌ Tidak    |
+| GET    | `/api/account`            | Mengambil data akun pengguna yang sedang login.            | ✅ Ya       |
+| PUT    | `/api/account`            | Memperbarui data akun pengguna.                            | ✅ Ya       |
+| POST   | `/api/add-story`          | Menambahkan cerita baru.                                   | ✅ Ya       |
+| GET    | `/api/bookmark`           | Mengambil semua bookmark milik pengguna.                   | ✅ Ya       |
+| POST   | `/api/bookmark`           | Menambahkan bookmark ke cerita tertentu.                   | ✅ Ya       |
+| PUT    | `/api/bookmark`           | Mengedit catatan bookmark.                                 | ✅ Ya       |
+| DELETE | `/api/bookmark`           | Menghapus bookmark dari cerita tertentu.                   | ✅ Ya       |
+| GET    | `/api/category`           | Mengambil daftar kategori cerita.                          | ❌ Tidak    |
+| GET    | `/api/like`               | Mengambil semua like ke milik pengguna.                    | ✅ Ya       |
+| POST   | `/api/like`               | Menambahkan like ke cerita tertentu.                       | ✅ Ya       |
+| DELETE | `/api/like/[id]`          | Menghapus like dari cerita tertentu.                       | ✅ Ya       |
+| GET    | `/api/profile/[username]` | Mengambil profil pengguna berdasarkan username.            | ✅ Ya       |
+| POST   | `/api/profile/[username]` | Membuat profil pengguna berdasarkan username.              | ✅ Ya       |
+| PUT    | `/api/profile/[username]` | Memperbarui profil pengguna.                               | ✅ Ya       |
+| GET    | `/api/story`              | Mengambil semua cerita (filter: publik, kategori, dsb).    | ❌ Tidak    |
+| PUT    | `/api/story`              | Memperbarui Cerita.                                        | ✅ Ya       |
+| GET    | `/api/story/[slug]`       | Mengambil detail cerita berdasarkan slug.                  | ❌ Tidak    |
+| DELETE | `/api/story/delete`       | Menghapus cerita yang dimiliki oleh pengguna.              | ✅ Ya       |
 
 ## 🛠️ Getting Started (Development)
 

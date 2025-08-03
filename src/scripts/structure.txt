@@ -1,0 +1,93 @@
+├── .vscode
+├── docs
+│   ├── dev/
+│   └── md/
+├── prisma
+│   ├── migrations/
+│   └── schema.prisma
+├── public
+├── src
+│   ├── app
+│   │   ├── (auth)
+│   │   │   ├── login/
+│   │   │   ├── register/
+│   │   │   └── layout.tsx
+│   │   ├── (dashboard)
+│   │   │   ├── user
+│   │   │   │   ├── [username]/
+│   │   │   │   ├── account/
+│   │   │   │   ├── bookmark/
+│   │   │   │   ├── likes/
+│   │   │   │   ├── my-story/
+│   │   │   │   └── not-found.tsx
+│   │   │   ├── layout.tsx
+│   │   │   └── not-found.tsx
+│   │   ├── (home)
+│   │   │   ├── (footer)
+│   │   │   │   ├── privacy-policy/
+│   │   │   │   └── term-condition/
+│   │   │   ├── about/
+│   │   │   ├── add-story/
+│   │   │   ├── story
+│   │   │   │   ├── [slug]/
+│   │   │   │   │   ├── not-found.tsx
+│   │   │   ├── layout.tsx
+│   │   │   ├── loading.tsx
+│   │   │   ├── not-found.tsx
+│   │   │   └── page.tsx
+│   │   ├── api
+│   │   │   ├── account/
+│   │   │   ├── add-story/
+│   │   │   ├── auth
+│   │   │   │   ├── [...nextauth]/
+│   │   │   │   └── signup/
+│   │   │   ├── bookmark/
+│   │   │   ├── category/
+│   │   │   ├── like/
+│   │   │   │   ├── [id]/
+│   │   │   ├── profile/
+│   │   │   │   └── [username]/
+│   │   │   └── story/
+│   │   │       ├── [slug]/
+│   │   │       ├── delete/
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   ├── NextSession.tsx
+│   │   └── not-found.tsx
+│   ├── components
+│   │   ├── ui/
+│   │   ├── view/
+│   │   │   ├── add-story/
+│   │   │   ├── auth/
+│   │   │   ├── dashboard/
+│   │   │   ├── footer/
+│   │   │   ├── home/
+│   │   │   ├── navbar/
+│   │   │   ├── not-found/
+│   │   │   └── story/
+│   │   └── Providers.tsx
+│   ├── lib
+│   │   ├── features/
+│   │   ├── prisma/
+│   ├── scripts/
+│   ├── types/
+│   ├── auth.config.ts
+│   ├── auth.ts
+│   └── middleware.ts
+├── .env
+├── .env.example
+├── .gitignore
+├── .prettierrc.json
+├── components.json
+├── eslint.config.mjs
+├── key.json
+├── LICENSE
+├── next-env.d.ts
+├── next.config.ts
+├── package.json
+├── pnpm-lock.yaml
+├── postcss.config.mjs
+├── README.md
+├── tailwind.config.ts
+├── tsconfig.json
+└── vercel.json

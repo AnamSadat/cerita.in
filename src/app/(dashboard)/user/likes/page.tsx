@@ -111,7 +111,7 @@ export default function LikesPage() {
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link href="/" className="text-zinc-400">
+                <Link href="/" className="text-zinc-400 hover:text-white">
                   Home
                 </Link>
               </BreadcrumbLink>

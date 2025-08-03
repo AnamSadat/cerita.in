@@ -77,12 +77,28 @@ export default function ProfilePage() {
         );
       })
       .catch((err) => {
-        // Cek apakah memang error karena profile belum dibuat
-        if (err.message?.toLowerCase().includes('not found')) {
-          setProfile(null);
+        if (err.response) {
+          const status = err.response.status;
+          const message = err.response.data?.message || 'Terjadi kesalahan';
+
+          if (status === 401) {
+            toast.error('Sesi habis. Silakan login kembali.');
+            window.location.href = '/login';
+          } else if (status === 500) {
+            toast.error('Terjadi kesalahan pada server.');
+          } else if (status === 404) {
+            setProfile(null); // Profil belum dibuat
+          } else {
+            toast.error(`Error ${status}: ${message}`);
+          }
+
+          console.error('Error response:', err.response);
+        } else if (err.request) {
+          toast.error('Tidak dapat terhubung ke server.');
+          console.error('Error request:', err.request);
         } else {
-          toast.error('Gagal memuat profil');
-          console.error(err);
+          toast.error(`Error: ${err.message}`);
+          console.error('Error message:', err.message);
         }
       })
       .finally(() => setLoading(false));
